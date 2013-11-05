@@ -1,0 +1,17 @@
+<template name="layout">
+{{>topbar}}
+<div class="container" id="main-container">
+    {{#each alerts}}
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>Æv, der er sket en fejl!</strong> {{this.message}}.
+    </div>
+    {{/each}}
+    <div class="col-xs-3">
+        {{>sidebar}}
+    </div>
+    <div class="col-xs-9">
+        {{yield}}
+    </div>
+</div>
+</template>

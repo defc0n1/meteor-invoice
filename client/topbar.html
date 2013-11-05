@@ -1,0 +1,27 @@
+<template name="topbar">
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Invoice</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Salg</a></li>
+            <li><a href="#">Køb</a></li>
+            <li class=""><a href="#">Varer</a></li>
+            <li><a href="#">Kontakter</a></li>
+            <li><a href="#">Statistik</a></li>
+            <li><a href="#">Bogføring</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" id="main-search" role="search">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button disabled class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                    <input type="text" class="form-control" id="search-query">
+                </div>
+            </div>
+        </form>
+    </div>
+</nav>
+</template>

@@ -1,0 +1,25 @@
+<template name="login">
+    <h1 class="text-center">Log ind</h1>
+    <form id="login-form">
+        <div class="input-group">
+            <span class="exclaim-text input-group-addon"><i class="icon-user"></i></span>
+            <input class="form-control" type="text" id="login-email" placeholder="email adresse" />
+        </div>
+        <div class="input-group">
+            <span class="exclaim-text input-group-addon"><i class="icon-key"></i></span>
+            <input class="form-control" type="password" id="login-password" placeholder="password" />
+        </div>
+        <label class="checkbox">
+            <input type="checkbox"/> Husk mig
+        </label>
+        <input type="submit" class="btn btn-primary btn-lg btn-block" value="Go!">
+    </form>
+<div class="spinner" role="spinner"><div class="spinner-icon"></div></div>
+ <div class="spinner-icon"></div>   <hr>
+    {{#if showResult}}
+    <ul class="login message">
+        <li><i class="icon-warning-sign"></i> {{ message }} </li>
+    </ul>
+<div class="spinner-icon"></div>
+    {{/if}}
+</template>

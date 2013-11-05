@@ -1,0 +1,12 @@
+{
+  "packages": {
+    "bootstrap-3": {},
+    "font-awesome": {},
+    "iron-router": {},
+    "moment": {},
+    "npm": {},
+    "select2": {},
+    "x-editable-bootstrap3": {},
+    "when": {}
+  }
+}
