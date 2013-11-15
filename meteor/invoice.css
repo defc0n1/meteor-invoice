@@ -1,0 +1,23 @@
+#invoice-items-list {
+    padding-top: 40px;
+}
+#invoice-totals {
+    padding-top: 40px;
+}
+.invoice-amount {
+    text-align: right;
+    padding-right: 30px !important;
+}
+.invoice-layout {
+    margin-top: -80px;
+}
+.spinner-icon {
+    margin-top: 60px;
+}
+#td-spinner {
+    margin-top: 0px !important;
+}
+#td-spinner-wrapper {
+    margin-top: 0px;
+    position: inherit !important;
+}

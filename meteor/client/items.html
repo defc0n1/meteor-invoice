@@ -1,0 +1,45 @@
+<template name="items">
+<table class="table table-hover list-table">
+    <thead>
+        <tr>
+            <th>Varenummer</th>
+            <th>Navn</th>
+            <th>Gruppe</th>
+            <th>Kostpris</th>
+            <th>Pris</th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each items}}
+    <tr>
+        <td>
+            {{this.key}}
+        </td>
+        <td>
+            {{this.name}}
+        </td>
+        <td>
+            {{this.group}}
+        </td>
+        <td>
+            {{this.price}}
+        </td>
+        <td>
+            {{getDate this.posting_date}}
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</table>
+<div>
+    <div class="col-xs-8">
+        {{countText}}
+    </div>
+    <div class="col-xs-4">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default {{showPrevious}}" id="previous-page">Forrige</button>
+            <button type="button" class="btn btn-default {{showNext}}" id="next-page">Næste</button>
+        </div>
+    </div>
+</div>
+</template>

@@ -1,0 +1,31 @@
+<template name="topbar">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Invoice</a>
+    </div>
+    <div class="collapse navbar-collapse" id="topbar">
+        <ul class="nav navbar-nav">
+            <li ><a href="{{this.path}}"></a></li>
+            {{# each items}}
+            <li class="{{this.active}}"><a href="{{this.path}}">{{this.name}}</a></li>
+            {{/each}}
+        </ul>
+        <form class="navbar-form navbar-right" id="main-search" role="search">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            {{currentUser.username}} <span class="caret"></span>
+                        </button>
+                        <button disabled class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a id="logout" href="#">Log ud</a></li>
+                        </ul>
+                    </span>
+                    <input type="text" class="form-control" id="search-query">
+                </div>
+            </div>
+        </form>
+    </div>
+</nav>
+</template>

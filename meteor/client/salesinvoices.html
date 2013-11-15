@@ -1,0 +1,56 @@
+<template name="postedSalesinvoices">
+<table class="table table-hover list-table">
+    <thead>
+        <tr>
+            <th>Fakturanummer</th>
+            <th>Kundenummer</th>
+            <th>Navn</th>
+            <th>Bogf. dato</th>
+            <th>Send</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each items}}
+    <tr>
+        <td>
+            {{this.key}}
+        </td>
+        <td>
+            {{this.customer_number}}
+        </td>
+        <td>
+            {{this.name}}
+        </td>
+        <td>
+            {{getDate this.posting_date}}
+        </td>
+        <td>
+            <div class="btn-group">
+                <button type="button" {{processing 'amqp'}} class="edi-button btn btn-default btn-sm {{sentBy 'amqp'}}">Edi</button>
+                <button type="button" {{processing 'mail'}} class="email-button btn btn-default btn-sm {{sentBy 'mail'}}">Mail</button>
+                <button type="button" class="show-button btn btn-default btn-sm">Vis</button>
+            </div>
+        </td>
+        <td>
+            <div id="nprogress" style="{{showSpinner}}">
+                <div class="spinner" role="spinner" id="td-spinner-wrapper"><div class="spinner-icon" id="td-spinner"></div></div>
+            </div>
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</table>
+<div>
+    <div class="col-xs-8">
+        {{countText}}
+    </div>
+    <div class="col-xs-4">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default {{showPrevious}}" id="previous-page">Forrige</button>
+            <button type="button" class="btn btn-default {{showNext}}" id="next-page">Næste</button>
+        </div>
+    </div>
+</div>
+{{> modal}}
+</template>
