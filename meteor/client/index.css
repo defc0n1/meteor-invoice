@@ -34,3 +34,22 @@ body .modal-open {
      /*-moz-border-radius: 0 !important;*/
           /*border-radius: 0 !important;*/
 /*}*/
+
+/******************
+ * GLOBAL STYLES SHARED AMONGST TEMPLATES
+ * ***************/
+
+.right-align-td {
+    text-align: right;
+    padding-right: 30px !important;
+}
+.spinner-icon {
+    margin-top: 60px;
+}
+#td-spinner {
+    margin-top: 0px !important;
+}
+#td-spinner-wrapper {
+    margin-top: 0px;
+    position: inherit !important;
+}

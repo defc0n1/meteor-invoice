@@ -1,7 +1,7 @@
 "use strict"
 
-Template.deptors.created = function () {
-    RenderList('deptors');
+Template.creditors.created = function () {
+    RenderList('creditors');
     var list = [
     { name: 'Nummer', key: 'key'},
     { name: 'Navn', key: 'name'},
@@ -11,16 +11,15 @@ Template.deptors.created = function () {
     { name: 'Adresse', key: 'address'},
     { name: 'By', key: 'city'},
     { name: 'Postnummer', key: 'zip'},
-    { name: 'Att.', key: 'attention'},
     ];
     Session.set('modalFields', list);
 };
 
-Template.deptors.items = function () {
-    return Deptors.find({}, { sort: { key: -1 }}); // .fetch();
+Template.creditors.items = function () {
+    return Creditors.find({}, { sort: { key: -1 }}); // .fetch();
 };
-Template.deptors.events({
-    'click .deptors tbody>tr': function(event) {
+Template.creditors.events({
+    'click .creditors tbody>tr': function(event) {
         Session.set('selected', this);
         $('#myModal').modal({});
     },

@@ -1,0 +1,166 @@
+<template name="postedPurchasecreditnota">
+<div class="row">
+    <div class="col-xs-7">
+    </div>
+    <div class="col-xs-5">
+        <h3>LOGO</h3>
+    </div>
+</div>
+<div class="row" id="invoice-header">
+    <div class="col-xs-7">
+        <h2>{{Element.name}}</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-7">
+        <ul class="list-unstyled lead">
+            <li>
+            {{Element.address}}
+            </li>
+            <li>
+            {{Element.address1}}
+            </li>
+            <li>
+            {{Element.zip}} {{Element.city}}
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <hr>
+</div>
+<div class="row">
+    <div class="col-xs-5">
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="2">
+                    <h4>Kreditnotanr. {{Element.key}}</h4>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Kreditnotadato:
+                </td>
+                <td>
+                    {{GetDate Element.posting_date}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Leverandørnummer.:
+                </td>
+                <td>
+                    {{Element.supplier_number}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-2">
+    </div>
+    <div class="col-xs-5">
+        <h4>Tradehouse Danmark ApS</h4>
+        <ul class="list-unstyled">
+            <li>
+            Rugvænget 54-56
+            </li>
+            <li>
+            2360 Taastrup
+            </li>
+            <li>
+            Tlf. +45 46323632
+            </li>
+            <li>
+            Fax. +45 46326964
+            </li>
+            <li>
+            <a href="mailto:post@tradehouse.as">post@tradehouse.as</a>
+            </li>
+            <li>
+            CVR-nr: DK 26704561
+            </li>
+        </ul>
+    </div>
+</div>
+{{#if Element.comments}}
+<div class="row">
+    <div class="col-xs-12">
+        <b>Bemærkninger:</b>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        {{#each Element.comments}}
+        <tr>
+            <td class="right-align-td">
+                {{this}}
+            </td>
+        </tr>
+        {{/each}}
+    </div>
+</div>
+{{/if}}
+<div class="row" id="invoice-items-list">
+    <div class="col-xs-12">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Antal</th>
+                    <th>Produkt</th>
+                    <th>Varenummer</th>
+                    <th>Stk. pris</th>
+                    <th>Beløb</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#each Element.lines}}
+            <tr>
+                <td class="right-align-td">
+                    {{this.quantity}}
+                </td>
+                <td>
+                    {{this.info}}
+                </td>
+                <td>
+                    {{this.item_number}}
+                </td>
+                <td class="right-align-td">
+                    {{GetPrice this.price}}
+                </td>
+                <td class="right-align-td">
+                    {{ chain 'GetPrice' 'Multiply' this.price this.quantity}}
+                </td>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row" id="invoice-totals">
+    <div class="col-xs-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Varebeløb</th>
+                    <th>Moms</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    {{ chain 'GetPrice' 'Session' 'total'}}
+                </td>
+                <td>
+                    {{ chain 'GetPrice' 'Multiply' '0.25' 'Session' 'total'}}
+                </td>
+                <td>
+                    {{ chain 'GetPrice' 'Multiply' '1.25' 'Session' 'total'}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</template>

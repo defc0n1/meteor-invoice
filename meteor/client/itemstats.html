@@ -1,0 +1,35 @@
+<template name="itemstats">
+<div class="modal fade" data-keyboard="true" id="itemstats" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    {{> itemstatsinner}}
+</div><!-- /.modal -->
+</template>
+<template name="itemstatsinner">
+<!-- Modal -->
+<div class="modal-dialog" id="inner-itemstats">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">Statistik for vare {{ElementProp 'key'}}</h4>
+        </div>
+        <div class="modal-body">
+            <table class="table table-bordered talbe-striped">
+                <tbody>
+                {{#each Session 'stats'}}
+                <tr>
+                    <td class="modal-left-td">
+                        {{this._id}}
+                    </td>
+                    <td class="modal-left-td">
+                        {{GetPrice this.total}}
+                    </td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Luk</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</template>

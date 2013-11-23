@@ -12,5 +12,5 @@ Template.layout.events({
     },
     'click .close': function (event) {
         Alerts.remove({ _id: this._id });
-    }
+    },
 });

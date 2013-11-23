@@ -24,9 +24,9 @@ Template.topbar.isSelected = function (route) {
 Template.topbar.items = function () {
     var items = [
         { name: 'Salg', path: Router.routes['sale'].path({ type: 'postedSalesinvoices' }) },
-        { name: 'Køb', path: Router.routes['sale'].path({ type: '' }) },
+        { name: 'Køb', path: Router.routes['purchase'].path({ type: 'postedPurchaseinvoices' }) },
         { name: 'Kontaker', path: Router.routes['contacts'].path({ type: 'deptors' }) },
-        { name: 'Varer', path: Router.routes['items'].path({ type: '' }) },
+        { name: 'Varer', path: Router.routes['items'].path({ type: 'items' }) },
         { name: 'Statistik', path: Router.routes['sale'].path({ type: '' }) },
         { name: 'Bogføring', path: Router.routes['sale'].path({ type: '' }) },
     ];

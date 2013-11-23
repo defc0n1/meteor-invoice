@@ -1,11 +1,11 @@
 <template name="modal">
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" data-keyboard="false" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     {{> modalInner}}
 </div><!-- /.modal -->
 </template>
 <template name="modalInner">
 <!-- Modal -->
-<div class="modal-dialog">
+<div class="modal-dialog" id="inner-modal">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -22,11 +22,11 @@
                 <tbody>
                 {{#each fields element}}
                 <tr>
-                    <td>
+                    <td class="modal-left-td">
                         {{this.name}}
                     </td>
                     <td>
-                        <a href="#" class="modal-edit-field" id="{{this.key}}" data-type="text" data-title="Enter username">{{this.value}}</a>
+                        <a href="#" class="modal-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
                     </td>
                 </tr>
                 {{/each}}
@@ -34,7 +34,7 @@
             </table>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Luk</button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->

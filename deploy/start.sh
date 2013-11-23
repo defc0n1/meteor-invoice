@@ -1,23 +1,23 @@
 #!/bin/bash
 
-#NODE=bin/node
 NODE=bin/node
 DIR=/home/ettienne/webapps/node
+STAGEDIR=/home/ettienne/webapps/staging
 test -x "$DIR/$NODE" || exit 0
 
+
 function start_app {
-
-    export METEOR_SETTINGS="$(cat $DIR/settings.json)"
-    export MONGO_URL="mongodb://prod:12Trade34@localhost:27018/invoice"
-
-    export NODE_ENV=production
-    export ROOT_URL=http://invoice.tradehouse.as
-    export PORT=18203
-    export MONGO_URL=mongodb://prod:12Trade34@localhost:22282/invoice
-
+    source "$DIR/prod.sh"
     nohup "$DIR/$NODE" "$DIR/bundle/main.js" 1>>"$DIR/log.log" 2>&1 &
-    pidof "/home/ettienne/webapps/node/bin/node" > "$DIR/meteor.pid"
-    #echo $! > "$DIR/meteor.pid"
+    pidof "$DIR/$NODE" > "$DIR/meteor.pid"
+}
+function start_stage {
+    source "$STAGEDIR/staging.sh"
+    nohup "$STAGEDIR/$NODE" "$STAGEDIR/bundle/main.js" 1>>"$STAGEDIR/log.log" 2>&1 &
+    pidof "$STAGEDIR/$NODE" > "$STAGEDIR/meteor.pid"
+}
+function stop_stage {
+    kill `cat $STAGEDIR/meteor.pid`
 }
 
 function stop_app {
@@ -33,8 +33,16 @@ case $1 in
         stop_app
         start_app
         ;;
+    start_stage)
+        start_stage ;;
+    stop_stage)
+        stop_stage ;;
+    restart_stage)
+        stop_stage
+        start_stage
+        ;;
     *)
-echo "usage: meteor {start|stop}" ;;
+echo "usage: meteor {start|stop|start_stage|stop_stage}" ;;
 esac
 exit 0
 

@@ -46,7 +46,7 @@ Router.map(function () {
             if (Meteor.user()) {
                 //NProgress.done();
                 this.stop();
-                Router.go('home');
+                Router.go('index');
                 //this.redirect('/');
             }
         },
@@ -58,15 +58,25 @@ Router.map(function () {
         path: '/loading',
         template: 'loading'
     });
-    this.route('home', {
+    this.route('index', {
         path: '/',
         layoutTemplate: 'layout',
-        template: 'home'
+        template: 'index'
     });
     this.route('items', {
-        path: '/items',
+        path: '/items/:type',
         layoutTemplate: 'layout',
-        template: 'items'
+        template: 'items',
+        data: function ()  {
+            var items = [
+                { name: 'Varer', path: 'items'},
+                { name: 'Varegrupper', path: 'itemGroups' },
+            ];
+            items = determineActive(items, this.params.type, this.path);
+            return {
+                sidebarItems: items,
+            };
+        },
     });
     this.route('sale_root', {
         path: '/sale',
@@ -79,16 +89,33 @@ Router.map(function () {
         path: '/sale/:type',
         layoutTemplate: 'layout',
         action: function () {
-            this.render(this.params.type)
-
+            this.render(this.params.type);
         },
         data: function ()  {
             var items = [
                 { name: 'Åbne fakturaer', path: 'openSalesinvoices'},
                 { name: 'Bogførte fakturaer', path: 'postedSalesinvoices' },
-                { name: 'Åbne kreditnota' },
-                { name: 'Bogførte kreditnota' },
-                { name: 'Tilbud' },
+                { name: 'Åbne kreditnota', path: 'openSalescreditnotas' },
+                { name: 'Bogførte kreditnota', path: 'postedSalescreditnotas' },
+            ];
+            items = determineActive(items, this.params.type, this.path);
+            return {
+                sidebarItems: items,
+            };
+        }
+    });
+    this.route('purchase', {
+        path: '/purchase/:type',
+        layoutTemplate: 'layout',
+        action: function () {
+            this.render(this.params.type);
+        },
+        data: function ()  {
+            var items = [
+                { name: 'Åbne fakturaer', path: 'openPurchaseinvoices'},
+                { name: 'Bogførte fakturaer', path: 'postedPurchaseinvoices' },
+                { name: 'Åbne kreditnota', path: 'openPurchasecreditnotas' },
+                { name: 'Bogførte kreditnota', path: 'postedPurchasecreditnotas' },
             ];
             items = determineActive(items, this.params.type, this.path);
             return {
@@ -100,19 +127,12 @@ Router.map(function () {
         path: '/contacts/:type',
         layoutTemplate: 'layout',
         action: function () {
-            if (this.params.type === 'deptorsNoEmail') {
-                Session.set('filter', { email: '' });
-                this.render('deptors');
-            }
-            else{
-                this.render(this.params.type);
-            }
+            this.render(this.params.type);
         },
         data: function ()  {
             var items = [
                 { name: 'Debitorer', path: 'deptors'},
                 { name: 'Kreditorer', path: 'creditors' },
-                { name: 'Debitorer uden email', path: 'deptorsNoEmail' },
             ];
             items = determineActive(items, this.params.type, this.path);
             return {
@@ -120,10 +140,12 @@ Router.map(function () {
             };
         }
     });
-    this.route('invoice', {
-        path: '/sale/salesinvoices/:key',
-        template: 'invoice',
+    this.route('show', {
+        path: '/show/:type/:key',
         layoutTemplate: 'layout',
+        action: function () {
+            this.render(this.params.type);
+        },
         before: function () {
             Session.set('key', this.params.key);
         }
@@ -131,7 +153,7 @@ Router.map(function () {
     this.route('bareInvoice', {
         path: '/sale/salesinvoices/bare/:key',
         layoutTemplate: 'invoiceLayout',
-        template: 'invoice',
+        template: 'postedSalesinvoice',
         before: function () {
             Session.set('key', this.params.key);
         }

@@ -9,18 +9,19 @@
       "npm": {},
       "select2": {},
       "x-editable-bootstrap3": {},
-      "when": {}
+      "when": {},
+      "mongodb-server-aggregation": {}
     },
     "packages": {
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v0.3.5",
-        "commit": "47996f67f3987c9f82117394effcbe1586a4fe29"
+        "tag": "v0.3.6",
+        "commit": "711dbcabe333c8714298b2fd1de97fdcdae6efa7"
       },
       "font-awesome": {
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
-        "tag": "v3.2.1",
-        "commit": "38bdfff72dfb8857b272f9a9b056045d6a015489"
+        "tag": "v4.0.3",
+        "commit": "61e9361384347547ae144f8228faa4deffda23db"
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
@@ -51,6 +52,11 @@
         "git": "https://github.com/awwx/meteor-when",
         "tag": "v1.7.1r1",
         "commit": "7a5da1838b1ee0c732ecf0b4dd19c502e17af183"
+      },
+      "mongodb-server-aggregation": {
+        "git": "https://github.com/zvictor/meteor-mongo-server.git",
+        "tag": "v1.0.3",
+        "commit": "416293e383f53e2506f1b7a1a7687390cbaf0e68"
       }
     }
   }

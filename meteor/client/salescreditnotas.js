@@ -1,7 +1,7 @@
 
 
-Template.postedSalesinvoices.created = function () {
-    RenderList('salesinvoices');
+Template.postedSalescreditnotas.created = function () {
+    RenderList('salescreditnotas');
     var list = [
     { name: 'Nummer', key: 'key'},
     { name: 'Navn', key: 'name'},
@@ -15,56 +15,53 @@ Template.postedSalesinvoices.created = function () {
     ];
     Session.set('modalFields', list);
 }
-Template.postedSalesinvoices.rendered = function () {
+Template.postedSalescreditnotas.rendered = function () {
 };
 
-Template.postedSalesinvoices.items = function () {
-    return SalesInvoices.find({}, { sort: { key: -1 }}); // .fetch();
+Template.postedSalescreditnotas.items = function () {
+    return SalesCreditnotas.find({}, { sort: { key: -1 }}); // .fetch();
 };
 
-Template.postedSalesinvoices.events({
+Template.postedSalescreditnotas.events({
     'click .edi-button': function(event) {
         // if already sent, we ask if user would like to resend
-        var sent = this.sent && this.sent.amqp && this.sent.amqp.state === 'success';
-        if (sent) {
-            var message = 'Denne faktura blev sendt d. ' +
-                moment(this.sent.amqp.date).format('DD MMM YYYY') +
-                ' via AMQP.\n Vil du gensende fakturaen?';
+        var do_send = this.sent === undefined;
 
-            var element = this;
-            bootbox.confirm(message, function (res) {
-                if (res) {
-                    Meteor.call('sendAmqp', element.key);
-                }
-            });
+        if (!do_send) {
+            var message = 'Denne faktura blev sendt d. ' +
+                moment(this.sent.date).format('DD MMM YYYY') +
+                ' via ' + this.sent.type + '\n Vil du gensende fakturaen?';
+            if (confirm(message)) {
+                do_send = true;
+            }
         }
-        else {
-            Meteor.call('sendAmqp', this.key);
+        if (do_send) {
+            Meteor.call('sendAmqp', this.key, function(err, result) {
+                console.log(err, result);
+                Session.set('amqp', true);
+            });
         }
     },
     'click .email-button': function(event) {
         // if already sent, we ask if user would like to resend
-        var sent = this.sent && this.sent.mail && this.sent.mail.state === 'success';
-        if (sent) {
-            var message = 'Denne faktura blev sendt d. ' +
-                moment(this.sent.mail.date).format('DD MMM YYYY') +
-                ' via e-mail.\n Vil du gensende fakturaen?';
+        var do_send = this.sent === undefined;
 
-            var element = this;
-            bootbox.confirm(message, function (res) {
-                res && Meteor.call('sendEmail', element._id.valueOf(), function (err, res) {
-                    err && bootbox.alert(err);
-                });
-            });
+        if (!do_send) {
+            var message = 'Denne faktura blev sendt d. ' +
+                moment(this.sent.date).format('DD MMM YYYY') +
+                ' via ' + this.sent.type + '\n Vil du gensende fakturaen?';
+            if (confirm(message)) {
+                do_send = true;
+            }
         }
-        else {
-            Meteor.call('sendEmail', this._id.valueOf(), function (err, res) {
-               err && bootbox.alert(err);
+        if (do_send) {
+            Meteor.call('sendEmail', this._id.valueOf(), function(err, result) {
+                console.log(err, result);
             });
         }
     },
     'click .show-button': function(event) {
-        Router.go('show', { type: 'postedSalesinvoice', key: this._id.valueOf()  });
+        Router.go('show', { type: 'postedSalescreditnota', key: this._id.valueOf() });
     },
 });
 
@@ -74,7 +71,7 @@ var processing = function (element, type) {
     return sent && element.sent[type].state === 'processing'
 
 }
-Template.postedSalesinvoices.helpers({
+Template.postedSalescreditnotas.helpers({
     getDate: function(date) {
         return moment(date).format('DD MMM YYYY'); // + ' - ' + moment(date).fromNow();
     },

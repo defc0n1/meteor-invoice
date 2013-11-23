@@ -1,4 +1,4 @@
-<template name="invoice">
+<template name="postedPurchaseinvoice">
 <div class="row">
     <div class="col-xs-7">
     </div>
@@ -8,7 +8,7 @@
 </div>
 <div class="row" id="invoice-header">
     <div class="col-xs-7">
-        <h2>{{element.name}}</h2>
+        <h2>{{Element.name}}</h2>
     </div>
     <div class="col-xs-5">
         <h4>Leveringsadresse</h4>
@@ -18,13 +18,13 @@
     <div class="col-xs-7">
         <ul class="list-unstyled lead">
             <li>
-            {{element.address}}
+            {{Element.address}}
             </li>
             <li>
-            {{element.address1}}
+            {{Element.address1}}
             </li>
             <li>
-            {{element.zip}} {{element.city}}
+            {{Element.zip}} {{Element.city}}
             </li>
         </ul>
     </div>
@@ -38,31 +38,23 @@
             <tbody>
             <tr>
                 <td colspan="2">
-                    <h4>Fakturanr. {{element.key}}</h4>
+                    <h4>Fakturanr. {{Element.key}}</h4>
                 </td>
             </tr>
             <tr>
                 <td>
-                    Fakturadato
+                    Fakturadato:
                 </td>
                 <td>
-                    {{getDate element.order_date}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Udskrevet
-                </td>
-                <td>
-                    {{getDate element.posting_date}}
+                    {{GetDate Element.posting_date}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    Kundenr.
+                    Kundenummer.:
                 </td>
                 <td>
-                    {{element.customer_number}}
+                    {{Element.customer_number}}
                 </td>
             </tr>
             </tbody>
@@ -94,6 +86,24 @@
         </ul>
     </div>
 </div>
+{{#if Element.comments}}
+<div class="row">
+    <div class="col-xs-12">
+        <b>Bemærkninger:</b>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        {{#each Element.comments}}
+        <tr>
+            <td class="right-align-td">
+                {{this}}
+            </td>
+        </tr>
+        {{/each}}
+    </div>
+</div>
+{{/if}}
 <div class="row" id="invoice-items-list">
     <div class="col-xs-12">
         <table class="table table-condensed">
@@ -107,9 +117,9 @@
                 </tr>
             </thead>
             <tbody>
-            {{#each element.lines}}
+            {{#each Element.lines}}
             <tr>
-                <td class="invoice-amount">
+                <td class="right-align-td">
                     {{this.quantity}}
                 </td>
                 <td>
@@ -118,11 +128,11 @@
                 <td>
                     {{this.item_number}}
                 </td>
-                <td class="invoice-amount">
-                    {{getPrice this.price}}
+                <td class="right-align-td">
+                    {{GetPrice this.price}}
                 </td>
-                <td class="invoice-amount">
-                    {{getLineTotal this.price this.quantity}}
+                <td class="right-align-td">
+                    {{ chain 'GetPrice' 'Multiply' this.price this.quantity}}
                 </td>
             </tr>
             {{/each}}
@@ -143,13 +153,13 @@
             <tbody>
             <tr>
                 <td>
-                    {{getTotal}}
+                    {{ chain 'GetPrice' 'Session' 'total'}}
                 </td>
                 <td>
-                    {{getTax}}
+                    {{ chain 'GetPrice' 'Multiply' '0.25' 'Session' 'total'}}
                 </td>
                 <td>
-                    {{getTotalWithTax}}
+                    {{ chain 'GetPrice' 'Multiply' '1.25' 'Session' 'total'}}
                 </td>
             </tr>
             </tbody>

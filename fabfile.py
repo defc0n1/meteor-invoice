@@ -6,6 +6,9 @@ import os.path
 import inspect
 
 env.meteor = 'meteor'
+env.apps_path = '/home/ettienne/webapps'
+env.hosts = ['ettienne.webfactional.com']
+env.user = 'ettienne'
 
 def bundle():
     print(_yellow('>>> starting {}'.format(_fn())))
@@ -21,7 +24,8 @@ def sync():
 
 def start_dev():
     with lcd(env.meteor):
-        local("source ../config/dev.sh && meteor")
+        #local("source ../config/dev.sh && meteor")
+        local("source ../config/dev.sh && meteor --settings ../config/settings.json")
 
 def start_remote():
     with lcd(env.meteor):
@@ -30,28 +34,37 @@ def start_remote():
 def mongo_dev():
     local('mongo invoice')
 
-
 def mongo_prod():
     local('mongo localhost:22282/invoice -u prod -p 12Trade34')
+
+def mongo_staging():
+    local('mongo localhost:22282/invoiceTest -u prod -p 12Trade34')
+
+def mongo_prod_admin():
+    local('mongo localhost:22282/admin -u mettienne -p luxemb0rg')
 
 #def mongo_stage():
     #local('mongo localhost:27018/invoice_test -u mettienne -p luxemb0rg')
 
 # environments
 
-def prod():
-
-    env.user = 'ettienne'
-    env.app_name = 'node'
-    env.apps_path = '/home/ettienne/webapps'
-    #env.git_clone = 'https://github.com/mettienne/trade-import.git'
-    env.hosts = ['ettienne.webfactional.com']
+def staging():
+    env.app_name = 'staging'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    #env.venv_path = os.path.join(env.app_path, '_venv')
+    env.monit = 'invoice_stage'
+
+def prod():
+    env.app_name = 'node'
+    env.app_path = os.path.join(env.apps_path, env.app_name)
+    env.monit = 'nodejs'
 
 def restart():
     print(_yellow('>>> starting {}'.format(_fn())))
-    run('monit restart nodejs')
+    run('monit restart {}'.format(env.monit))
+
+def restart():
+    print(_yellow('>>> starting {}'.format(_fn())))
+    run('monit restart {}'.format(env.monit))
 
 def deploy():
     bundle()

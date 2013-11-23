@@ -1,13 +1,12 @@
-<template name="items">
-<table class="items table table-hover list-table">
+<template name="postedPurchaseinvoices">
+<table class="table table-hover list-table">
     <thead>
         <tr>
-            <th>Varenummer</th>
+            <th>Fakturanummer</th>
+            <th>Kundenummer</th>
             <th>Navn</th>
-            <th>Gruppe</th>
-            <th>Kostpris</th>
-            <th>Salgspris</th>
-            <th>Beholdning</th>
+            <th>Bogf. dato</th>
+            <th>Send</th>
             <th></th>
         </tr>
     </thead>
@@ -18,24 +17,22 @@
             {{this.key}}
         </td>
         <td>
+            {{this.customer_number}}
+        </td>
+        <td>
             {{this.name}}
         </td>
-        <td class="right-align-td">
-            {{this.group}}
-        </td>
-        <td class="right-align-td">
-            {{GetPrice this.cost_price}}
-        </td>
-        <td class="right-align-td">
-            {{GetPrice this.price}}
-        </td>
-        <td class="right-align-td">
-            {{this.quantity}}
+        <td>
+            {{getDate this.posting_date}}
         </td>
         <td>
             <div class="btn-group">
-                <button type="button" class="btn-show btn btn-default btn-sm">Vis</button>
-                <button type="button" class="btn-statistic btn btn-default btn-sm">Statistik</button>
+                <button type="button" class="show-button btn btn-default btn-sm">Vis</button>
+            </div>
+        </td>
+        <td>
+            <div id="nprogress" style="{{showSpinner}}">
+                <div class="spinner" role="spinner" id="td-spinner-wrapper"><div class="spinner-icon" id="td-spinner"></div></div>
             </div>
         </td>
     </tr>
@@ -54,5 +51,4 @@
     </div>
 </div>
 {{> modal}}
-{{> itemstats}}
 </template>

@@ -1,0 +1,23 @@
+<template name="modalConfirm">
+<div class="modal fade" data-keyboard="true" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    {{> modalConfirmInner}}
+</div><!-- /.modal -->
+</template>
+<template name="modalConfirmInner">
+<!-- Modal -->
+<div class="modal-dialog" id="">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="myModalLabel">{{Session 'header'}}</h4>
+        </div>
+        <div class="modal-body">
+            {{Session 'message'}}
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Send</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Luk</button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</template>
