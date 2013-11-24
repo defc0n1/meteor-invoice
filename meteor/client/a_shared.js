@@ -12,13 +12,31 @@ Deps.autorun(function() {
         'purchaseinvoiceChannel',
         'purchasecreditnotaChannel',
     ];
+    var progressCount = 0;
+    console.log('deps');
+    try {
+        NProgress.start();
+        log.info('started')
+    }
+    catch (err) {
+        console.log('err');
+    }
     _.each(collections, function (collection) {
+        progressCount += 1
         Meteor.subscribe(collection,
             Session.get('limit'),
             Session.get('skip'),
             Session.get('query'),
-            Session.get('filter')
-            );
+            Session.get('filter'),
+            function (ready) {
+                progressCount -= 1;
+                log.info('ready')
+                if (progressCount === 0) {
+                    log.info('done')
+                    NProgress.done();
+                }
+            });
+
     });
     Meteor.subscribe('alertChannel');
 });

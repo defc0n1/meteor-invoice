@@ -40,7 +40,7 @@ Router.map(function () {
         before: function() {
 
             if (Meteor.loggingIn()) {
-                NProgress.start();
+                //NProgress.start();
 
             }
             if (Meteor.user()) {
@@ -51,7 +51,7 @@ Router.map(function () {
             }
         },
         after: function () {
-            NProgress.done();
+            //NProgress.done();
         }
     });
     this.route('loading', {
@@ -151,11 +151,13 @@ Router.map(function () {
         }
     });
     this.route('bareInvoice', {
-        path: '/sale/salesinvoices/bare/:key',
+        path: '/sale/salesinvoices/bare/:key/:page',
         layoutTemplate: 'invoiceLayout',
         template: 'postedSalesinvoice',
         before: function () {
             Session.set('key', this.params.key);
+            Session.set('page', this.params.page);
+            Session.set('paginated', true);
         }
     });
 });

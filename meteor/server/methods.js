@@ -148,9 +148,13 @@ Meteor.methods({
 
         };
         //fut = new Future()
-        Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf', 'javascript-delay': 1000 },
+        //Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf', 'javascript-delay': 1000 },
+        Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf', 'redirect-delay': 3000 },
+        //Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf' },
                 Meteor.bindEnvironment(function (err, msg) {
+                    console.log(err, msg);
                     if (err) error(errors.pdfConversion, err);
+                    log.info('File written to /tmp/' + id + '.pdf', err, msg);
                     log.info('Conversion done, sending mail to', deptor.email);
                     transport.sendMail(message, Meteor.bindEnvironment(function (err, message) {
                         if (err) error(errors.mailSend, err);

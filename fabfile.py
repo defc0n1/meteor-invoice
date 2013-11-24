@@ -6,9 +6,9 @@ import os.path
 import inspect
 
 env.meteor = 'meteor'
-env.apps_path = '/home/ettienne/webapps'
-env.hosts = ['ettienne.webfactional.com']
-env.user = 'ettienne'
+env.apps_path = '/apps'
+env.hosts = ['54.204.24.80']
+env.user = 'ubuntu'
 
 def bundle():
     print(_yellow('>>> starting {}'.format(_fn())))
@@ -20,7 +20,12 @@ def bundle():
 
 def sync():
     print(_yellow('>>> starting {}'.format(_fn())))
-    rsync_project(local_dir='deploy/', remote_dir=env.app_path, extra_opts='-L')
+
+def sync():
+    print(_yellow('>>> starting {}'.format(_fn())))
+    rsync_project(local_dir='deploy/', remote_dir=env.app_path, extra_opts='-L -i /Users/mikko/.ssh/mikko.pem')
+    #local('rsync  -pthrvz -L -e "ssh -i /Users/mikko/.ssh/mikko.pem" deploy/ {}@{}:{}'.format(
+        #env.user, env.hosts[0], env.app_path))
 
 def start_dev():
     with lcd(env.meteor):
@@ -49,12 +54,12 @@ def mongo_prod_admin():
 # environments
 
 def staging():
-    env.app_name = 'staging'
+    env.app_name = 'invoice_staging'
     env.app_path = os.path.join(env.apps_path, env.app_name)
     env.monit = 'invoice_stage'
 
 def prod():
-    env.app_name = 'node'
+    env.app_name = 'invoice'
     env.app_path = os.path.join(env.apps_path, env.app_name)
     env.monit = 'nodejs'
 
@@ -66,7 +71,13 @@ def restart():
     print(_yellow('>>> starting {}'.format(_fn())))
     run('monit restart {}'.format(env.monit))
 
+def mkdirs():
+    print(_yellow('>>> starting {}'.format(_fn())))
+    run('sudo mkdir -p {}'.format(env.app_path))
+    run('sudo chown {} {}'.format(env.user, env.app_path))
+
 def deploy():
+    mkdirs()
     bundle()
     sync()
     restart()

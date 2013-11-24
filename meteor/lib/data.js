@@ -17,6 +17,9 @@ RootRoute = function (args) {
 
 };
 
+lpp = 30;
+lfirst = 20;
+llast = 20;
 
 log = {
     log: function (level, args) {
