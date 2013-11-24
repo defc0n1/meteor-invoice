@@ -15,18 +15,21 @@ env.hosts = ['54.204.24.80']
 env.user = 'ubuntu'
 env.git_clone = 'https://github.com/mettienne/meteor-invoice.git'
 
-def bundle():
-    print(_yellow('>>> starting {}'.format(_fn())))
-    with cd(os.path.join(env.app_path, env.meteor)):
-        run('pwd')
-        run('meteor bundle --debug ../deploy/out.tgz')
-        run('tar -xzf ../deploy/out.tgz -C ../deploy/')
-        run('rm ../deploy/out.tgz')
-
+# dev commands
 def start_dev():
     with lcd(env.meteor):
         #local("source ../config/dev.sh && meteor")
         local("source ../config/dev.sh && meteor --settings ../config/settings.json")
+
+# shared commands
+def update():
+    with cd(os.path.join(env.app_path, env.meteor)):
+        run('mrt install')
+
+# prod commands
+
+def restart():
+    run('monit restart {}'.format(env.monit))
 
 def start_remote():
     with lcd(env.meteor):
@@ -52,36 +55,39 @@ def mongo_prod_admin():
 def staging():
     env.app_name = 'invoice_staging'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    env.monit = 'invoice_stage'
+    env.monit = 'invoice_staging'
 
 def prod():
     env.app_name = 'invoice'
     env.app_path = os.path.join(env.apps_path, env.app_name)
     env.monit = 'nodejs'
 
-def restart():
-    print(_yellow('>>> starting {}'.format(_fn())))
-    run('monit restart {}'.format(env.monit))
-
-def restart():
-    print(_yellow('>>> starting {}'.format(_fn())))
-    run('monit restart {}'.format(env.monit))
+#subcommands
 
 def mkdirs():
-    print(_yellow('>>> starting {}'.format(_fn())))
     run('sudo mkdir -p {}'.format(env.apps_path))
     run('sudo chown {} {}'.format(env.user, env.apps_path))
     run('mkdir -p {}'.format(env.log_dir))
     run('mkdir -p {}'.format(env.pid_dir))
     run('mkdir -p {}'.format(env.monit_dir))
 
+def bundle():
+    with cd(os.path.join(env.app_path, env.meteor)):
+        run('pwd')
+        run('meteor bundle --debug ../deploy/out.tgz')
+        run('tar -xzf ../deploy/out.tgz -C ../deploy/')
+        run('rm ../deploy/out.tgz')
+
+
 def clone():
-    print(_yellow('>>> starting {}'.format(_fn())))
     with cd(env.apps_path):
         run('git clone -q --depth 1 {} {}'.format(env.git_clone, env.app_name))
 
+def install_deps():
+    run('sudo npm install -g meteorite')
+
+
 def pull():
-    print(_yellow('>>> starting {}'.format(_fn())))
     with cd(env.app_path):
         run('git checkout . ')
         run('git pull origin master')
@@ -91,12 +97,8 @@ def setup():
     clone()
 
 def deploy():
+    pull()
+    update()
     bundle()
     sync()
     restart()
-
-def _fn():
-    """
-    Returns current function name
-    """
-    return inspect.stack()[1][3]

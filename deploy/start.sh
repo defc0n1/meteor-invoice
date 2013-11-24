@@ -1,15 +1,17 @@
 #!/bin/bash
 
-NODE=bin/node
-DIR=/home/ettienne/webapps/node
-STAGEDIR=/home/ettienne/webapps/staging
+NODE=/usr/local/bin/node
+DIR=/apps/invoice
+LOG=/apps/log/invoice.log
+PID=/apps/pid/invoice.pid
+STAGEDIR=/apps/invoice_staging
 test -x "$DIR/$NODE" || exit 0
 
 
 function start_app {
     source "$DIR/prod.sh"
-    nohup "$DIR/$NODE" "$DIR/bundle/main.js" 1>>"$DIR/log.log" 2>&1 &
-    pidof "$DIR/$NODE" > "$DIR/meteor.pid"
+    nohup "$DIR/$NODE" "$DIR/bundle/main.js" 1>>"$LOG" 2>&1 &
+    pidof "$DIR/$NODE" > "$PID"
 }
 function start_stage {
     source "$STAGEDIR/staging.sh"
@@ -21,7 +23,7 @@ function stop_stage {
 }
 
 function stop_app {
-    kill `cat $DIR/meteor.pid`
+    kill `cat $PID`
 }
 
 case $1 in
