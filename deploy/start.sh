@@ -10,7 +10,7 @@ test -x "$NODE" || exit 0
 
 function start_app {
     source "$DIR/deploy/prod.sh"
-    nohup "$NODE" "$DIR/bundle/main.js" 1>>"$LOG" 2>&1 &
+    nohup "$NODE" "$DIR/deploy/bundle/main.js" 1>>"$LOG" 2>&1 &
     pidof "$NODE" > "$PID"
 }
 function start_stage {
