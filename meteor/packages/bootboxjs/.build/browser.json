@@ -1,0 +1,25 @@
+{
+  "format": "unipackage-slice-pre1",
+  "packageVariables": [],
+  "uses": [
+    {
+      "package": "meteor"
+    },
+    {
+      "package": "bootstrap-3"
+    },
+    {
+      "package": "jquery"
+    }
+  ],
+  "resources": [
+    {
+      "type": "prelink",
+      "file": "browser/packages/bootboxjs.js",
+      "length": 69723,
+      "offset": 0,
+      "servePath": "/packages/bootboxjs.js",
+      "sourceMap": "browser/packages/bootboxjs.js.map"
+    }
+  ]
+}
