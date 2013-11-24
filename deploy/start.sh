@@ -5,7 +5,7 @@ DIR=/apps/invoice
 LOG=/apps/log/invoice.log
 PID=/apps/pid/invoice.pid
 STAGEDIR=/apps/invoice_staging
-test -x "$DIR/$NODE" || exit 0
+test -x "$NODE" || exit 0
 
 
 function start_app {
