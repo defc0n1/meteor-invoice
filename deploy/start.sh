@@ -9,9 +9,9 @@ test -x "$NODE" || exit 0
 
 
 function start_app {
-    source "$DIR/prod.sh"
-    nohup "$DIR/$NODE" "$DIR/bundle/main.js" 1>>"$LOG" 2>&1 &
-    pidof "$DIR/$NODE" > "$PID"
+    source "$DIR/deploy/prod.sh"
+    nohup "$NODE" "$DIR/bundle/main.js" 1>>"$LOG" 2>&1 &
+    pidof "$NODE" > "$PID"
 }
 function start_stage {
     source "$STAGEDIR/staging.sh"
