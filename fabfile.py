@@ -7,25 +7,21 @@ import inspect
 
 env.meteor = 'meteor'
 env.apps_path = '/apps'
+env.log_dir = '/apps/log'
+env.config_dir = '/apps/config'
+env.pid_dir = '/apps/pid'
+env.monit_dir = '/apps/monit'
 env.hosts = ['54.204.24.80']
 env.user = 'ubuntu'
+env.git_clone = 'https://github.com/mettienne/meteor-invoice.git'
 
 def bundle():
     print(_yellow('>>> starting {}'.format(_fn())))
-    with lcd(env.meteor):
-        local('pwd')
-        local('meteor bundle --debug ../deploy/out.tgz')
-        local('tar -xzf ../deploy/out.tgz -C ../deploy/')
-        local('rm ../deploy/out.tgz')
-
-def sync():
-    print(_yellow('>>> starting {}'.format(_fn())))
-
-def sync():
-    print(_yellow('>>> starting {}'.format(_fn())))
-    rsync_project(local_dir='deploy/', remote_dir=env.app_path, extra_opts='-L -i /Users/mikko/.ssh/mikko.pem')
-    #local('rsync  -pthrvz -L -e "ssh -i /Users/mikko/.ssh/mikko.pem" deploy/ {}@{}:{}'.format(
-        #env.user, env.hosts[0], env.app_path))
+    with cd(os.path.join(env.app_path, env.meteor)):
+        run('pwd')
+        run('meteor bundle --debug ../deploy/out.tgz')
+        run('tar -xzf ../deploy/out.tgz -C ../deploy/')
+        run('rm ../deploy/out.tgz')
 
 def start_dev():
     with lcd(env.meteor):
@@ -73,11 +69,28 @@ def restart():
 
 def mkdirs():
     print(_yellow('>>> starting {}'.format(_fn())))
-    run('sudo mkdir -p {}'.format(env.app_path))
-    run('sudo chown {} {}'.format(env.user, env.app_path))
+    run('sudo mkdir -p {}'.format(env.apps_path))
+    run('sudo chown {} {}'.format(env.user, env.apps_path))
+    run('mkdir -p {}'.format(env.log_dir))
+    run('mkdir -p {}'.format(env.pid_dir))
+    run('mkdir -p {}'.format(env.monit_dir))
+
+def clone():
+    print(_yellow('>>> starting {}'.format(_fn())))
+    with cd(env.apps_path):
+        run('git clone -q --depth 1 {} {}'.format(env.git_clone, env.app_name))
+
+def pull():
+    print(_yellow('>>> starting {}'.format(_fn())))
+    with cd(env.app_path):
+        run('git checkout . ')
+        run('git pull origin master')
+
+def setup():
+    mkdirs()
+    clone()
 
 def deploy():
-    mkdirs()
     bundle()
     sync()
     restart()

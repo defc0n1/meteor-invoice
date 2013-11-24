@@ -1,6 +1,5 @@
 config
 .DS_Store
-.meteor
 */bundle
 *.pyc
 tags
