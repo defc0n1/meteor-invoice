@@ -70,6 +70,7 @@ def mkdirs():
     run('mkdir -p {}'.format(env.log_dir))
     run('mkdir -p {}'.format(env.pid_dir))
     run('mkdir -p {}'.format(env.monit_dir))
+    run('mkdir -p {}'.format(env.config_dir))
 
 def bundle():
     with cd(os.path.join(env.app_path, env.meteor)):
