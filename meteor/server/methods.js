@@ -33,6 +33,10 @@ Meteor.methods({
         check(id, String);
         return PurchaseCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
     },
+    getPurchaseInvoice: function (id) {
+        check(id, String);
+        return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    },
     getItemStats: function (number) {
         var res = ItemEntries.aggregate([
                 { $match: { item_number: number } },

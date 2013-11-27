@@ -1,6 +1,7 @@
 <template name="layout">
 {{>topbar}}
-<div class="container" id="main-container">
+<div class="container" style="{{width}}" id="main-container">
+    {{width}}
     {{#each alerts}}
     <div class="row">
         <div class="col-xs-12">

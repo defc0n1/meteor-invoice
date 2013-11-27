@@ -144,14 +144,16 @@ Router.map(function () {
         path: '/show/:type/:key',
         layoutTemplate: 'layout',
         action: function () {
-            this.render(this.params.type);
+            this.render('posted');
+
         },
         before: function () {
             Session.set('key', this.params.key);
+            Session.set('type', Mapping[this.params.type]);
         }
     });
     this.route('bareInvoice', {
-        path: '/sale/salesinvoices/bare/:key/:page',
+        path: '/show/postedSalesinvoice/:key/:page',
         layoutTemplate: 'invoiceLayout',
         template: 'postedSalesinvoice',
         before: function () {

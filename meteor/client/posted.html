@@ -1,32 +1,37 @@
-<template name="postedPurchaseinvoice">
+<template name="posted">
+{{#if firstPage}}
 <div class="row">
-    <div class="col-xs-7">
-    </div>
     <div class="col-xs-5">
-        <h3>LOGO</h3>
+    </div>
+    <div class="col-xs-7">
     </div>
 </div>
-<div class="row" id="invoice-header">
+<div class="row" >
     <div class="col-xs-7">
-        <h2>{{Element.name}}</h2>
+        <div class="row" id="invoice-header">
+            <div class="col-xs-12">
+                <h2>{{Element.name}}</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <ul class="list-unstyled lead">
+                    <li>
+                    {{Element.address}}
+                    </li>
+                    <li>
+                    {{Element.address1}}
+                    </li>
+                    <li>
+                    {{Element.zip}} {{Element.city}}
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <div class="col-xs-5">
-        <h4>Leveringsadresse</h4>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-7">
-        <ul class="list-unstyled lead">
-            <li>
-            {{Element.address}}
-            </li>
-            <li>
-            {{Element.address1}}
-            </li>
-            <li>
-            {{Element.zip}} {{Element.city}}
-            </li>
-        </ul>
+        <img id="invoice-logo" src="http://ettienne.webfactional.com/media/billeder/others/logo_faktura.png" />
+        <!--<h4>Leveringsadresse</h4>-->
     </div>
 </div>
 <div class="row">
@@ -38,25 +43,27 @@
             <tbody>
             <tr>
                 <td colspan="2">
-                    <h4>Fakturanr. {{Element.key}}</h4>
+                    <h4>{{Prop 'type' 'text' 'date'}} {{Element.key}}</h4>
                 </td>
             </tr>
             <tr>
                 <td>
-                    Fakturadato:
+                    {{Prop 'type' 'text' 'typeNumber'}} 
                 </td>
                 <td>
                     {{GetDate Element.posting_date}}
                 </td>
             </tr>
+            {{#if Prop 'type' 'showCustInfo'}}
             <tr>
                 <td>
-                    Kundenummer.:
+                    Kundenummer:
                 </td>
                 <td>
                     {{Element.customer_number}}
                 </td>
             </tr>
+            {{/if}}
             </tbody>
         </table>
     </div>
@@ -104,6 +111,7 @@
     </div>
 </div>
 {{/if}}
+{{/if}}
 <div class="row" id="invoice-items-list">
     <div class="col-xs-12">
         <table class="table table-condensed">
@@ -117,7 +125,7 @@
                 </tr>
             </thead>
             <tbody>
-            {{#each Element.lines}}
+            {{#each getLines}}
             <tr>
                 <td class="right-align-td">
                     {{this.quantity}}
@@ -140,7 +148,8 @@
         </table>
     </div>
 </div>
-<div class="row" id="invoice-totals">
+{{#if lastPage}}
+<div class="row" style="{{footerStyle}}" id="invoice-totals">
     <div class="col-xs-12">
         <table class="table">
             <thead>
@@ -166,6 +175,7 @@
         </table>
     </div>
 </div>
+{{#if Prop 'type' 'showCustInfo'}}
 <div class="row">
     <div class="col-xs-9">
         <hr>
@@ -178,4 +188,6 @@
         Oplys venligst kunde- & fakturanummer ved indbetaling.
     </div>
 </div>
+{{/if}}
+{{/if}}
 </template>

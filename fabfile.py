@@ -11,8 +11,10 @@ env.log_dir = '/apps/log'
 env.config_dir = '/apps/config'
 env.pid_dir = '/apps/pid'
 env.monit_dir = '/apps/monit'
-env.hosts = ['54.204.24.80']
-env.user = 'ubuntu'
+env.hosts = ['144.76.234.182']
+env.user = 'root'
+#env.hosts = ['54.204.24.80']
+#env.user = 'ubuntu'
 env.git_clone = 'https://github.com/mettienne/meteor-invoice.git'
 
 # dev commands

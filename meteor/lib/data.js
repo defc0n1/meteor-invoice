@@ -8,6 +8,45 @@ Alerts = new Meteor.Collection('alerts');
 Items = new Meteor.Collection('items');
 ItemEntries = new Meteor.Collection('itementries');
 
+
+Mapping = {
+    postedPurchaseinvoice: {
+        getSingle: 'getPurchaseInvoice',
+        view: 'postedSalesinvoice',
+        text: {
+            date: 'Fakturadato:',
+            typeNumber: 'Købsfakturanr.:',
+        },
+
+    },
+    postedPurchasecreditnota: {
+        getSingle: 'getPurchaseCreditnota',
+        view:'posted',
+        text: {
+            date: 'Kreditnotadato:',
+            typeNumber: 'Købsreditnotanr.:',
+        },
+    },
+    postedSalesinvoice: {
+        getSingle: 'getSalesInvoice',
+        view: 'postedSalesinvoice',
+        showCustInfo: true,
+        text: {
+            date: 'Fakturadato:',
+            typeNumber: 'Fakturanr.:',
+        },
+
+    },
+    postedSalescreditnota: {
+        getSingle: 'getSalesCreditnota',
+        view:'posted',
+        showCustInfo: true,
+        text: {
+            date: 'Kreditnotadato:',
+            typeNumber: 'Kreditnotanr.:',
+        },
+    },
+};
 RootRoute = function (args) {
     var route =  Router.current().path.split('/')[1];
     if (args) {
@@ -17,9 +56,11 @@ RootRoute = function (args) {
 
 };
 
+
+// these settings makes the stuff fit on the pdf conversion
 lpp = 30;
-lfirst = 20;
-llast = 20;
+lfirst = 18;
+llast = 23;
 
 log = {
     log: function (level, args) {

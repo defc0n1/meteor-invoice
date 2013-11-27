@@ -42,13 +42,21 @@ register('GetPrice', GetPrice);
 register('Session', function(arg) {
     return Session.get(arg);
 });
-
 register('Element', function(arg) {
     return Session.get('element');
 });
 register('ElementProp', function(arg) {
     elem = Session.get('element');
     return elem && elem[arg];
+});
+register('Prop', function(arg) {
+    var args = Array.prototype.slice.call(arguments).slice(1, arguments.length - 1);
+    log.info(args);
+    var elem = Session.get(arguments[0]);
+    args.forEach(function (arg, i) {
+        elem = elem[arg];
+    });
+    return elem;
 });
 
 register('Multiply', function(arg1, arg2) {

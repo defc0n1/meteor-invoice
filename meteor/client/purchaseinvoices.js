@@ -23,43 +23,6 @@ Template.postedPurchaseinvoices.items = function () {
 };
 
 Template.postedPurchaseinvoices.events({
-    'click .edi-button': function(event) {
-        // if already sent, we ask if user would like to resend
-        var do_send = this.sent === undefined;
-
-        if (!do_send) {
-            var message = 'Denne faktura blev sendt d. ' +
-                moment(this.sent.date).format('DD MMM YYYY') +
-                ' via ' + this.sent.type + '\n Vil du gensende fakturaen?';
-            if (confirm(message)) {
-                do_send = true;
-            }
-        }
-        if (do_send) {
-            Meteor.call('sendAmqp', this.key, function(err, result) {
-                console.log(err, result);
-                Session.set('amqp', true);
-            });
-        }
-    },
-    'click .email-button': function(event) {
-        // if already sent, we ask if user would like to resend
-        var do_send = this.sent === undefined;
-
-        if (!do_send) {
-            var message = 'Denne faktura blev sendt d. ' +
-                moment(this.sent.date).format('DD MMM YYYY') +
-                ' via ' + this.sent.type + '\n Vil du gensende fakturaen?';
-            if (confirm(message)) {
-                do_send = true;
-            }
-        }
-        if (do_send) {
-            Meteor.call('sendEmail', this._id.valueOf(), function(err, result) {
-                console.log(err, result);
-            });
-        }
-    },
     'click .show-button': function(event) {
         Router.go('show', { type: 'postedPurchaseinvoice', key: this._id.valueOf()  });
     },

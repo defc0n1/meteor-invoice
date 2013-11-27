@@ -1,7 +1,3 @@
-Template.layout.alerts = function () {
-    return Alerts.find(); // .fetch();
-
-};
 Template.layout.events({
     'click #next-page': function(event) {
         Session.set('skip', Session.get('skip') + incrementSize);
@@ -13,4 +9,7 @@ Template.layout.events({
     'click .close': function (event) {
         Alerts.remove({ _id: this._id });
     },
+});
+Template.layout.helpers({
+    alerts: Alerts.find(),// .fetch();
 });

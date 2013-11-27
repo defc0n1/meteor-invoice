@@ -1,5 +1,6 @@
-Template.postedSalesinvoice.rendered = function () {
-    Meteor.call('getSalesInvoice', Session.get('key'), function (err, result) {
+Template.posted.rendered = function () {
+log.info(Session.get('type').getSingle)
+    Meteor.call(Session.get('type').getSingle, Session.get('key'), function (err, result) {
         Session.set('element', result);
         var total = 0;
         result.lines.forEach(function (line) {
@@ -9,7 +10,7 @@ Template.postedSalesinvoice.rendered = function () {
     });
 
 };
-Template.postedSalesinvoice.helpers({
+Template.posted.helpers({
     getLines: function () {
         var elem = Session.get('element');
         if (Router.current().route.name !== 'bareInvoice') return elem && elem.lines
@@ -41,7 +42,7 @@ Template.postedSalesinvoice.helpers({
         var height = 31;
         var page = Session.get('page');
         var elem = Session.get('element');
-        var px = height * 30 - (height * (elem.lines.length - (lfirst + (page - 2 ) * lpp)))
+        var px = height * llast - (height * (elem.lines.length - (lfirst + (page - 2 ) * lpp)))
         if (page !== '1'){
             px += 100;
         }
