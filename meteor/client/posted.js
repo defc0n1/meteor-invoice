@@ -1,5 +1,7 @@
+Template.posted.created = function () {
+};
 Template.posted.rendered = function () {
-log.info(Session.get('type').getSingle)
+    log.info(Session.get('type'), 'test')
     Meteor.call(Session.get('type').getSingle, Session.get('key'), function (err, result) {
         Session.set('element', result);
         var total = 0;
@@ -8,7 +10,6 @@ log.info(Session.get('type').getSingle)
         });
         Session.set('total', total);
     });
-
 };
 Template.posted.helpers({
     getLines: function () {

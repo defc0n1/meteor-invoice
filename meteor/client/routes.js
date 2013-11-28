@@ -66,7 +66,10 @@ Router.map(function () {
     this.route('items', {
         path: '/items/:type',
         layoutTemplate: 'layout',
-        template: 'items',
+        action: function () {
+            Session.set('type', Mapping[this.params.type]);
+            this.render('table');
+        },
         data: function ()  {
             var items = [
                 { name: 'Varer', path: 'items'},
@@ -89,7 +92,8 @@ Router.map(function () {
         path: '/sale/:type',
         layoutTemplate: 'layout',
         action: function () {
-            this.render(this.params.type);
+            Session.set('type', Mapping[this.params.type]);
+            this.render('table');
         },
         data: function ()  {
             var items = [
@@ -108,7 +112,8 @@ Router.map(function () {
         path: '/purchase/:type',
         layoutTemplate: 'layout',
         action: function () {
-            this.render(this.params.type);
+            Session.set('type', Mapping[this.params.type]);
+            this.render('table');
         },
         data: function ()  {
             var items = [
@@ -127,7 +132,8 @@ Router.map(function () {
         path: '/contacts/:type',
         layoutTemplate: 'layout',
         action: function () {
-            this.render(this.params.type);
+            Session.set('type', Mapping[this.params.type]);
+            this.render('table');
         },
         data: function ()  {
             var items = [
@@ -153,13 +159,14 @@ Router.map(function () {
         }
     });
     this.route('bareInvoice', {
-        path: '/show/postedSalesinvoice/:key/:page',
+        path: '/show/:type/:key/:page',
         layoutTemplate: 'invoiceLayout',
-        template: 'postedSalesinvoice',
+        template: 'posted',
         before: function () {
             Session.set('key', this.params.key);
             Session.set('page', this.params.page);
             Session.set('paginated', true);
+            Session.set('type', Mapping[this.params.type]);
         }
     });
 });

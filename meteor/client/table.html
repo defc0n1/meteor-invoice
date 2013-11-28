@@ -1,37 +1,33 @@
-<template name="postedPurchaseinvoices">
-<table class="table table-hover list-table">
+<template name="table">
+<table class="{{Prop 'type' 'class'}} table table-hover list-table">
     <thead>
         <tr>
-            <th>Fakturanummer</th>
-            <th>Kundenummer</th>
-            <th>Navn</th>
-            <th>Bogf. dato</th>
-            <th>Send</th>
-            <th></th>
+            {{#each Prop 'type' 'table'}}
+            <th>{{this.header}}</th>
+            {{/each}}
         </tr>
     </thead>
     <tbody>
     {{#each items}}
     <tr>
+        {{#each Prop 'type' 'table'}}
         <td>
-            {{this.key}}
-        </td>
-        <td>
-            {{this.customer_number}}
-        </td>
-        <td>
-            {{this.name}}
-        </td>
-        <td>
-            {{getDate this.posting_date}}
-        </td>
-        <td>
+            {{ElementProp ../this this.key this.formatter}}
+            {{#if this.buttons}}
             <div class="btn-group">
-                <button type="button" class="show-button btn btn-default btn-sm">Vis</button>
+                {{#each this.buttons}}
+                {{#With elem=../../../this button=this}}
+                <button type="button" {{processing button.key}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
+                {{/With}}
+                {{/each}}
             </div>
+            {{/if}}
+        </td>
+        {{/each}}
+        <td>
         </td>
         <td>
-            <div id="nprogress" style="{{showSpinner}}">
+            <div style="{{showSpinner}}">
                 <div class="spinner" role="spinner" id="td-spinner-wrapper"><div class="spinner-icon" id="td-spinner"></div></div>
             </div>
         </td>
@@ -51,4 +47,5 @@
     </div>
 </div>
 {{> modal}}
+{{> itemstats}}
 </template>

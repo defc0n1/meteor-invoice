@@ -41,9 +41,8 @@ Deps.autorun(function() {
     Meteor.subscribe('alertChannel');
 });
 
-UpdateCount = function () {
-    Meteor.call(
-            Session.get('currentCollection'),
+UpdateCount = function (method) {
+    Meteor.call(method,
             Session.get('query'),
             { filter: Session.get('filter') },
             function(err, result) {
@@ -52,26 +51,3 @@ UpdateCount = function () {
             });
 };
 
-RenderList = function (collection) {
-    Session.set('currentCollection', collection);
-    Session.set('skip', 0);
-    UpdateCount();
-
-};
-GetPrice = function (amount) {
-        if(isNaN(amount)){
-            var a = 0;
-            return a.toFixed(2) ;
-        }
-        amount = amount/100;
-        amount = amount.toFixed(2);
-        //if(amount.length === 2){
-        //return '00.' + amount;
-        //}
-    //var money = amount.substring(0, amount.length-2) + '.' + amount.substring(amount.length-2, amount.length);
-    //return money;
-        amount = amount + '';
-        amount = amount.replace('.', ',');
-        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
-        return val;
-};

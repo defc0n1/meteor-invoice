@@ -31,6 +31,7 @@ def update():
 # prod commands
 
 def restart():
+    run('monit reload')
     run('monit restart {}'.format(env.monit))
 
 def start_remote():
@@ -62,7 +63,7 @@ def staging():
 def prod():
     env.app_name = 'invoice'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    env.monit = 'nodejs'
+    env.monit = 'invoice'
 
 #subcommands
 
@@ -80,6 +81,10 @@ def bundle():
         run('meteor bundle --debug ../deploy/out.tgz')
         run('tar -xzf ../deploy/out.tgz -C ../deploy/')
         run('rm ../deploy/out.tgz')
+
+def copy():
+    with cd(env.app_path):
+        run('cp deploy/monit.conf ../monit/invoice.conf')
 
 
 def clone():
@@ -103,5 +108,6 @@ def deploy():
     pull()
     update()
     bundle()
-    sync()
+    copy()
+    #sync()
     restart()

@@ -1,24 +1,24 @@
 "use strict";
 Meteor.methods({
-    salesinvoices: function (query, merger) {
+    SalesInvoices: function (query, merger) {
         return FilterQuery(SalesInvoices, SalesInvoiceSearchFields, query, merger).count();
     },
-    salescreditnotas: function (query, merger) {
+    SalesCreditnotas: function (query, merger) {
         return FilterQuery(SalesCreditnotas, SalesCreditnotaSearchFields, query, merger).count();
     },
-    purchaseinvoices: function (query, merger) {
+    PurchaseInvoices: function (query, merger) {
         return FilterQuery(PurchaseInvoices, PurchaseInvoiceSearchFields, query, merger).count();
     },
-    purchasecreditnotas: function (query, merger) {
+    PurchaseCreditnotas: function (query, merger) {
         return FilterQuery(PurchaseCreditnotas, PurchaseCreditnotaSearchFields, query, merger).count();
     },
-    deptors: function (query, merger) {
+    Deptors: function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).count();
     },
-    creditors: function (query, merger) {
+    Creditors: function (query, merger) {
         return FilterQuery(Creditors, CreditorSearchFields, query, merger).count();
     },
-    items: function (query, merger) {
+    Items: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).count();
     },
     getSalesInvoice: function (id) {
@@ -131,18 +131,10 @@ Meteor.methods({
             email = Meteor.settings.test_mail;
         }
 
-        var message = {
-            sender: 'tradehouse@tradehouse.as',
-            to: email,
-            subject: 'Faktura 123',
-            body: 'Din faktura er vedhæftet som en pdf fil.\n Venlig hilsen Trade House Danmark ApS',
-            attachments: [
-                {
-                    filename: 'faktura.pdf',
-                    filePath: '/tmp/' + id + '.pdf'
-                }
-            ]
-        };
+        var message = Mail.invoice;
+        message.to = email;
+        message.attachments = [ { filename: 'faktura.pdf', filePath: '/tmp/' + id + '.pdf' } ];
+
         var error = function (err, msg) {
                 SalesInvoices.update(
                     { _id: objectId },
@@ -151,30 +143,27 @@ Meteor.methods({
 
 
         };
-        //fut = new Future()
-        //Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf', 'javascript-delay': 1000 },
-        Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf', 'redirect-delay': 3000 },
-        //Wkhtmltopdf(Meteor.absoluteUrl('sale/salesinvoices/bare/' + id), { output: '/tmp/' + id + '.pdf' },
-                Meteor.bindEnvironment(function (err, msg) {
-                    console.log(err, msg);
-                    if (err) error(errors.pdfConversion, err);
-                    log.info('File written to /tmp/' + id + '.pdf', err, msg);
-                    log.info('Conversion done, sending mail to', deptor.email);
-                    transport.sendMail(message, Meteor.bindEnvironment(function (err, message) {
-                        if (err) error(errors.mailSend, err);
-                        else if (message.failedRecipients.length > 0) error(errors.recipients, message.failedRecipients);
-                        else {
-                            log.info('Email successfully send', deptor.email);
-                            SalesInvoices.update(
-                                { _id: objectId },
-                                { $push: { 'sent.mail.history': new Date() },
-                                    $set: { 'sent.mail.state': 'success' } });
-                        }
-                    }, function (e) {
-                        error(errors.unknown, e);
-                    }));
-                }, function (e) {
-                    error(errors.unknown, e);
-                }));
+        var pages = Print.totalPages(invoice.lines.length);
+        Pdf.getInvoice(id, pages, Meteor.bindEnvironment(function (err, msg) {
+            console.log(err, msg);
+            if (err) error(errors.pdfConversion, err);
+            log.info('File written to /tmp/' + id + '.pdf', err, msg);
+            log.info('Conversion done, sending mail to', email);
+            transport.sendMail(message, Meteor.bindEnvironment(function (err, message) {
+                if (err) error(errors.mailSend, err);
+                else if (message.failedRecipients.length > 0) error(errors.recipients, message.failedRecipients);
+                else {
+                    log.info('Email successfully send', deptor.email);
+                    SalesInvoices.update(
+                        { _id: objectId },
+                        { $push: { 'sent.mail.history': new Date() },
+                            $set: { 'sent.mail.state': 'success' } });
+                }
+            }, function (e) {
+                error(errors.unknown, e);
+            }));
+        }, function (e) {
+            error(errors.unknown, e);
+        }));
     }
 });
