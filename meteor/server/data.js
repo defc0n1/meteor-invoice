@@ -1,4 +1,4 @@
-DeptorSearchFields = [ 'key' ];
+DeptorSearchFields = [ 'key', 'name' ];
 CreditorSearchFields = [ 'key' ];
 ItemSearchFields = [ 'key' ];
 SalesInvoiceSearchFields = [ 'key', 'customer_number', 'name' ];
@@ -21,39 +21,42 @@ FilterQuery = function (collection, fields, query, merger) {
             obj[field] = { '$regex': query, '$options': 'i' };
             return obj;
         });
+        var number = parseInt(query);
+        if (!isNaN(number) && isFinite(query)) {
+            list.push({ 'key': number });
+        }
         filter = { $or : list };
     }
     if (!merger.options.limit) merger.options.limit = 10;
 
     return collection.find(_.extend(filter, merger.filter), _.extend({ sort: orderBy }, merger.options));
-
 };
 
-Meteor.publish('salesinvoiceChannel', function (limit, skip, query){
+Meteor.publish('SalesInvoices', function (limit, skip, query){
     return FilterQuery(SalesInvoices, SalesInvoiceSearchFields, query,
         { options: {limit: limit, skip: skip }});
 });
-Meteor.publish('purchaseinvoiceChannel', function (limit, skip, query){
+Meteor.publish('PurchaseInvoices', function (limit, skip, query){
     return FilterQuery(PurchaseInvoices, PurchaseInvoiceSearchFields, query,
         { options: {limit: limit, skip: skip }});
 });
-Meteor.publish('salescreditnotaChannel', function (limit, skip, query){
+Meteor.publish('SalesCreditnotas', function (limit, skip, query){
     return FilterQuery(SalesCreditnotas, SalesCreditnotaSearchFields, query,
         { options: {limit: limit, skip: skip }});
 });
-Meteor.publish('purchasecreditnotaChannel', function (limit, skip, query){
+Meteor.publish('PurchaseCreditnotas', function (limit, skip, query){
     return FilterQuery(PurchaseCreditnotas, PurchaseCreditnotaSearchFields, query,
         { options: {limit: limit, skip: skip }});
 });
-Meteor.publish('deptorChannel', function (limit, skip, query, filter){
+Meteor.publish('Deptors', function (limit, skip, query, filter){
     return FilterQuery(Deptors, DeptorSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
-Meteor.publish('creditorChannel', function (limit, skip, query, filter){
+Meteor.publish('Creditors', function (limit, skip, query, filter){
     return FilterQuery(Creditors, CreditorSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
-Meteor.publish('itemChannel', function (limit, skip, query, filter){
+Meteor.publish('Items', function (limit, skip, query, filter){
     return FilterQuery(Items, ItemSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });

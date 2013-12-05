@@ -8,6 +8,7 @@
     "select2": {},
     "x-editable-bootstrap3": {},
     "when": {},
-    "mongodb-server-aggregation": {}
+    "mongodb-server-aggregation": {},
+    "handlebars-server": {}
   }
 }

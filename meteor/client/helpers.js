@@ -19,15 +19,6 @@ register('countText', function () {
     }
 });
 
-register('showPrevious', function() {
-    var disable = Session.equals('skip', 0);
-    return disable ? 'disabled' : '';
-});
-register('showNext', function() {
-    var disable = Session.get('skip') + incrementSize >= Session.get('itemCount');
-    return disable ? 'disabled' : '';
-});
-
 register('GetDate', GetDate);
 
 register('GetPrice', GetPrice);

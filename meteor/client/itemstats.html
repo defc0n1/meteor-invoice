@@ -17,10 +17,18 @@
                 {{#each Session 'stats'}}
                 <tr>
                     <td class="modal-left-td">
-                        {{this._id}}
+                        {{this._id}} (beløb)
                     </td>
                     <td class="modal-left-td">
                         {{GetPrice this.total}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="modal-left-td">
+                        {{this._id}} (antal)
+                    </td>
+                    <td class="modal-left-td">
+                        {{this.quantity}}
                     </td>
                 </tr>
                 {{/each}}

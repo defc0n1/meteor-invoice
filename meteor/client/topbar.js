@@ -23,16 +23,16 @@ Template.topbar.isSelected = function (route) {
 
 Template.topbar.items = function () {
     var items = [
-        { name: 'Salg', path: Router.routes['sale'].path({ type: 'postedSalesinvoices' }) },
-        { name: 'Køb', path: Router.routes['purchase'].path({ type: 'postedPurchaseinvoices' }) },
-        { name: 'Kontaker', path: Router.routes['contacts'].path({ type: 'deptors' }) },
-        { name: 'Varer', path: Router.routes['items'].path({ type: 'items' }) },
-        { name: 'Statistik', path: Router.routes['sale'].path({ type: '' }) },
-        { name: 'Bogføring', path: Router.routes['sale'].path({ type: '' }) },
+        { name: 'Salg', path: Router.routes['main'].path({ root: 'sale', type: 'postedSalesinvoices' }) },
+        { name: 'Køb', path: Router.routes['main'].path({ root: 'purchase', type: 'postedPurchaseinvoices' }) },
+        { name: 'Kontaker', path: Router.routes['main'].path({ root: 'contacts', type: 'deptors' }) },
+        { name: 'Varer', path: Router.routes['main'].path({ root: 'items', type: 'items' }) },
+        //{ name: 'Statistik', path: Router.routes['sale'].path({ type: '' }) },
+        //{ name: 'Bogføring', path: Router.routes['sale'].path({ type: '' }) },
     ];
     var path = Router.current().path;
     items = _.map(items, function (item) {
-        item.active = path == item.path ? 'active' : '';
+        item.active = path.split('/')[1] == item.path.split('/')[1] ? 'active' : '';
         return item;
     });
     return items;

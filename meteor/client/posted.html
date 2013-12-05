@@ -1,5 +1,4 @@
 <template name="posted">
-{{#if firstPage}}
 <div class="row">
     <div class="col-xs-5">
     </div>
@@ -111,7 +110,6 @@
     </div>
 </div>
 {{/if}}
-{{/if}}
 <div class="row" id="invoice-items-list">
     <div class="col-xs-12">
         <table class="table table-condensed">
@@ -125,7 +123,7 @@
                 </tr>
             </thead>
             <tbody>
-            {{#each getLines}}
+            {{#each Element.lines}}
             <tr>
                 <td class="right-align-td">
                     {{this.quantity}}
@@ -148,8 +146,7 @@
         </table>
     </div>
 </div>
-{{#if lastPage}}
-<div class="row" style="{{footerStyle}}" id="invoice-totals">
+<div class="row" id="invoice-totals">
     <div class="col-xs-12">
         <table class="table">
             <thead>
@@ -188,6 +185,5 @@
         Oplys venligst kunde- & fakturanummer ved indbetaling.
     </div>
 </div>
-{{/if}}
 {{/if}}
 </template>

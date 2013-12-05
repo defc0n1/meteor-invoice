@@ -15,6 +15,9 @@ Meteor.methods({
     Deptors: function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).count();
     },
+    DeptorsSearch: function (query, merger) {
+        return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
+    },
     Creditors: function (query, merger) {
         return FilterQuery(Creditors, CreditorSearchFields, query, merger).count();
     },
@@ -38,14 +41,24 @@ Meteor.methods({
         return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
     },
     getItemStats: function (number) {
-        var res = ItemEntries.aggregate([
+        return ItemEntries.aggregate([
                 { $match: { item_number: number } },
-                { $group: { _id: "$type", total: { $sum: "$total_price" } } }
+                { $group: { _id: "$type", total: { $sum: "$total_price" }, quantity: { $sum: "$quantity" } } }
+                ]);
+    },
+    getCreditorStats: function (number) {
+        return CreditorEntries.aggregate([
+                { $match: { creditor_number: number } },
+                { $group: { _id: "$type", total: { $sum: "$amount" } } }
         ]);
-        return res;
+    },
+    getDeptorStats: function (number) {
+        return CreditorEntries.aggregate([
+                { $match: { deptor_number: number } },
+                { $group: { _id: "$type", total: { $sum: "$amount" } } }
+        ]);
     },
     sendAmqp: function (invoiceNumber) {
-        check(invoiceNumber, String);
         var invoice = SalesInvoices.findOne({ key: invoiceNumber });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
         log.info('Sending invoice over amqp:', invoiceNumber);
@@ -144,7 +157,7 @@ Meteor.methods({
 
         };
         var pages = Print.totalPages(invoice.lines.length);
-        Pdf.getInvoice(id, pages, Meteor.bindEnvironment(function (err, msg) {
+        Pdf.getInvoice(invoice, {},  pages, Meteor.bindEnvironment(function (err, msg) {
             console.log(err, msg);
             if (err) error(errors.pdfConversion, err);
             log.info('File written to /tmp/' + id + '.pdf', err, msg);

@@ -28,6 +28,18 @@ body .modal-open {
 #main-container {
     padding-top: 30px;
 }
+#invoice-items-list {
+    padding-top: 40px;
+}
+#invoice-totals {
+    padding-top: 40px;
+}
+.editable-click, 
+a.editable-click, 
+a.editable-click:hover {
+    text-decoration: none;
+    border-bottom: none !important;
+}
 
 /** {*/
   /*-webkit-border-radius: 0 !important;*/

@@ -1,13 +1,11 @@
 Template.modal.events({
     'keyup': function (event) {
-        console.log('outer')
         // manually close modal on esc in case we are not editing
         event.keyCode === 27 && !Session.get('modal_prevent_close') && $('#myModal').modal('hide');
     },
 });
 Template.modalInner.events({
     'click .editable-submit .modal-edit-field': function(event) {
-        console.log(this, event);
     },
     'click .close': function (event) {
         Messages.remove({ _id: this._id });
@@ -20,7 +18,7 @@ Template.modalInner.helpers({
     fields: function (element) {
         // don't run  element has been clicked
         if (!element) return [];
-        var list = Session.get('modalFields');
+        var list = Session.get('type').modalFields;
         list = _.map(list, function (elem) {
             elem['value'] = element[elem.key];
             return elem;

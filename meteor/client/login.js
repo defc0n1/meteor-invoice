@@ -12,8 +12,6 @@ Template.login.events({
         var password = t.find('#login-password').value;
 
         // trim and validate
-
-        console.log(email, password);
         Meteor.loginWithPassword(email, password,
             function(err){
                 if (err){

@@ -1,14 +1,6 @@
 "use strict";
 
 // helper to determine the current active route
-var determineActive = function (items, path, rootPath) {
-    return _.map(items, function (item) {
-        item.active = path == item.path ? 'active' : '';
-        item.path = RootRoute(item.path);
-        return item;
-    });
-
-}
 Router.before(
         function() {
             // clear session variables
@@ -26,7 +18,7 @@ Router.before(
             else if(Meteor.user()) {
                 //NProgress.done();
             }
-        }, {except: ['login', 'forgotPassword', 'bareInvoice']});
+        }, {except: ['login', 'forgotPassword']});
 
 Router.configure({
     //layoutTemplate: 'layout',
@@ -54,97 +46,23 @@ Router.map(function () {
             //NProgress.done();
         }
     });
-    this.route('loading', {
-        path: '/loading',
-        template: 'loading'
-    });
     this.route('index', {
         path: '/',
         layoutTemplate: 'layout',
         template: 'index'
     });
-    this.route('items', {
-        path: '/items/:type',
+    this.route('main', {
+        path: '/:root/:type',
         layoutTemplate: 'layout',
         action: function () {
             Session.set('type', Mapping[this.params.type]);
-            this.render('table');
+            if (this.params.type === 'newSalesinvoice') {
+                this.render('new');
+            }
+            else {
+                this.render('table');
+            }
         },
-        data: function ()  {
-            var items = [
-                { name: 'Varer', path: 'items'},
-                { name: 'Varegrupper', path: 'itemGroups' },
-            ];
-            items = determineActive(items, this.params.type, this.path);
-            return {
-                sidebarItems: items,
-            };
-        },
-    });
-    this.route('sale_root', {
-        path: '/sale',
-        action: function () {
-            alert('Endnu ikke implementeret')
-            Router.go('sale', { type: 'postedSalesinvoices' });
-        }
-    });
-    this.route('sale', {
-        path: '/sale/:type',
-        layoutTemplate: 'layout',
-        action: function () {
-            Session.set('type', Mapping[this.params.type]);
-            this.render('table');
-        },
-        data: function ()  {
-            var items = [
-                { name: 'Åbne fakturaer', path: 'openSalesinvoices'},
-                { name: 'Bogførte fakturaer', path: 'postedSalesinvoices' },
-                { name: 'Åbne kreditnota', path: 'openSalescreditnotas' },
-                { name: 'Bogførte kreditnota', path: 'postedSalescreditnotas' },
-            ];
-            items = determineActive(items, this.params.type, this.path);
-            return {
-                sidebarItems: items,
-            };
-        }
-    });
-    this.route('purchase', {
-        path: '/purchase/:type',
-        layoutTemplate: 'layout',
-        action: function () {
-            Session.set('type', Mapping[this.params.type]);
-            this.render('table');
-        },
-        data: function ()  {
-            var items = [
-                { name: 'Åbne fakturaer', path: 'openPurchaseinvoices'},
-                { name: 'Bogførte fakturaer', path: 'postedPurchaseinvoices' },
-                { name: 'Åbne kreditnota', path: 'openPurchasecreditnotas' },
-                { name: 'Bogførte kreditnota', path: 'postedPurchasecreditnotas' },
-            ];
-            items = determineActive(items, this.params.type, this.path);
-            return {
-                sidebarItems: items,
-            };
-        }
-    });
-    this.route('contacts', {
-        path: '/contacts/:type',
-        layoutTemplate: 'layout',
-        action: function () {
-            Session.set('type', Mapping[this.params.type]);
-            this.render('table');
-        },
-        data: function ()  {
-            var items = [
-                { name: 'Debitorer', path: 'deptors'},
-                { name: 'Kreditorer', path: 'creditors' },
-            ];
-            items = determineActive(items, this.params.type, this.path);
-            return {
-                sidebarItems: items,
-            };
-        }
     });
     this.route('show', {
         path: '/show/:type/:key',
@@ -155,17 +73,6 @@ Router.map(function () {
         },
         before: function () {
             Session.set('key', this.params.key);
-            Session.set('type', Mapping[this.params.type]);
-        }
-    });
-    this.route('bareInvoice', {
-        path: '/show/:type/:key/:page',
-        layoutTemplate: 'invoiceLayout',
-        template: 'posted',
-        before: function () {
-            Session.set('key', this.params.key);
-            Session.set('page', this.params.page);
-            Session.set('paginated', true);
             Session.set('type', Mapping[this.params.type]);
         }
     });

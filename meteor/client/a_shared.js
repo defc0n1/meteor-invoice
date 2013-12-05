@@ -2,37 +2,34 @@ Messages = new Meteor.Collection(null);
 incrementSize = 10;
 Session.set('limit', incrementSize);
 
-Deps.autorun(function() {
-    var collections = [
-        'deptorChannel',
-        'creditorChannel',
-        'itemChannel',
-        'salesinvoiceChannel',
-        'salescreditnotaChannel',
-        'purchaseinvoiceChannel',
-        'purchasecreditnotaChannel',
+var collections = [
+    'Deptors',
+    'Creditors',
+    'Items',
+    'SalesInvoices',
+    'SalesCreditnotas',
+    'PurchaseInvoices',
+    'PurchaseCreditnotas',
     ];
-    var progressCount = 0;
-    console.log('deps');
+Deps.autorun(function() {
+    var progressCount = 1;
     try {
         NProgress.start();
-        log.info('started')
     }
     catch (err) {
-        console.log('err');
+        console.log('err', err);
     }
     _.each(collections, function (collection) {
-        progressCount += 1
+        //progressCount += 1
+
         Meteor.subscribe(collection,
-            Session.get('limit'),
-            Session.get('skip'),
+            Session.get(collection + 'limit'),
+            Session.get(collection + 'skip'),
             Session.get('query'),
-            Session.get('filter'),
-            function (ready) {
+            Session.get(collection + 'filter'),
+            function () {
                 progressCount -= 1;
-                log.info('ready')
-                if (progressCount === 0) {
-                    log.info('done')
+                if (progressCount <= 0) {
                     NProgress.done();
                 }
             });
@@ -50,4 +47,5 @@ UpdateCount = function (method) {
                 Session.set('itemCount', result);
             });
 };
+
 

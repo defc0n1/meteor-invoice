@@ -7,6 +7,8 @@ Creditors = new Meteor.Collection('creditors');
 Alerts = new Meteor.Collection('alerts');
 Items = new Meteor.Collection('items');
 ItemEntries = new Meteor.Collection('itementries');
+CreditorEntries = new Meteor.Collection('creditorentries');
+DeptorEntries = new Meteor.Collection('deptorentries');
 
 GetDate = function (date) {
     if (date) {
@@ -35,6 +37,7 @@ GetPrice = function (amount) {
 };
 
 
+Mappeing = {}
 Mapping = {
     postedPurchaseinvoice: {
         getSingle: 'getPurchaseInvoice',
@@ -143,6 +146,11 @@ Mapping = {
             { header: 'Adresse', key: 'address' },
             { header: 'By', key: 'zip' },
             { header: 'Saldo', key: '' },
+            { header: '', key: '', buttons: [
+                { text: 'Rediger', classes: 'show-deptor-button' },
+                { text: 'Kontokort', classes: 'account-deptor-button' },
+                { text: 'Statistik', classes: 'deptor-statistics-button' },
+                ] },
         ],
         modalFields: [ { name: 'Nummer', key: 'key'},
         { name: 'Navn', key: 'name'},
@@ -158,11 +166,16 @@ Mapping = {
         collection: 'Creditors',
         class: 'modal-edit',
         table: [
-            { header: 'Debitornummer', key: 'key' },
+            { header: 'Kreditornummer', key: 'key' },
             { header: 'Navn', key: 'name' },
             { header: 'Adresse', key: 'address' },
             { header: 'By', key: 'zip' },
             { header: 'Saldo', key: '' },
+            { header: '', key: '', buttons: [
+                { text: 'Rediger', classes: 'show-creditor-button' },
+                { text: 'Kontokort', classes: 'account-creditor-button' },
+                { text: 'Statistik', classes: 'creditor-statistics-button' },
+                ] },
         ],
         modalFields: [ { name: 'Nummer', key: 'key'},
         { name: 'Navn', key: 'name'},
@@ -185,8 +198,8 @@ Mapping = {
             { header: 'Salgspris', key: 'price', formatter: 'GetPrice' },
             { header: 'Beholdning', key: 'quantity' },
             { header: '', key: '', buttons: [
-                { text: 'Vis', classes: 'show-item-button' },
-                { text: 'Statistik', classes: 'statistics-button' },
+                { text: 'Rediger', classes: 'show-item-button' },
+                { text: 'Statistik', classes: 'item-statistics-button' },
            ] },
         ],
         modalFields: [
@@ -205,37 +218,24 @@ Mapping = {
         { name: 'Beholdning', key: 'quantity'},
         ]
     },
-    creditors: {
-        collection: 'Creditors',
-        class: 'modal-edit',
-        table: [
-            { header: 'Debitornummer', key: 'key' },
-            { header: 'Navn', key: 'name' },
-            { header: 'Adresse', key: 'address' },
-            { header: 'By', key: 'zip' },
-            { header: 'Saldo', key: '' },
-        ],
-        modalFields: [ { name: 'Nummer', key: 'key'},
-        { name: 'Navn', key: 'name'},
-        { name: 'Email', key: 'email'},
-        { name: 'Telefon', key: 'phone'},
-        { name: 'Fax', key: 'fax'},
-        { name: 'Adresse', key: 'address'},
-        { name: 'By', key: 'city'},
-        { name: 'Postnummer', key: 'zip'},
-        { name: 'Att.', key: 'attention'} ],
+    newSalesinvoice: {
+        headerFields: [
+            { header: 'Fakturanummer', key: 'key' },
+            { header: 'Kundenummer', key: 'customer_number', from: 'key' },
+            { header: 'Navn', key: 'name', from: 'name' },
+            { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
+            ]
+
     },
-};
-RootRoute = function (args) {
-    var route =  Router.current().path.split('/')[1];
-    if (args) {
-        route += '/' + args;
+    get newItem () {
+        return {
+            new: true,
+            collection: 'Items',
+            background: this.items,
+            modalFields: this.items.modalFields,
+        }
     }
-    return route;
-
 };
-
-
 // these settings makes the stuff fit on the pdf conversion
 lpp = 30;
 lfirst = 18;
@@ -275,5 +275,4 @@ log.error = function () {
 log.warning = function () {
     log.log('WARNING', arguments);
 }
-
 
