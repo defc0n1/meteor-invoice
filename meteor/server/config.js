@@ -1,4 +1,4 @@
 Accounts.config({
     sendVerificationEmail: true,
-    forbidClientAccountCreation: true
+    // forbidClientAccountCreation: true
 });

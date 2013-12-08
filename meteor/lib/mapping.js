@@ -180,8 +180,13 @@ Mapping = {
             { header: 'Kundenummer', key: 'customer_number', from: 'key' },
             { header: 'Navn', key: 'name', from: 'name' },
             { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
-            ]
-
+        ],
+        lineFields: [
+            { from: 'quantity', key: 'quantity' },
+            { from: 'name', key: 'info' },
+            { from: 'key', key: 'item_number' },
+            { from: 'price', key: 'price', formatter: 'GetPrice' },
+        ]
     },
     get newItem () {
         return {

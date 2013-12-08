@@ -20,7 +20,9 @@
         </table>
     </div>
 </div>
-
+<div class="row" id="select-container-item">
+    <input type="hidden" id="item-select">
+</div>
 <div class="row" id="invoice-items-list">
     <div class="col-xs-12">
         <table class="table table-condensed">
@@ -34,20 +36,13 @@
                 </tr>
             </thead>
             <tbody>
-            {{#each Element.lines}}
+            {{#each Element.lines}} 
             <tr>
-                <td class="right-align-td">
-                    {{this.quantity}}
-                </td>
+                {{#each Prop 'type' 'lineFields'}}
                 <td>
-                    {{this.info}}
+                    <a href="#" class="new-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
                 </td>
-                <td>
-                    {{this.item_number}}
-                </td>
-                <td class="right-align-td">
-                    {{GetPrice this.price}}
-                </td>
+                {{/each}}
                 <td class="right-align-td">
                     {{ chain 'GetPrice' 'Multiply' this.price this.quantity}}
                 </td>

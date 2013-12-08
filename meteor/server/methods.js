@@ -24,6 +24,9 @@ Meteor.methods({
     Items: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).count();
     },
+    ItemsSearch: function (query, merger) {
+        return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
+    },    
     getSalesInvoice: function (id) {
         check(id, String);
         return SalesInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
