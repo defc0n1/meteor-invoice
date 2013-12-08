@@ -1,10 +1,9 @@
 "use strict";
 Template.topbar.events({
     'keyup #search-query': function(event) {
-        console.log(event);
-        Session.set('query', event.target.value);
-        Session.set('skip', 0);
-        UpdateCount();
+        var type = Session.get('type');
+        Session.set(type.collection + 'query', event.target.value);
+        Session.set(type.collection + 'skip', 0);
     },
     'click #logout': function () {
         Meteor.logout();

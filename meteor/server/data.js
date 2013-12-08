@@ -29,6 +29,7 @@ FilterQuery = function (collection, fields, query, merger) {
     }
     if (!merger.options.limit) merger.options.limit = 10;
 
+    //log.error(_.extend(filter, merger.filter), _.extend({ sort: orderBy }, merger.options))
     return collection.find(_.extend(filter, merger.filter), _.extend({ sort: orderBy }, merger.options));
 };
 

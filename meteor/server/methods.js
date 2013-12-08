@@ -40,9 +40,17 @@ Meteor.methods({
         check(id, String);
         return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
     },
-    getItemStats: function (number) {
+    getItemStats: function (number, startDate, endDate) {
+        var match = { item_number: number };
+        if (endDate) {
+            match.date = { $lte: endDate };
+        }
+        if (startDate) {
+            match.date = { $gte: startDate };
+        }
+        log.info(match);
         return ItemEntries.aggregate([
-                { $match: { item_number: number } },
+                { $match: match },
                 { $group: { _id: "$type", total: { $sum: "$total_price" }, quantity: { $sum: "$quantity" } } }
                 ]);
     },
@@ -53,7 +61,7 @@ Meteor.methods({
         ]);
     },
     getDeptorStats: function (number) {
-        return CreditorEntries.aggregate([
+        return DeptorEntries.aggregate([
                 { $match: { deptor_number: number } },
                 { $group: { _id: "$type", total: { $sum: "$amount" } } }
         ]);

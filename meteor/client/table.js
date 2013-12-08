@@ -6,14 +6,13 @@ Template.table.rendered = function () {
         type = type.background;
         Session.set('type', type);
     }
-    UpdateCount(type.collection);
     Session.set('modalFields', type.modalFields);
-    UpdateCount(type.collection);
     Session.setDefault(type.collection + 'skip', 0);
     if (doit) {
         Session.set('selected', {});
         $('#myModal').modal({});
     }
+    $('.table-tooltip').tooltip();
 }
 
 Template.table.created = function () {
@@ -103,9 +102,10 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
-    'click .deotor-statistics-button': function (event) {
+    'click .deptor-statistics-button': function (event) {
         Session.set('element', this);
-        var stats = Meteor.call('getDeotorStats', this.elem.key, function (err, res) {
+        log.error('test');
+        var stats = Meteor.call('getDeptorStats', this.elem.key, function (err, res) {
             Session.set('stats', res);
             $('#itemstats').modal({});
         });

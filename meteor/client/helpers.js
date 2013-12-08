@@ -1,4 +1,13 @@
 
+TableMaxLength = 22;
+Shorten = function(arg) {
+    if (arg.length > TableMaxLength) {
+        return arg.substr(0, 24);
+    }
+    return arg;
+
+};
+
 var handlebarHelpers = {}
 
 var register = function(name, func) {
@@ -26,14 +35,26 @@ register('GetPrice', GetPrice);
 register('Session', function(arg) {
     return Session.get(arg);
 });
+register('Shorten', function(arg) {
+    return Session.get('element');
+});
 register('Element', function(arg) {
     return Session.get('element');
 });
 register('ElementProp', function(elem, prop, method) {
+    var res = '';
     if (window[method]) {
-        return window[method](elem[prop]);
+         res = window[method](elem[prop]);
     }
-    return elem[prop];
+    else{
+        res = elem[prop];
+    }
+    if (res && res.length > TableMaxLength) {
+        var shortString = res.substr(0, TableMaxLength - 2) + '..';
+        var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
+        return new Handlebars.SafeString(link);
+    }
+    return res;
 });
 register('Prop', function(arg) {
     var args = Array.prototype.slice.call(arguments).slice(1, arguments.length - 1);

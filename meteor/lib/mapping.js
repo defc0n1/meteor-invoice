@@ -1,43 +1,3 @@
-SalesInvoices = new Meteor.Collection('salesinvoices');
-SalesCreditnotas = new Meteor.Collection('salescreditnotas');
-PurchaseInvoices = new Meteor.Collection('purchaseinvoices');
-PurchaseCreditnotas = new Meteor.Collection('purchasecreditnotas');
-Deptors = new Meteor.Collection('deptors');
-Creditors = new Meteor.Collection('creditors');
-Alerts = new Meteor.Collection('alerts');
-Items = new Meteor.Collection('items');
-ItemEntries = new Meteor.Collection('itementries');
-CreditorEntries = new Meteor.Collection('creditorentries');
-DeptorEntries = new Meteor.Collection('deptorentries');
-
-GetDate = function (date) {
-    if (date) {
-        return moment(date).format('DD MMM YYYY');
-    }
-    else{
-        return '';
-    }
-};
-GetPrice = function (amount) {
-        if(isNaN(amount)){
-            var a = 0;
-            return a.toFixed(2) ;
-        }
-        amount = amount/100;
-        amount = amount.toFixed(2);
-        //if(amount.length === 2){
-        //return '00.' + amount;
-        //}
-    //var money = amount.substring(0, amount.length-2) + '.' + amount.substring(amount.length-2, amount.length);
-    //return money;
-        amount = amount + '';
-        amount = amount.replace('.', ',');
-        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
-        return val;
-};
-
-
-Mappeing = {}
 Mapping = {
     postedPurchaseinvoice: {
         getSingle: 'getPurchaseInvoice',
@@ -77,41 +37,39 @@ Mapping = {
         collection: 'SalesCreditnotas',
         singleView: 'postedSalescreditnota',
         table: [
-            { header: 'Fakturanummer', key: 'key' },
+            { header: 'Nummer', key: 'key' },
             { header: 'Kundenummer', key: 'customer_number' },
             { header: 'Navn', key: 'name' },
             { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
             { header: 'Send', key: '', buttons: [
                 { text: 'Edi', key: 'amqp' , classes:'edi-button' },
-                { text: 'Mail', key: 'mail' , classes:'email-button'  },
+                { icon: 'envelope', key: 'mail' , classes:'email-button'  },
                 { text: 'Vis', classes: 'show-button' },
 
            ] },
-            { header: '', key: '' },
         ],
     },
     postedSalesinvoices: {
         collection: 'SalesInvoices',
         singleView: 'postedSalesinvoice',
         table: [
-            { header: 'Fakturanummer', key: 'key' },
+            { header: 'Nummer', key: 'key' },
             { header: 'Kundenummer', key: 'customer_number' },
             { header: 'Navn', key: 'name' },
             { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
             { header: 'Send', key: '', buttons: [
                 { text: 'Edi', key: 'amqp' , classes:'edi-button' },
-                { text: 'Mail', key: 'mail' , classes:'email-button'  },
+                { icon: 'envelope', key: 'mail' , classes:'email-button'  },
                 { text: 'Vis', classes: ['show-button'] },
 
            ] },
-            { header: '', key: '' },
         ],
     },
     postedPurchasecreditnotas: {
         collection: 'PurchaseCreditnotas',
         singleView: 'postedPurchasecreditnota',
         table: [
-            { header: 'Fakturanummer', key: 'key' },
+            { header: 'Nummer', key: 'key' },
             { header: 'Leverendørnummer', key: 'supplier_number' },
             { header: 'Navn', key: 'name' },
             { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
@@ -119,14 +77,13 @@ Mapping = {
                 { text: 'Vis', classes: 'show-button' },
 
            ] },
-            { header: '', key: '' },
         ],
     },
     postedPurchaseinvoices: {
         collection: 'PurchaseInvoices',
         singleView: 'postedPurchaseinvoice',
         table: [
-            { header: 'Fakturanummer', key: 'key' },
+            { header: 'Nummer', key: 'key' },
             { header: 'Leverendørnummer', key: 'supplier_number' },
             { header: 'Navn', key: 'name' },
             { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
@@ -134,20 +91,19 @@ Mapping = {
                 { text: 'Vis', classes: ['show-button'] },
 
            ] },
-            { header: '', key: '' },
         ],
     },
     deptors: {
         collection: 'Deptors',
         class: 'modal-edit',
         table: [
-            { header: 'Debitornummer', key: 'key' },
-            { header: 'Navn', key: 'name' },
+            { header: 'Nummer', key: 'key' },
+            { header: 'Navn', key: 'name', formatter: 'Shorten' },
             { header: 'Adresse', key: 'address' },
             { header: 'By', key: 'zip' },
             { header: 'Saldo', key: '' },
             { header: '', key: '', buttons: [
-                { text: 'Rediger', classes: 'show-deptor-button' },
+                { icon: 'wrench', classes: 'show-deptor-button' },
                 { text: 'Kontokort', classes: 'account-deptor-button' },
                 { text: 'Statistik', classes: 'deptor-statistics-button' },
                 ] },
@@ -166,13 +122,13 @@ Mapping = {
         collection: 'Creditors',
         class: 'modal-edit',
         table: [
-            { header: 'Kreditornummer', key: 'key' },
-            { header: 'Navn', key: 'name' },
+            { header: 'Nummer', key: 'key' },
+            { header: 'Navn', key: 'name', formatter: 'Shorten' },
             { header: 'Adresse', key: 'address' },
             { header: 'By', key: 'zip' },
             { header: 'Saldo', key: '' },
             { header: '', key: '', buttons: [
-                { text: 'Rediger', classes: 'show-creditor-button' },
+                { icon: 'wrench', classes: 'show-creditor-button' },
                 { text: 'Kontokort', classes: 'account-creditor-button' },
                 { text: 'Statistik', classes: 'creditor-statistics-button' },
                 ] },
@@ -191,14 +147,14 @@ Mapping = {
         collection: 'Items',
         //class: 'modal-edit',
         table: [
-            { header: 'Varenummer', key: 'key' },
+            { header: 'Nummer', key: 'key' },
             { header: 'Navn', key: 'name' },
             { header: 'Gruppe', key: 'group' },
             { header: 'Kostpris', key: 'cost_price', formatter: 'GetPrice' },
             { header: 'Salgspris', key: 'price', formatter: 'GetPrice' },
             { header: 'Beholdning', key: 'quantity' },
             { header: '', key: '', buttons: [
-                { text: 'Rediger', classes: 'show-item-button' },
+                { icon: 'wrench', classes: 'show-item-button' },
                 { text: 'Statistik', classes: 'item-statistics-button' },
            ] },
         ],
@@ -236,43 +192,3 @@ Mapping = {
         }
     }
 };
-// these settings makes the stuff fit on the pdf conversion
-lpp = 30;
-lfirst = 18;
-llast = 23;
-
-Print = {
-    totalPages: function (nLines) {
-        var pages = 1;
-        for(var i = 1; i <= nLines; i++) {
-            if (i > lfirst +  lpp * (pages -  1)) {
-                pages += 1;
-            }
-        };
-        return pages;
-    },
-};
-
-log = {
-    log: function (level, args) {
-            var now = moment().format('DD-MM-YY HH:mm:ss');
-            var message = '';
-            _.each(args, function (m, i) {
-                message += JSON.stringify(m) + ' ';
-            });
-            console.log(level, ':', now, message);
-        }
-}
-log.info = function () {
-    log.log('INFO   ', arguments);
-}
-log.debug = function () {
-    log.log('DEBUG  ', arguments);
-}
-log.error = function () {
-    log.log('ERROR  ', arguments);
-}
-log.warning = function () {
-    log.log('WARNING', arguments);
-}
-

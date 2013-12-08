@@ -17,15 +17,14 @@ Deps.autorun(function() {
         NProgress.start();
     }
     catch (err) {
-        console.log('err', err);
+        log.error('err', err);
     }
     _.each(collections, function (collection) {
         //progressCount += 1
-
         Meteor.subscribe(collection,
             Session.get(collection + 'limit'),
             Session.get(collection + 'skip'),
-            Session.get('query'),
+            Session.get(collection + 'query'),
             Session.get(collection + 'filter'),
             function () {
                 progressCount -= 1;
@@ -38,14 +37,18 @@ Deps.autorun(function() {
     Meteor.subscribe('alertChannel');
 });
 
-UpdateCount = function (method) {
-    Meteor.call(method,
-            Session.get('query'),
-            { filter: Session.get('filter') },
-            function(err, result) {
-                err && console.log(err);
-                Session.set('itemCount', result);
-            });
-};
+//this could instead be run on collection ready
+Deps.autorun(function () {
+    var type = Session.get('type');
+    if (type) {
+        Meteor.call(type.collection,
+                Session.get(type.collection + 'query'),
+                { filter: Session.get(type.collection + 'filter') },
+                function(err, result) {
+                    err && log.error(err);
+                    Session.set('itemCount', result);
+                });
+    }
+});
 
 

@@ -9,6 +9,7 @@
     "x-editable-bootstrap3": {},
     "when": {},
     "mongodb-server-aggregation": {},
-    "handlebars-server": {}
+    "handlebars-server": {},
+    "bootstrap-datepicker2": {}
   }
 }
