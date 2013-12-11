@@ -1,7 +1,7 @@
 <template name="sidebar">
 <div class="list-group affix" id="sidebar">
     {{# each items}}
-    <a href="{{this.path}}" class="{{this.active}} list-group-item">{{this.name}}</a>
+    <a href="{{this.path}}" class="{{this.active}} list-group-item {{this.click}}">{{this.name}}</a>
     {{/each}}
 </div>
 </template>

@@ -33,8 +33,23 @@ Template.modalInner.helpers({
 });
 
 Template.modalInner.rendered = function () {
-    //console.log(this);
+
     $.fn.editable.defaults.mode = 'inline';
+
+    var selected = Session.get('selected');
+    if (selected) {
+        // when the selected item is defined, we attach an observed handler and update the
+        // editable value on change
+        var query = Items.find({ _id: selected._id });
+        var handle = query.observeChanges({
+            changed: function (id, fields) {
+                _.each(fields, function (v, k) {
+                    $('#' + k).editable('setValue', v);
+                    console.log(k, v);
+                });
+            }
+        });
+    }
 
     // disable esc-close-modal when an editable is active
     $('.modal-edit-field').on('hidden', function (e, reason) {
@@ -66,26 +81,30 @@ Template.modalInner.rendered = function () {
             }
             update[field] = newValue;
             var selected = Session.get('selected');
-            //var res = Deptors.update({ _id: selected._id }, { $set: update }, function (err, msg) {
-                //console.log(err, msg);
-                //if (err) {
+            console.log(selected, newValue, response);
+            var res = Items.update({ _id: selected._id }, { $set: update }, function (err, msg) {
+                console.log(err, msg);
+                if (err) {
+                    console.log(err);
                     //var selector = '#' + field;
                     //$(selector).editable('setValue', selected[field] , true);
                     //Messages.insert({ message: 'Nøgle eksisterer allerede' });
-                //}
-            //});
-            //return 'test2';
+                }
+            });
+            //we might need to run the update sync, as editable expects the error to be returned
         },
         display: function (value) {
 
             var formatter = $(this).attr('data-formatter');
+            // call the formatter function if defined
             if (formatter) {
                 var func = window[formatter];
                 $(this).html(func(value));
             }
+            //ootherwise, just insert the new value
+            else{
+                $(this).html(value);
+            }
         },
-        error: function(msg) {
-            return msg;
-        }
     });
 };

@@ -1,7 +1,14 @@
-Template.sidebar.items = function (route) {
+Template.sidebar.events = {
+    'click .new-item': function (event) {
+        $('#new-element-modal').modal({});
+    },
+}
+
+
+Template.sidebar.items = function () {
     var sidebar = {
         items: [
-            { name: 'Ny vare', path: Router.routes.main.path({ root: 'items', type:  'newItem' }) },
+            { name: 'Ny vare', path: '#', click: 'new-item' },
             { name: 'Varer', path: Router.routes.main.path({ root: 'items', type:  'items' }) },
             { name: 'Varegrupper', path: Router.routes.main.path({ root: 'items', type:  'itemGroups'  }) },
         ],
