@@ -39,7 +39,17 @@ register('Shorten', function(arg) {
     return Session.get('element');
 });
 register('Element', function(arg) {
-    return Session.get('element');
+  var elem = Session.get('element');
+
+  // TODO: refactor into generic array index
+  if (elem && elem.lines) {
+    elem.lines = _.map(elem.lines, function (item, index) {
+      item.index = index;
+      return item;
+    });
+  }
+  // console.log(elem);
+  return elem;
 });
 register('ElementProp', function(elem, prop, method) {
     var res = '';
@@ -65,8 +75,16 @@ register('Prop', function(arg) {
     return elem;
 });
 
-register('Multiply', function(arg1, arg2) {
+register('Multiply', function (arg1, arg2) {
     return arg1 * arg2;
+});
+
+register('key_value', function (context, options) {
+  var result = [];
+  _.each(context, function(value, key, list){
+    result.push({key:key, value:value});
+  });
+  return result;
 });
 
 Handlebars.registerHelper('chain', function () {

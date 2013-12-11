@@ -40,7 +40,7 @@
             <tr>
                 {{#each Prop 'type' 'lineFields'}}
                 <td>
-                    <a href="#" class="new-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
+                    <a href="#" class="new-edit-field" id="{{this.key}}-{{../this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
                 </td>
                 {{/each}}
                 <td class="right-align-td">
