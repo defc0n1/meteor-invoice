@@ -12,7 +12,7 @@
                     {{this.header}}
                 </td>
                 <td>
-                    <a href="#" class="new-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
+                    <a href="#" class="new-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{ElementProp newitem this.key}}</a>
                 </td>
             </tr>
             {{/each}}
@@ -36,11 +36,11 @@
                 </tr>
             </thead>
             <tbody>
-            {{#each Element.lines}} 
+            {{#each newitem.lines}} 
             <tr>
                 {{#each Prop 'type' 'lineFields'}}
                 <td>
-                    <a href="#" class="new-edit-field" id="{{this.key}}-{{../this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
+                    <a href="#" class="new-edit-field" id="{{this.key}}-{{../this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{ElementProp ../this this.key}}</a>
                 </td>
                 {{/each}}
                 <td class="right-align-td">
