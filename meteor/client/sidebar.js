@@ -1,6 +1,11 @@
-Template.sidebar.events = function (route) {
+Template.sidebar.events = {
+    'click .new-item': function (event) {
+        $('#new-element-modal').modal({});
+    },
+}
 
-Template.sidebar.items = function (route) {
+
+Template.sidebar.items = function () {
     var sidebar = {
         items: [
             { name: 'Ny vare', path: '#', click: 'new-item' },
