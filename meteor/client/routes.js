@@ -59,6 +59,10 @@ Router.map(function () {
             if (this.params.type === 'newSalesinvoice') {
                 this.render('new');
             }
+            else if (this.params.type === 'newItem') {
+                console.log('test')
+                $('#new-element-modal').modal({});
+            }
             else {
                 this.render('table');
             }

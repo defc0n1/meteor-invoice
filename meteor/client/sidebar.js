@@ -1,7 +1,9 @@
+Template.sidebar.events = function (route) {
+
 Template.sidebar.items = function (route) {
     var sidebar = {
         items: [
-            { name: 'Ny vare', path: Router.routes.main.path({ root: 'items', type:  'newItem' }) },
+            { name: 'Ny vare', path: '#', click: 'new-item' },
             { name: 'Varer', path: Router.routes.main.path({ root: 'items', type:  'items' }) },
             { name: 'Varegrupper', path: Router.routes.main.path({ root: 'items', type:  'itemGroups'  }) },
         ],
