@@ -24,6 +24,15 @@ Meteor.methods({
     Items: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).count();
     },
+    ItemEntries: function (query, merger) {
+        return FilterQuery(ItemEntries, ItemEntriesSearchFields, query, merger).count();
+    },  
+    CreditorEntries: function (query, merger) {
+        return FilterQuery(CreditorEntries, CreditorEntriesSearchFields, query, merger).count();
+    },
+    DeptorEntries: function (query, merger) {
+        return FilterQuery(DeptorEntries, DeptorEntriesSearchFields, query, merger).count();
+    },       
     ItemsSearch: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
     },    

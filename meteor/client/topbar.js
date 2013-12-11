@@ -26,6 +26,7 @@ Template.topbar.items = function () {
         { name: 'Køb', path: Router.routes['main'].path({ root: 'purchase', type: 'postedPurchaseinvoices' }) },
         { name: 'Kontaker', path: Router.routes['main'].path({ root: 'contacts', type: 'deptors' }) },
         { name: 'Varer', path: Router.routes['main'].path({ root: 'items', type: 'items' }) },
+        { name: 'Posteringer', path: Router.routes['main'].path({ root: 'entries', type: 'entries' }) },
         //{ name: 'Statistik', path: Router.routes['sale'].path({ type: '' }) },
         //{ name: 'Bogføring', path: Router.routes['sale'].path({ type: '' }) },
     ];

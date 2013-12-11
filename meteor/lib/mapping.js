@@ -174,6 +174,55 @@ Mapping = {
         { name: 'Beholdning', key: 'quantity'},
         ]
     },
+    itemEntries: {
+        collection: 'ItemEntries',
+        //class: 'modal-edit',
+        table: [
+            { header: 'Løbenummer', key: 'key' },
+            { header: 'Varenummer', key: 'item_number' },
+            { header: 'Gruppe', key: 'item_group' },
+            { header: 'Beholdning', key: 'quantity' },
+            { header: 'BilagsNr', key: 'record_number' },
+            { header: 'Type', key: 'type' },
+            { header: 'Pris', key: 'item_price', formatter: 'GetPrice' },
+            { header: 'Pris total', key: 'total_price', formatter: 'GetPrice' },
+            { header: 'Dato', key: 'date', formatter: 'GetDate' },
+            { header: 'Kontakt', key: 'contact_number' },
+            { header: '', key: '', buttons: [
+                { icon: 'wrench', classes: 'show-item-button' },
+           ] },
+        ],
+    },    
+    creditorEntries: {
+        collection: 'CreditorEntries',
+        //class: 'modal-edit',
+        table: [
+            { header: 'Type', key: 'type' },
+            { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
+            { header: 'Løbenummer', key: 'key' },
+            { header: 'Kreditor', key: 'creditor_number' },
+            { header: 'BilagsNr', key: 'record_number' },
+            { header: 'Dato', key: 'date', formatter: 'GetDate' },
+            { header: '', key: '', buttons: [
+                { icon: 'wrench', classes: 'show-item-button' },
+           ] },
+        ],
+    },
+    deptorEntries: {
+        collection: 'DeptorEntries',
+        //class: 'modal-edit',
+        table: [
+            { header: 'Type', key: 'type' },
+            { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
+            { header: 'Løbenummer', key: 'key' },
+            { header: 'Debitor', key: 'deptor_number' },
+            { header: 'BilagsNr', key: 'record_number', link: true },
+            { header: 'Dato', key: 'date', formatter: 'GetDate' },
+            { header: '', key: '', buttons: [
+                { icon: 'wrench', classes: 'show-item-button' },
+           ] },
+        ],
+    },       
     newSalesinvoice: {
         headerFields: [
             { header: 'Fakturanummer', key: 'key' },

@@ -1,6 +1,9 @@
 DeptorSearchFields = [ 'key', 'name' ];
 CreditorSearchFields = [ 'key' ];
 ItemSearchFields = [ 'key' ];
+ItemEntriesSearchFields = [ 'key' ];
+DeptorEntriesSearchFields = [ 'key' ];
+CreditorEntriesSearchFields = [ 'key' ];
 SalesInvoiceSearchFields = [ 'key', 'customer_number', 'name' ];
 PurchaseInvoiceSearchFields = [ 'key' ];
 SalesCreditnotaSearchFields = [ 'key' ];
@@ -59,6 +62,18 @@ Meteor.publish('Creditors', function (limit, skip, query, filter){
 });
 Meteor.publish('Items', function (limit, skip, query, filter){
     return FilterQuery(Items, ItemSearchFields, query,
+        { options: {limit: limit, skip: skip }, filter: filter});
+});
+Meteor.publish('ItemEntries', function (limit, skip, query, filter){
+    return FilterQuery(ItemEntries, ItemEntriesSearchFields, query,
+        { options: {limit: limit, skip: skip }, filter: filter});
+});
+Meteor.publish('DeptorEntries', function (limit, skip, query, filter){
+    return FilterQuery(DeptorEntries, DeptorEntriesSearchFields, query,
+        { options: {limit: limit, skip: skip }, filter: filter});
+});
+Meteor.publish('CreditorEntries', function (limit, skip, query, filter){
+    return FilterQuery(CreditorEntries, CreditorEntriesSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('alertChannel', function (user){

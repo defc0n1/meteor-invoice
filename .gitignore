@@ -3,3 +3,4 @@ config
 */bundle
 *.pyc
 tags
+*/.build

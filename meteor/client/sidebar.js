@@ -23,6 +23,11 @@ Template.sidebar.items = function (route) {
             { name: 'Åbne kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'openSalescreditnotas'  }) },
             { name: 'Bogførte kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'postedSalescreditnotas'  }) },
         ],
+        entries: [
+            { name: 'Vare', path: Router.routes.main.path({ root: 'entries', type:  'itemEntries'  }) },
+            { name: 'Kreditor', path: Router.routes.main.path({ root: 'entries', type:  'creditorEntries'  }) },
+            { name: 'Debitor', path: Router.routes.main.path({ root: 'entries', type:  'deptorEntries'  }) },
+        ],        
     };
     var root = Router.current().params.root;
     var type = Router.current().params.type;
