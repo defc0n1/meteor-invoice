@@ -16,6 +16,8 @@ Template.new.rendered = function () {
     var elem = SalesInvoices.findOne( {key: 99999} );
     Session.set('element', elem);
 
+    // attach an observed handler and update the
+    // editable value on change
     var query = SalesInvoices.find( {key: 99999} );
     var handle = query.observeChanges({changed: function(id, fields) {
         _.each(fields, function (v, k) {
@@ -113,24 +115,24 @@ Template.new.rendered = function () {
             var key = parts[0];
             var id = parts[1];
 
-            if (field === 'key') {
-                Messages.insert({ message: 'Nøglen kan ikke ændres på nuværende tidspunkt.' });
-                return;
+            update[key] = newValue;
+
+            console.log(update);
+
+
+            var res = SalesInvoices.update({ _id: elem.id }, { $set: update });
+        },
+        display: function (value) {
+            var formatter = $(this).attr('data-formatter');
+            // call the formatter function if defined
+            if (formatter) {
+                var func = window[formatter];
+                $(this).html(func(value));
             }
-            elem.lines[id][key] = newValue;
-            update[field] = newValue;
-
-            console.log(elem.lines[id][key]);
-
-
-            var res = SalesInvoices.update({ _id: elem.id }, { $set: update }, function (err, msg) {
-                console.log(err, msg);
-                if (err) {
-                    var selector = '#' + field;
-                    $(selector).editable('setValue', selected[field] , true);
-                    Messages.insert({ message: 'Nøgle eksisterer allerede' });
-                }
-            });
+            //ootherwise, just insert the new value
+            else{
+                $(this).html(value);
+            }
         },
     });
 

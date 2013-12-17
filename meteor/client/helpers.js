@@ -38,18 +38,14 @@ register('Session', function(arg) {
 register('Shorten', function(arg) {
     return Session.get('element');
 });
-register('Element', function(arg) {
-  var elem = Session.get('element');
-
-  // TODO: refactor into generic array index
-  if (elem && elem.lines) {
-    elem.lines = _.map(elem.lines, function (item, index) {
+register('ListIndex', function (arg) {
+    return _.map(arg, function (item, index) {
       item.index = index;
       return item;
     });
-  }
-  // console.log(elem);
-  return elem;
+});
+register('Element', function(arg) {
+  return Session.get('element');
 });
 register('ElementProp', function(elem, prop, method) {
     var res = '';
