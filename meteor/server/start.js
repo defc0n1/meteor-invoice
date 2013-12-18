@@ -20,6 +20,11 @@ Handlebars = Meteor.require('handlebars');
 //});
 
 Meteor.startup(function () {
+    var fs = Meteor.require('fs');
+    fs.writeFile(Meteor.settings.pid, process.pid, function(err) {
+        if (err) console.log(err);
+        console.log(process.pid);
+    });
     log.debug(Meteor.settings);
     amqp.connect();
 });

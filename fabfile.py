@@ -103,6 +103,7 @@ def pull():
 def setup():
     mkdirs()
     clone()
+    install_deps()
 
 def deploy():
     pull()
