@@ -3,9 +3,9 @@
 NODE=/usr/local/bin/node
 DIR=/apps/invoice
 LOG=/apps/log/invoice.log
+LOG_STAGING=/apps/log/invoice_staging.log
 PID=/apps/pid/invoice.pid
 PID_STAGING=/apps/pid/invoice_staging.pid
-STAGEDIR=/apps/invoice_staging
 test -x "$NODE" || exit 0
 
 
@@ -14,8 +14,8 @@ function start_app {
     nohup "$NODE" "$DIR/deploy/bundle/main.js" 1>>"$LOG" 2>&1 &
 }
 function start_staging {
-    source "$STAGEDIR/deploy/staging.sh"
-    nohup "$STAGEDIR/$NODE" "$STAGEDIR/bundle/main.js" 1>>"$STAGEDIR/log.log" 2>&1 &
+    source "$DIR/deploy/staging.sh"
+    nohup "$NODE" "$DIR/deploy/bundle/main.js" 1>>"$LOG_STAGING" 2>&1 &
 }
 function stop_staging {
     kill `cat $PID_STAGING`
