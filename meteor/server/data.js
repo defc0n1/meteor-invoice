@@ -32,13 +32,21 @@ FilterQuery = function (collection, fields, query, merger) {
     }
     if (!merger.options.limit) merger.options.limit = 10;
 
+    //console.log(collection._prefix, merger)
     //log.error(_.extend(filter, merger.filter), _.extend({ sort: orderBy }, merger.options))
     return collection.find(_.extend(filter, merger.filter), _.extend({ sort: orderBy }, merger.options));
 };
 
-Meteor.publish('SalesInvoices', function (limit, skip, query){
+Meteor.publish('PostedSalesInvoices', function (limit, skip, query){
     return FilterQuery(SalesInvoices, SalesInvoiceSearchFields, query,
-        { options: {limit: limit, skip: skip }});
+        { options: {limit: limit, skip: skip } ,
+         filter: { posting_date: { $exists: true } } });
+});
+Meteor.publish('OpenSalesInvoices', function (limit, skip, query){
+    console.log(skip)
+    return FilterQuery(SalesInvoices, SalesInvoiceSearchFields, query,
+        { options: {limit: limit, skip: skip },
+         filter: { posting_date: { $exists: false } } });
 });
 Meteor.publish('PurchaseInvoices', function (limit, skip, query){
     return FilterQuery(PurchaseInvoices, PurchaseInvoiceSearchFields, query,

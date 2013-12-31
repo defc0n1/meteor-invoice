@@ -1,3 +1,4 @@
+Counters = new Meteor.Collection('counters');
 SalesInvoices = new Meteor.Collection('salesinvoices');
 SalesCreditnotas = new Meteor.Collection('salescreditnotas');
 PurchaseInvoices = new Meteor.Collection('purchaseinvoices');

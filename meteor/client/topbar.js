@@ -5,6 +5,14 @@ Template.topbar.events({
         Session.set(type.collection + 'query', event.target.value);
         Session.set(type.collection + 'skip', 0);
     },
+    'click #search-query': function(event) {
+        if (event.target.value === '') {
+            console.log('test')
+            var type = Session.get('type');
+            Session.set(type.collection + 'query', '');
+            Session.set(type.collection + 'skip', 0);
+        }
+    },
     'click #logout': function () {
         Meteor.logout();
     }
