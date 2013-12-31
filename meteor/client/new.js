@@ -1,24 +1,17 @@
 Template.new.created = function () {
-    console.log('created');
-    var elem = SalesInvoices.findOne( {key: 99999} );
-    console.log(elem)
-    if (!elem) {
-        SalesInvoices.insert( {key: 99999, lines: [] });
-    }
 };
 
 Template.new.newitem = function () {
-    return SalesInvoices.findOne( {key: 99999} );
+    return SalesInvoices.findOne({ key: parseInt(Router.current().params.key ) });
 };
 
 Template.new.rendered = function () {
     Session.set('type', Mapping['newSalesinvoice']);
-    var elem = SalesInvoices.findOne( {key: 99999} );
+    var elem = SalesInvoices.findOne({ key: parseInt(Router.current().params.key) });
     Session.set('element', elem);
-
     // attach an observed handler and update the
     // editable value on change
-    var query = SalesInvoices.find( {key: 99999} );
+    var query = SalesInvoices.find({ key: parseInt(Router.current().params.key) });
     var handle = query.observeChanges({changed: function(id, fields) {
         _.each(fields, function (v, k) {
             // go through every item line in case that property has changed
@@ -79,11 +72,10 @@ Template.new.rendered = function () {
 
             var update = {};
             _.each(type.headerFields, function (map) {
-                update[map.key] = props[map.from];
-
+                if (!map.fixed) {
+                    update[map.key] = props[map.from];
+                }
             });
-            console.log(update);
-            console.log(elem);
             var res = SalesInvoices.update({ _id: elem._id }, { $set: update });
         });
 

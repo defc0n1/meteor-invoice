@@ -56,16 +56,16 @@ Router.map(function () {
         layoutTemplate: 'layout',
         action: function () {
             Session.set('type', Mapping[this.params.type]);
-            if (this.params.type === 'newSalesinvoice') {
-                this.render('new');
-            }
-            else if (this.params.type === 'newItem') {
-                console.log('test')
-                $('#new-element-modal').modal({});
-            }
-            else {
-                this.render('table');
-            }
+            this.render('table');
+        },
+    });
+    this.route('edit', {
+        path: '/edit/:type/:key',
+        layoutTemplate: 'layout',
+        action: function () {
+            Session.set('key', this.params.key);
+            Session.set('type', Mapping[this.params.type]);
+            this.render('new');
         },
     });
     this.route('show', {
@@ -73,7 +73,6 @@ Router.map(function () {
         layoutTemplate: 'layout',
         action: function () {
             this.render('posted');
-
         },
         before: function () {
             Session.set('key', this.params.key);

@@ -12,7 +12,11 @@
                     {{this.header}}
                 </td>
                 <td>
-                    <a href="#" class="new-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{ElementProp newitem this.key}}</a>
+                    {{#if this.fixed}}
+                    {{ElementProp newitem this.key}}
+                    {{else}}
+                        <a href="#" class="new-edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="">{{ElementProp newitem this.key}}</a>
+                    {{/if}}
                 </td>
             </tr>
             {{/each}}

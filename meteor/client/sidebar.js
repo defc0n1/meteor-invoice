@@ -1,14 +1,16 @@
 Template.sidebar.events = {
     'click .new-item': function (event) {
-        $('#new-element-modal').modal({});
+        var id = event.srcElement.id;
+        var mapping = Mapping[id];
+        mapping.create();
     },
-}
+};
 
 
 Template.sidebar.items = function () {
     var sidebar = {
         items: [
-            { name: 'Ny vare', path: '#', click: 'new-item' },
+            { name: 'Ny vare', path: '#', id: 'newItem', click: 'new-item' },
             { name: 'Varer', path: Router.routes.main.path({ root: 'items', type:  'items' }) },
             { name: 'Varegrupper', path: Router.routes.main.path({ root: 'items', type:  'itemGroups'  }) },
         ],
@@ -23,12 +25,16 @@ Template.sidebar.items = function () {
             { name: 'Bogførte kreditnota', path: Router.routes.main.path({ root: 'purchase', type:  'postedPurchasecreditnotas'  }) },
         ],
         sale: [
-            { name: 'Ny faktura', path: Router.routes.main.path({ root: 'sale', type:  'newSalesinvoice' }) },
+            { name: 'Ny faktura', path: '#', id: 'newSalesinvoice', click: 'new-item', goto: Router.routes.main.path({ root: 'new', type:  'newSalesinvoice' }) },
             { name: 'Åbne fakturaer', path: Router.routes.main.path({ root: 'sale', type:  'openSalesinvoices' }) },
             { name: 'Bogførte fakturaer', path: Router.routes.main.path({ root: 'sale', type:  'postedSalesinvoices'  }) },
-            { name: 'Ny kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'newSalesCreditnota' }) },
+            { name: 'Ny kreditnota', path: Router.routes.main.path({ root: 'new', type:  'newSalesCreditnota' }) },
             { name: 'Åbne kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'openSalescreditnotas'  }) },
             { name: 'Bogførte kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'postedSalescreditnotas'  }) },
+        ],
+        edit: [
+            { name: 'Bogfør', path: Router.routes.main.path({ root: 'sale', type:  'openSalesinvoices' }) },
+            { name: 'Slet', path: Router.routes.main.path({ root: 'sale', type:  'postedSalesinvoices'  }) },
         ],
     };
     var root = Router.current().params.root;

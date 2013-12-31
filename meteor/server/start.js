@@ -72,5 +72,5 @@ Handlebars.registerHelper('chain', function () {
 
 //var invoice = SalesInvoices.findOne( { key: "87104"});
 var invoice = SalesInvoices.findOne();
-console.log(invoice);
-Pdf.getInvoice(invoice, 3); 
+//console.log(invoice);
+//Pdf.getInvoice(invoice, 3); 

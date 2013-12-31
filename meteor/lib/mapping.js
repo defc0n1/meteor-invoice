@@ -51,6 +51,8 @@ Mapping = {
     },
     postedSalesinvoices: {
         collection: 'SalesInvoices',
+        subCollection: 'PostedSalesInvoices',
+        filter: { $or: [ { posting_date: { $exists: true } } ] }, 
         singleView: 'postedSalesinvoice',
         table: [
             { header: 'Nummer', key: 'key' },
@@ -62,6 +64,23 @@ Mapping = {
                 { icon: 'envelope', key: 'mail' , classes:'email-button'  },
                 { text: 'Vis', classes: ['show-button'] },
 
+           ] },
+        ],
+    },
+    openSalesinvoices: {
+        collection: 'SalesInvoices',
+        subCollection: 'OpenSalesInvoices',
+        singleView: 'openSalesinvoice',
+        filter: { $or: [ { posting_date: { $exists: false } }, 
+            { posting_date: null }, { posting_date: '' } ] },
+        table: [
+            { header: 'Nummer', key: 'key' },
+            { header: 'Kundenummer', key: 'customer_number' },
+            { header: 'Navn', key: 'name' },
+            { header: 'Rediger', key: '', buttons: [
+                { text: 'Bogfør', classes: '' },
+                { icon: 'wrench', classes: 'edit-button' },
+                { icon: 'remove', classes: 'delete-button' },
            ] },
         ],
     },
@@ -175,8 +194,9 @@ Mapping = {
         ]
     },
     newSalesinvoice: {
+        modalText: 'Salgsfakturanummer',
         headerFields: [
-            { header: 'Fakturanummer', key: 'key' },
+            { header: 'Fakturanummer', key: 'key', fixed: true }, // fixed means non-editable
             { header: 'Kundenummer', key: 'customer_number', from: 'key' },
             { header: 'Navn', key: 'name', from: 'name' },
             { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
@@ -186,14 +206,37 @@ Mapping = {
             { from: 'name', key: 'info' },
             { from: 'key', key: 'item_number' },
             { from: 'price', key: 'price', formatter: 'GetPrice' },
-        ]
+        ],
+        create: function () {
+            Meteor.call('GetNextSequence', 'salesinvoice', 
+                    function (err, sequence) {
+                        Router.go('edit', { type: Router.current().params.type, key: sequence });
+                    });
+        }
     },
     get newItem () {
         return {
             new: true,
+            modalText: 'Varenummer',
             collection: 'Items',
             background: this.items,
             modalFields: this.items.modalFields,
+            create: function (key) {
+
+
+        bootbox.prompt(mapping.modalText, function(result) {
+            if (result === null) {
+                // pass
+            } else {
+                //create element and move to it's page
+            }
+        });
+                var id = Items.insert({ key: key });
+                var element = Items.findOne({ _id : id });
+                Session.set('selected', element);
+                Session.set('showModal', true);
+                $('#myModal').modal({});
+            },
         }
     }
 };

@@ -10,6 +10,7 @@
     "when": {},
     "mongodb-server-aggregation": {},
     "handlebars-server": {},
-    "bootstrap-datepicker2": {}
+    "bootstrap-datepicker2": {},
+    "mocha-web": {}
   }
 }

@@ -6,7 +6,8 @@ var collections = [
     'Deptors',
     'Creditors',
     'Items',
-    'SalesInvoices',
+    'OpenSalesInvoices',
+    'PostedSalesInvoices',
     'SalesCreditnotas',
     'PurchaseInvoices',
     'PurchaseCreditnotas',
@@ -37,18 +38,42 @@ Deps.autorun(function() {
     Meteor.subscribe('alertChannel');
 });
 
-//this could instead be run on collection ready
-Deps.autorun(function () {
-    var type = Session.get('type');
-    if (type) {
-        Meteor.call(type.collection,
-                Session.get(type.collection + 'query'),
-                { filter: Session.get(type.collection + 'filter') },
-                function(err, result) {
-                    err && log.error(err);
-                    Session.set('itemCount', result);
-                });
-    }
-});
 
+var updateCounts = function (collections) {
+    _.each(collections, function (collection) {
+    Meteor.call('Count', collection,
+            Session.get(collection + 'query'),
+            { filter: Session.get(collection + 'filter') },
+            function(err, result) {
+                err && log.error(err);
+                Session.set(collection + 'itemCount', result);
+            });
+    });
+};
+var cols = {
+    'Deptors': undefined,
+    'Creditors': undefined,
+    'Items': undefined,
+    'SalesInvoices': ['OpenSalesInvoices', 'PostedSalesInvoices'],
+    'SalesCreditnotas': undefined,
+    'PurchaseInvoices': undefined,
+    'PurchaseCreditnotas': undefined,
+};
+DoCount = function () {
+    _.chain(cols).keys().each(function (key) {
+        extra = []
+        if (cols[key]) {
+            extra = cols[key];
+        }
+        else {
+            extra = [key];
+        }
+        updateCounts(extra);
+        //return window[key].find().observeChanges({
+            //added: updateCounts(extra),
+            //removed: updateCounts(extra),
+        //});
+    });
+}
+DoCount();
 

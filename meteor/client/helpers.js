@@ -15,13 +15,15 @@ var register = function(name, func) {
     Handlebars.registerHelper(name, func);
 
 }
-register('countText', function () {
-    var count = Session.get('itemCount');
+register('CountText', function () {
+    var type = Session.get('type');
+    var collection = type.subCollection || type.collection;
+    var count = Session.get(collection + 'itemCount');
     if (count < incrementSize) {
         return 'Viser alle';
     }
     else {
-        var start = Session.get('skip') + 1;
+        var start = Session.get(collection + 'skip', 0) + 1;
         return 'Viser ' + start + ' til ' +
         Math.min((start + incrementSize - 1), count)  +
         ' af ' + count;
