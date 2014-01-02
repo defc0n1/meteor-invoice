@@ -51,10 +51,10 @@ register('Element', function(arg) {
 });
 register('ElementProp', function(elem, prop, method, isLink) {
 
-  console.log(elem);
+  // console.log(elem);
 
   if (isLink) {
-    var path = Session.get('type').paths[elem.type] + elem['record_number'];
+    var path = 'show/' + Session.get('type').views[elem.type] + '/' + elem['record_number'];
     var link = '<a class="link", href=/' + path + '>' + elem[prop] + '</a>';
     return new Handlebars.SafeString(link);
   }

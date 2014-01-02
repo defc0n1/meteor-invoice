@@ -63,10 +63,11 @@ Meteor.methods({
         return PurchaseInvoices.findOne({ key: parseInt(key) });
     },
     getInvoiceKeyByRecordNumber: function (number) {
-        // check(id, String);
-        // return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
         return PurchaseInvoices.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
     },
+    // getCreditnotaKeyByRecordNumber: function (number) {
+    //     return PurchaseCreditnotas.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
+    // },    
     getItemStats: function (number, startDate, endDate) {
         var match = { item_number: number };
         if (endDate) {

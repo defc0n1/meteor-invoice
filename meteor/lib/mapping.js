@@ -215,9 +215,9 @@ Mapping = {
     creditorEntries: {
         collection: 'CreditorEntries',
         //class: 'modal-edit',
-        paths: {
-            'Faktura': 'show/postedPurchaseinvoice/',
-            'Kreditnota': 'show/postedPurchasecreditnota/'
+        views: {
+            'Faktura': 'postedPurchaseinvoice',
+            'Kreditnota': 'postedPurchasecreditnota'
         },        
         table: [
             { header: 'Type', key: 'type' },
@@ -233,9 +233,9 @@ Mapping = {
     },
     deptorEntries: {
         collection: 'DeptorEntries',
-        paths: {
-            'Faktura': 'show/postedSalesinvoice/',
-            'Kreditnota': 'show/postedSalescreditnota/'
+        views: {
+            'Faktura': 'postedSalesinvoice',
+            'Kreditnota': 'postedSalescreditnota'
         },
         table: [
             { header: 'Type', key: 'type' },

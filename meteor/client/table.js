@@ -70,17 +70,16 @@ Template.table.events({
         }
     },
     'click .link': function(event) {
-        event.preventDefault();
         var type = Session.get('type');
-
+        
         if ( type.collection == 'CreditorEntries' ) {
-            console.log(this);
-            console.log(type);
-            Meteor.call('getInvoiceKeyByRecordNumber', this.elem.record_number, function (err, result) {
-                console.log(result);
+            event.preventDefault();
+            
+            var elem = this.elem;
+            Meteor.call('getInvoiceKeyByRecordNumber', elem.record_number, function (err, result) {
+                Router.go('show', { type: type.views[elem.type], key: result.key  });
             });
         }
-        // Router.go('show', { type: type.singleView, key: this.elem.key  });
     },
     'click .show-button': function(event) {
         var type = Session.get('type');
