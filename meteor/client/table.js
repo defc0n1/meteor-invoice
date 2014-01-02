@@ -69,9 +69,22 @@ Template.table.events({
             });
         }
     },
+    'click .link': function(event) {
+        event.preventDefault();
+        var type = Session.get('type');
+
+        if ( type.collection == 'CreditorEntries' ) {
+            console.log(this);
+            console.log(type);
+            Meteor.call('getInvoiceKeyByRecordNumber', this.elem.record_number, function (err, result) {
+                console.log(result);
+            });
+        }
+        // Router.go('show', { type: type.singleView, key: this.elem.key  });
+    },
     'click .show-button': function(event) {
         var type = Session.get('type');
-        Router.go('show', { type: type.singleView, key: this.elem._id.valueOf()  });
+        Router.go('show', { type: type.singleView, key: this.elem.key  });
     },
     'click .delete-button': function(event) {
         var id = this.elem._id;

@@ -13,7 +13,9 @@
     <tr>
         {{#each Prop 'type' 'table'}}
         <td>
-            {{ElementProp ../this this.key this.formatter this.path}}
+            {{#With elem=../this props=this}}
+            {{ElementProp elem props.key props.formatter props.isLink}}
+            {{/With}}
             {{#if this.buttons}}
             <div class="table-buttons btn-group">
                 {{#each this.buttons}}
