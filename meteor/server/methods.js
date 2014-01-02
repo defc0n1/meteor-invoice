@@ -36,9 +36,11 @@ Meteor.methods({
     ItemsSearch: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
     },    
-    getSalesInvoice: function (id) {
-        check(id, String);
-        return SalesInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getSalesInvoice: function (record_number) {
+        // check(id, String);
+        console.log(record_number);
+        return SalesInvoices.findOne({ record_number: record_number });
+        // return SalesInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
     },
     getSalesCreditnota: function (id) {
         check(id, String);

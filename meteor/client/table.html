@@ -13,7 +13,7 @@
     <tr>
         {{#each Prop 'type' 'table'}}
         <td>
-            {{ElementProp ../this this.key this.formatter}}
+            {{ElementProp ../this this.key this.formatter this.path}}
             {{#if this.buttons}}
             <div class="table-buttons btn-group">
                 {{#each this.buttons}}

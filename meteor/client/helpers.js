@@ -51,7 +51,16 @@ register('Element', function(arg) {
   // console.log(elem);
   return elem;
 });
-register('ElementProp', function(elem, prop, method) {
+register('ElementProp', function(elem, prop, method, path) {
+
+  console.log(elem);
+
+    if (path) {
+      var link = '<a href=/' + path + elem['key'] + '>' + elem[prop] + '</a>';
+      // var link = '<a href=/' + path + elem['_id']['_str'] + '>' + elem[prop] + '</a>';
+      return new Handlebars.SafeString(link);
+    }
+
     var res = '';
     if (window[method]) {
          res = window[method](elem[prop]);

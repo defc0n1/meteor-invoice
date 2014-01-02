@@ -201,7 +201,7 @@ Mapping = {
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
             { header: 'Løbenummer', key: 'key' },
             { header: 'Kreditor', key: 'creditor_number' },
-            { header: 'BilagsNr', key: 'record_number' },
+            { header: 'BilagsNr', key: 'record_number', path: 'show/postedSalesinvoice/' },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
             { header: '', key: '', buttons: [
                 { icon: 'wrench', classes: 'show-item-button' },
@@ -210,19 +210,21 @@ Mapping = {
     },
     deptorEntries: {
         collection: 'DeptorEntries',
+        singleView: 'postedSalesinvoice',
         //class: 'modal-edit',
         table: [
             { header: 'Type', key: 'type' },
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
             { header: 'Løbenummer', key: 'key' },
             { header: 'Debitor', key: 'deptor_number' },
-            { header: 'BilagsNr', key: 'record_number', link: true },
+            { header: 'BilagsNr', key: 'record_number', path: 'show/postedSalesinvoice/' },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
-            { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-item-button' },
+            { header: 'Send', key: '', buttons: [
+                { text: 'Vis', classes: ['show-button'] },
+
            ] },
         ],
-    },       
+    },   
     newSalesinvoice: {
         headerFields: [
             { header: 'Fakturanummer', key: 'key' },
