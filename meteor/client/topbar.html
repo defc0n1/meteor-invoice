@@ -7,14 +7,14 @@
         <ul class="nav navbar-nav">
             <li ><a href="{{this.path}}"></a></li>
             {{# each items}}
-            <li class="{{this.active}}"><a href="{{this.path}}">{{this.name}}</a></li>
+            <li class="{{this.active}}"><a href="{{this.path}}" id="{{this.name}}">{{this.name}}</a></li>
             {{/each}}
         </ul>
         <form class="navbar-form navbar-right" id="main-search" role="search">
             <div class="form-group">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" class="btn btn-default dropdown-toggle" id="logout-dropdown" data-toggle="dropdown">
                             {{currentUser.username}} <span class="caret"></span>
                         </button>
                         <button disabled class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>

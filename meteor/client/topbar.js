@@ -1,16 +1,18 @@
 "use strict";
 Template.topbar.events({
     'keyup #search-query': function(event) {
+        console.log('test1')
         var type = Session.get('type');
-        Session.set(type.collection + 'query', event.target.value);
-        Session.set(type.collection + 'skip', 0);
+        var collection = type.subCollection || type.collection;
+        Session.set(collection + 'query', event.target.value);
+        Session.set(collection + 'skip', 0);
     },
     'click #search-query': function(event) {
         if (event.target.value === '') {
-            console.log('test')
+            var collection = type.subCollection || type.collection;
             var type = Session.get('type');
-            Session.set(type.collection + 'query', '');
-            Session.set(type.collection + 'skip', 0);
+            Session.set(collection + 'query', '');
+            Session.set(collection + 'skip', 0);
         }
     },
     'click #logout': function () {
@@ -34,7 +36,7 @@ Template.topbar.items = function () {
         { name: 'Køb', path: Router.routes['main'].path({ root: 'purchase', type: 'postedPurchaseinvoices' }) },
         { name: 'Kontaker', path: Router.routes['main'].path({ root: 'contacts', type: 'deptors' }) },
         { name: 'Varer', path: Router.routes['main'].path({ root: 'items', type: 'items' }) },
-        { name: 'Posteringer', path: Router.routes['main'].path({ root: 'entries', type: 'entries' }) },
+        { name: 'Posteringer', path: Router.routes['main'].path({ root: 'entries', type: 'itemEntries' }) },
         //{ name: 'Statistik', path: Router.routes['sale'].path({ type: '' }) },
         //{ name: 'Bogføring', path: Router.routes['sale'].path({ type: '' }) },
     ];
