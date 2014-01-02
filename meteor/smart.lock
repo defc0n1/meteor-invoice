@@ -12,7 +12,8 @@
       "when": {},
       "mongodb-server-aggregation": {},
       "handlebars-server": {},
-      "bootstrap-datepicker2": {}
+      "bootstrap-datepicker2": {},
+      "mocha-web": {}
     },
     "packages": {
       "bootstrap-3": {
@@ -69,6 +70,11 @@
         "git": "https://github.com/deepwell/meteor-bootstrap-datepicker.git",
         "tag": "v1.2.0",
         "commit": "b7de18a7cc651ea665cda75048663f90d1a11d10"
+      },
+      "mocha-web": {
+        "git": "https://github.com/mad-eye/meteor-mocha-web.git",
+        "tag": "v0.1.5",
+        "commit": "76583213dbea2c5459bcf5197a2267b71877b99c"
       }
     }
   }

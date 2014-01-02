@@ -78,13 +78,16 @@ def mkdirs():
 def bundle():
     with cd(os.path.join(env.app_path, env.meteor)):
         run('pwd')
-        run('meteor bundle --debug ../deploy/out.tgz')
+        run('meteor bundle ../deploy/out.tgz')
         run('tar -xzf ../deploy/out.tgz -C ../deploy/')
         run('rm ../deploy/out.tgz')
 
 def copy():
     with cd(env.app_path):
         run('cp deploy/monit.conf ../monit/invoice.conf')
+
+def stage_db():
+    run('''mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')"''')
 
 
 def clone():
@@ -103,6 +106,7 @@ def pull():
 def setup():
     mkdirs()
     clone()
+    install_deps()
 
 def deploy():
     pull()

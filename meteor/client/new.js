@@ -1,34 +1,34 @@
 Template.new.created = function () {
+};
 
+Template.new.newitem = function () {
+    return SalesInvoices.findOne({ key: parseInt(Router.current().params.key ) });
 };
 
 Template.new.rendered = function () {
     Session.set('type', Mapping['newSalesinvoice']);
-    // SalesInvoices.upsert( {_id: 99999}, {$set: { lines: [] } } );
-    SalesInvoices.upsert( {_id: 99999}, { $set: { lines: [] } }, function(err, res) {
-        if(err){throw err};
-        console.log(res);
-    });    
-    var elem = SalesInvoices.findOne( {_id: 99999} );
+    var elem = SalesInvoices.findOne({ key: parseInt(Router.current().params.key) });
     Session.set('element', elem);
-
-    var query = SalesInvoices.find( {_id: 99999} );
+    // attach an observed handler and update the
+    // editable value on change
+    var query = SalesInvoices.find({ key: parseInt(Router.current().params.key) });
     var handle = query.observeChanges({changed: function(id, fields) {
-        console.log(id, fields);
+        _.each(fields, function (v, k) {
+            // go through every item line in case that property has changed
+            if (k === 'lines') {
+                _.each(fields.lines, function (line, index) {
+                    // update each property of the line
+                    _.each(line, function (value, key) {
+                        $('#' + key + '-' + index).editable('setValue', value);
+                    });
+                });
+            }
+            else {
+                $('#' + k).editable('setValue', v);
+            }
+        });
+
     }});
-
-    // Deps.autorun(function() {
-    //     var elem = Session.get('element');
-    //     console.log(elem);
-
-    //     if (elem.lines) {
-    //         console.log('something');
-    //         elem.lines.forEach(function(item, index) {
-    //             $('#info-' + index).editable('setValue', item.info);
-    //             $('#info-' + index).editable('setValue', item.info);
-    //         });
-    //     }
-    // });
 
     $("#deptor-select").select2({
         placeholder: 'Kundenummer eller navn',
@@ -37,7 +37,7 @@ Template.new.rendered = function () {
         query: function (query) {
             Meteor.call('DeptorsSearch', query.term, function (err, res) {
                 var vals = [];
-                res.forEach( function (v) {
+                res.forEach(function (v) {
                     var text = v.key + ', ' + v.name + ', ' + v.address + ', ' + v.city + ', ' + v.phone;
                     vals.push({text: text, id: v.key, data: v});
                 });
@@ -51,9 +51,7 @@ Template.new.rendered = function () {
         minimumInputLength: 3,
         containerCss: { width: '600px' },
         query: function (query) {
-            console.log('something');
             Meteor.call('ItemsSearch', query.term, function (err, res) {
-                console.log(res);
                 var vals = [];
                 res.forEach( function (v) {
                     var text = v.key + ', ' + v.name + ', ' + v.cost_price + ', ' + v.group + ', ' + v.ean;
@@ -67,33 +65,30 @@ Template.new.rendered = function () {
     if (!Template.new.attached) {
         Template.new.attached = true;
 
-
         $("#deptor-select").on('change', function (val) {
-            props = val.added.data;
+            var type = Session.get('type');
             var elem = Session.get('element');
-            elem.address = props.address;
-            elem.customer_number = props.key;
-            $('#customer_number').editable('setValue', props.key, true);
+            props = val.added.data;
+
+            var update = {};
+            _.each(type.headerFields, function (map) {
+                if (!map.fixed) {
+                    update[map.key] = props[map.from];
+                }
+            });
+            var res = SalesInvoices.update({ _id: elem._id }, { $set: update });
         });
-        
+
         $("#item-select").on('change', function (val) {
             props = val.added.data;
             var elem = Session.get('element');
-
-            if (!elem.lines) {
-                elem.lines = [];
-            }
-
             var update = {
                 quantity: 1,
                 info: props.name,
                 item_number: props.key,
                 price: props.price
             };
-
-            Session.set('element', elem);
-
-            var res = SalesInvoices.update({ _id: 99999 }, { $push: { lines: update } }, function (err, msg) {
+            var res = SalesInvoices.update({ _id: elem._id }, { $push: { lines: update } }, function (err, msg) {
                 console.log(err, msg);
             });
         });
@@ -112,25 +107,24 @@ Template.new.rendered = function () {
             var key = parts[0];
             var id = parts[1];
 
-            if (field === 'key') {
-                Messages.insert({ message: 'Nøglen kan ikke ændres på nuværende tidspunkt.' });
-                return;
+            update[key] = newValue;
+
+            console.log(update);
+
+
+            var res = SalesInvoices.update({ _id: elem.id }, { $set: update });
+        },
+        display: function (value) {
+            var formatter = $(this).attr('data-formatter');
+            // call the formatter function if defined
+            if (formatter) {
+                var func = window[formatter];
+                $(this).html(func(value));
             }
-            elem.lines[id][key] = newValue;
-            update[field] = newValue;
-
-            console.log(elem.lines[id][key]);
-
-            Session.set('element', elem);
-
-            var res = SalesInvoices.update({ _id: 99999 }, { $set: update }, function (err, msg) {
-                console.log(err, msg);
-                if (err) {
-                    var selector = '#' + field;
-                    $(selector).editable('setValue', selected[field] , true);
-                    Messages.insert({ message: 'Nøgle eksisterer allerede' });
-                }
-            });
+            //ootherwise, just insert the new value
+            else{
+                $(this).html(value);
+            }
         },
     });
 

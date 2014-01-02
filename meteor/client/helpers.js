@@ -15,13 +15,15 @@ var register = function(name, func) {
     Handlebars.registerHelper(name, func);
 
 }
-register('countText', function () {
-    var count = Session.get('itemCount');
+register('CountText', function () {
+    var type = Session.get('type');
+    var collection = type.subCollection || type.collection;
+    var count = Session.get(collection + 'itemCount');
     if (count < incrementSize) {
         return 'Viser alle';
     }
     else {
-        var start = Session.get('skip') + 1;
+        var start = Session.get(collection + 'skip', 0) + 1;
         return 'Viser ' + start + ' til ' +
         Math.min((start + incrementSize - 1), count)  +
         ' af ' + count;
@@ -38,18 +40,14 @@ register('Session', function(arg) {
 register('Shorten', function(arg) {
     return Session.get('element');
 });
-register('Element', function(arg) {
-  var elem = Session.get('element');
-
-  // TODO: refactor into generic array index
-  if (elem && elem.lines) {
-    elem.lines = _.map(elem.lines, function (item, index) {
+register('ListIndex', function (arg) {
+    return _.map(arg, function (item, index) {
       item.index = index;
       return item;
     });
-  }
-  // console.log(elem);
-  return elem;
+});
+register('Element', function(arg) {
+  return Session.get('element');
 });
 register('ElementProp', function(elem, prop, method, path) {
 
@@ -75,8 +73,9 @@ register('ElementProp', function(elem, prop, method, path) {
     }
     return res;
 });
-register('Prop', function(arg) {
-    var args = Array.prototype.slice.call(arguments).slice(1, arguments.length - 1);
+register('Prop', function() {
+    var args = _.initial(arguments);
+    var args = _.rest(args);
     var elem = Session.get(arguments[0]);
     args.forEach(function (arg, i) {
         elem = elem[arg];

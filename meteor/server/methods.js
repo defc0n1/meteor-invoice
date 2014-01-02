@@ -1,58 +1,71 @@
 "use strict";
 Meteor.methods({
-    SalesInvoices: function (query, merger) {
-        return FilterQuery(SalesInvoices, SalesInvoiceSearchFields, query, merger).count();
+    GetNextSequence: function (name) {
+        var next = -1;
+        for( var i = 0; i <= 10; i++) {
+            var cursor = SalesInvoices.find({}, { fields: { key: 1 } , sort: { key: -1 }, limit: 1 })
+            next = cursor.fetch()[0].key + 1;
+            try{
+                SalesInvoices.insert( {_id: new Meteor.Collection.ObjectID(), key: next, lines: [] });
+                break;
+            }
+            catch(err) {
+                console.log(err);
+            }
+        }
+        return next;
     },
-    SalesCreditnotas: function (query, merger) {
-        return FilterQuery(SalesCreditnotas, SalesCreditnotaSearchFields, query, merger).count();
-    },
-    PurchaseInvoices: function (query, merger) {
-        return FilterQuery(PurchaseInvoices, PurchaseInvoiceSearchFields, query, merger).count();
-    },
-    PurchaseCreditnotas: function (query, merger) {
-        return FilterQuery(PurchaseCreditnotas, PurchaseCreditnotaSearchFields, query, merger).count();
-    },
-    Deptors: function (query, merger) {
-        return FilterQuery(Deptors, DeptorSearchFields, query, merger).count();
+    Count: function (collection, query, merger) {
+        var filter = {}
+        if (collection == 'OpenSalesInvoices') {
+            collection = 'SalesInvoices';
+            filter = { posting_date: { $exists: false } };
+        }
+        else if (collection == 'PostedSalesInvoices') {
+            collection = 'SalesInvoices';
+            filter = { posting_date: { $exists: true } };
+        }
+        return FilterQuery(global[collection], global[collection + 'SearchFields'], query, _.defaults(merger, { filter: filter })).count();
     },
     DeptorsSearch: function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
     },
-    Creditors: function (query, merger) {
-        return FilterQuery(Creditors, CreditorSearchFields, query, merger).count();
-    },
-    Items: function (query, merger) {
-        return FilterQuery(Items, ItemSearchFields, query, merger).count();
-    },
     ItemEntries: function (query, merger) {
         return FilterQuery(ItemEntries, ItemEntriesSearchFields, query, merger).count();
-    },  
+    },
     CreditorEntries: function (query, merger) {
         return FilterQuery(CreditorEntries, CreditorEntriesSearchFields, query, merger).count();
     },
     DeptorEntries: function (query, merger) {
         return FilterQuery(DeptorEntries, DeptorEntriesSearchFields, query, merger).count();
-    },       
+    },
     ItemsSearch: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
     },    
-    getSalesInvoice: function (record_number) {
+    getSalesInvoice: function (key) {
         // check(id, String);
-        console.log(record_number);
-        return SalesInvoices.findOne({ record_number: record_number });
         // return SalesInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+        return SalesInvoices.findOne({ key: parseInt(key) });
     },
-    getSalesCreditnota: function (id) {
-        check(id, String);
-        return SalesCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getSalesCreditnota: function (key) {
+        // check(id, String);
+        // return SalesCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+        return SalesCreditnotas.findOne({ key: parseInt(key) });
     },
-    getPurchaseCreditnota: function (id) {
-        check(id, String);
-        return PurchaseCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getPurchaseCreditnota: function (key) {
+        // check(id, String);
+        // return PurchaseCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+        return PurchaseCreditnotas.findOne({ key: parseInt(key) });
     },
-    getPurchaseInvoice: function (id) {
-        check(id, String);
-        return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getPurchaseInvoice: function (key) {
+        // check(id, String);
+        // return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+        return PurchaseInvoices.findOne({ key: parseInt(key) });
+    },
+    getInvoiceKeyByRecordNumber: function (number) {
+        // check(id, String);
+        // return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+        return PurchaseInvoices.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
     },
     getItemStats: function (number, startDate, endDate) {
         var match = { item_number: number };

@@ -7,7 +7,8 @@ Template.table.rendered = function () {
         Session.set('type', type);
     }
     Session.set('modalFields', type.modalFields);
-    Session.setDefault(type.collection + 'skip', 0);
+    var col = type.subCollection || type.collection 
+    Session.setDefault(col + 'skip', 0);
     if (doit) {
         Session.set('selected', {});
         $('#myModal').modal({});
@@ -19,12 +20,13 @@ Template.table.created = function () {
 }
 Template.table.items = function () {
     var type = Session.get('type');
-    return window[type.collection].find({}, { sort: { key: -1 }}); // .fetch();
+    return window[type.collection].find(type.filter || {}, { sort: { key: -1 }}); // .fetch();
 };
 
 changePage = function (count) {
-    var collection = Session.get('type').collection;
-    Session.set(collection + 'skip', Session.get(collection + 'skip') + count);
+    var collection = Session.get('type').subCollection || Session.get('type').collection;
+    Session.set(collection + 'skip',
+            Session.get(collection + 'skip') + count);
 }
 Template.table.events({
     'click .edi-button': function(event) {
@@ -69,7 +71,21 @@ Template.table.events({
     },
     'click .show-button': function(event) {
         var type = Session.get('type');
-        Router.go('show', { type: type.singleView , key: this.elem._id.valueOf()  });
+        Router.go('show', { type: type.singleView, key: this.elem._id.valueOf()  });
+    },
+    'click .delete-button': function(event) {
+        var id = this.elem._id;
+        bootbox.confirm('Vil du slette denne faktura?', function (res) {
+            if (res) {
+                window[Session.get('type').collection].remove({ _id: id });
+                DoCount();
+            }
+        });
+
+    },
+    'click .edit-button': function(event) {
+        var type = Session.get('type');
+        Router.go('edit', { type: Router.current().params.type, key: this.elem.key  });
     },
     //'click .modal-edit tbody>tr': function(event) {
         //Session.set('selected', this);
@@ -145,26 +161,15 @@ Template.table.helpers({
         return isProcessing ? 'display: inherit' : 'display:none';
     },
     showPrevious: function() {
-        var collection = Session.get('type').collection;
+        var type = Session.get('type');
+        var collection = type.subCollection || type.collection;
         var disable = Session.equals(collection + 'skip', 0);
         return disable ? 'disabled' : '';
     },
     showNext: function() {
-        var collection = Session.get('type').collection;
-        var disable = Session.get(collection + 'skip') + incrementSize >= Session.get('itemCount');
+        var type = Session.get('type');
+        var collection = type.subCollection || type.collection;
+        var disable = Session.get(collection + 'skip') + incrementSize >= Session.get(collection + 'itemCount');
         return disable ? 'disabled' : '';
-    },
-    countText: function () {
-        var collection = Session.get('type').collection;
-        var count = Session.get('itemCount');
-        if (count < incrementSize) {
-            return 'Viser alle';
-        }
-        else {
-            var start = Session.get(collection + 'skip', 0) + 1;
-            return 'Viser ' + start + ' til ' +
-                Math.min((start + incrementSize - 1), count)  +
-                ' af ' + count;
-        }
     },
 });

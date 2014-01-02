@@ -2,7 +2,7 @@ Template.posted.created = function () {
 };
 Template.posted.rendered = function () {
     log.info(Session.get('type'), 'test');
-    Meteor.call(Session.get('type').getSingle, Session.get('record_number'), function (err, result) {
+    Meteor.call(Session.get('type').getSingle, Session.get('key'), function (err, result) {
         Session.set('element', result);
         var total = 0;
         result.lines.forEach(function (line) {
