@@ -65,9 +65,9 @@ Meteor.methods({
     getInvoiceKeyByRecordNumber: function (number) {
         return PurchaseInvoices.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
     },
-    // getCreditnotaKeyByRecordNumber: function (number) {
-    //     return PurchaseCreditnotas.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
-    // },    
+    getCreditnotaKeyByRecordNumber: function (number) {
+        return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
+    },    
     getItemStats: function (number, startDate, endDate) {
         var match = { item_number: number };
         if (endDate) {

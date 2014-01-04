@@ -76,8 +76,11 @@ Template.table.events({
             event.preventDefault();
             
             var elem = this.elem;
-            Meteor.call('getInvoiceKeyByRecordNumber', elem.record_number, function (err, result) {
-                Router.go('show', { type: type.views[elem.type], key: result.key  });
+            var view = type.views[elem.type];
+            console.log(view);
+            
+            Meteor.call(view.method, elem.record_number, function (err, result) {
+                Router.go('show', { type: view.path, key: result.key  });
             });
         }
     },

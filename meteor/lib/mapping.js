@@ -216,9 +216,15 @@ Mapping = {
         collection: 'CreditorEntries',
         //class: 'modal-edit',
         views: {
-            'Faktura': 'postedPurchaseinvoice',
-            'Kreditnota': 'postedPurchasecreditnota'
-        },        
+            'Faktura': {
+                path: 'postedPurchaseinvoice',
+                method: 'getInvoiceKeyByRecordNumber'
+            },
+            'Kreditnota': {
+                path: 'postedPurchasecreditnota',
+                method: 'getCreditnotaKeyByRecordNumber'
+            }
+        },
         table: [
             { header: 'Type', key: 'type' },
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
@@ -234,9 +240,13 @@ Mapping = {
     deptorEntries: {
         collection: 'DeptorEntries',
         views: {
-            'Faktura': 'postedSalesinvoice',
-            'Kreditnota': 'postedSalescreditnota'
-        },
+            'Faktura': {
+                path: 'postedSalesinvoice'
+            },
+            'Kreditnota': {
+                path: 'postedSalescreditnota'
+            }
+        },        
         table: [
             { header: 'Type', key: 'type' },
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
