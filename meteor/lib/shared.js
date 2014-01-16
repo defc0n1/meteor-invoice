@@ -6,6 +6,7 @@ PurchaseCreditnotas = new Meteor.Collection('purchasecreditnotas');
 Deptors = new Meteor.Collection('deptors');
 Creditors = new Meteor.Collection('creditors');
 Alerts = new Meteor.Collection('alerts');
+TradeAccounts = new Meteor.Collection('accounts');
 Items = new Meteor.Collection('items');
 ItemEntries = new Meteor.Collection('itementries');
 CreditorEntries = new Meteor.Collection('creditorentries');

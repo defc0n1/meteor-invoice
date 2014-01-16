@@ -2,6 +2,10 @@ Messages = new Meteor.Collection(null);
 incrementSize = 10;
 Session.set('limit', incrementSize);
 
+
+Meteor.subscribe('TradeAccounts');
+Meteor.subscribe('alertChannel');
+
 var collections = [
     'Deptors',
     'Creditors',
@@ -38,7 +42,6 @@ Deps.autorun(function() {
             });
 
     });
-    Meteor.subscribe('alertChannel');
 });
 
 

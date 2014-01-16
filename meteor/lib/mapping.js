@@ -52,7 +52,7 @@ Mapping = {
     postedSalesinvoices: {
         collection: 'SalesInvoices',
         subCollection: 'PostedSalesInvoices',
-        filter: { $or: [ { posting_date: { $exists: true } } ] }, 
+        filter: { $or: [ { posting_date: { $exists: true } } ] },
         singleView: 'postedSalesinvoice',
         table: [
             { header: 'Nummer', key: 'key' },
@@ -71,7 +71,7 @@ Mapping = {
         collection: 'SalesInvoices',
         subCollection: 'OpenSalesInvoices',
         singleView: 'openSalesinvoice',
-        filter: { $or: [ { posting_date: { $exists: false } }, 
+        filter: { $or: [ { posting_date: { $exists: false } },
             { posting_date: null }, { posting_date: '' } ] },
         table: [
             { header: 'Nummer', key: 'key' },
@@ -211,7 +211,7 @@ Mapping = {
                 { icon: 'wrench', classes: 'show-item-button' },
            ] },
         ],
-    },    
+    },
     creditorEntries: {
         collection: 'CreditorEntries',
         //class: 'modal-edit',
@@ -241,7 +241,24 @@ Mapping = {
                 { icon: 'wrench', classes: 'show-item-button' },
            ] },
         ],
-    },       
+    },
+    accounts: {
+        collection: 'TradeAccounts',
+        //class: 'modal-edit',
+        table: [
+            { header: 'Nummer', key: 'key' },
+            { header: 'Navn', key: 'name' },
+            { header: 'Type', key: 'type' },
+            { header: 'Art', key: 'art' },
+            { header: 'Moms kode', key: 'tax_code' },
+            //{ header: 'Debitor', key: 'deptor_number' },
+            //{ header: 'BilagsNr', key: 'record_number', link: true },
+            //{ header: 'Dato', key: 'date', formatter: 'GetDate' },
+            //{ header: '', key: '', buttons: [
+                //{ icon: 'wrench', classes: 'show-item-button' },
+           //] },
+        ],
+    },
     newSalesinvoice: {
         modalText: 'Salgsfakturanummer',
         headerFields: [
@@ -257,7 +274,7 @@ Mapping = {
             { from: 'price', key: 'price', formatter: 'GetPrice' },
         ],
         create: function () {
-            Meteor.call('GetNextSequence', 'salesinvoice', 
+            Meteor.call('GetNextSequence', 'salesinvoice',
                     function (err, sequence) {
                         Router.go('edit', { type: Router.current().params.type, key: sequence });
                     });

@@ -84,6 +84,9 @@ Meteor.publish('CreditorEntries', function (limit, skip, query, filter){
     return FilterQuery(CreditorEntries, CreditorEntriesSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
-Meteor.publish('alertChannel', function (user){
+Meteor.publish('alertChannel', function (){
     return Alerts.find();
+});
+Meteor.publish('TradeAccounts', function (){
+    return TradeAccounts.find();
 });
