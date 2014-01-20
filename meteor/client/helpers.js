@@ -51,8 +51,6 @@ register('Element', function(arg) {
 });
 register('ElementProp', function(elem, prop, method, isLink) {
 
-  // console.log(elem);
-
   if (isLink) {
     var view = Session.get('type').views[elem.type];
     

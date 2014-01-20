@@ -77,7 +77,6 @@ Template.table.events({
             
             var elem = this.elem;
             var view = type.views[elem.type];
-            console.log(view);
             
             Meteor.call(view.method, elem.record_number, function (err, result) {
                 Router.go('show', { type: view.path, key: result.key  });

@@ -43,23 +43,15 @@ Meteor.methods({
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
     },    
     getSalesInvoice: function (key) {
-        // check(id, String);
-        // return SalesInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
         return SalesInvoices.findOne({ key: parseInt(key) });
     },
     getSalesCreditnota: function (key) {
-        // check(id, String);
-        // return SalesCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
         return SalesCreditnotas.findOne({ key: parseInt(key) });
     },
     getPurchaseCreditnota: function (key) {
-        // check(id, String);
-        // return PurchaseCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
         return PurchaseCreditnotas.findOne({ key: parseInt(key) });
     },
     getPurchaseInvoice: function (key) {
-        // check(id, String);
-        // return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
         return PurchaseInvoices.findOne({ key: parseInt(key) });
     },
     getInvoiceKeyByRecordNumber: function (number) {
