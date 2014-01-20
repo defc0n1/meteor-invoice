@@ -11,6 +11,7 @@ Items = new Meteor.Collection('items');
 ItemEntries = new Meteor.Collection('itementries');
 CreditorEntries = new Meteor.Collection('creditorentries');
 DeptorEntries = new Meteor.Collection('deptorentries');
+FinanceEntries = new Meteor.Collection('financeentries');
 
 GetDate = function (date) {
     if (date) {

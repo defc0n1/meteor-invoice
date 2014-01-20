@@ -37,6 +37,7 @@ Template.sidebar.items = function () {
             { name: 'Vare', path: Router.routes.main.path({ root: 'entries', type:  'itemEntries'  }) },
             { name: 'Kreditor', path: Router.routes.main.path({ root: 'entries', type:  'creditorEntries'  }) },
             { name: 'Debitor', path: Router.routes.main.path({ root: 'entries', type:  'deptorEntries'  }) },
+            { name: 'Finans', path: Router.routes.main.path({ root: 'entries', type:  'financeEntries'  }) },
         ],
         edit: [
             { name: 'Bogfør', path: Router.routes.main.path({ root: 'sale', type:  'openSalesinvoices' }) },

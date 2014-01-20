@@ -13,6 +13,7 @@ var collections = [
     'ItemEntries',
     'DeptorEntries',
     'CreditorEntries',
+    'FinanceEntries',
     'OpenSalesInvoices',
     'PostedSalesInvoices',
     'SalesCreditnotas',

@@ -212,6 +212,21 @@ Mapping = {
            ] },
         ],
     },
+    financeEntries: {
+        collection: 'FinanceEntries',
+        table: [
+            { header: 'Type', key: 'type' },
+            { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
+            { header: 'Løbenummer', key: 'key' },
+            { header: 'Kontonummer', key: 'account_number' },
+            { header: 'Modkonto', key: 'offsetting_account' },
+            { header: 'BilagsNr', key: 'record_number' },
+            { header: 'Dato', key: 'date', formatter: 'GetDate' },
+            { header: '', key: '', buttons: [
+                { icon: 'wrench', classes: 'show-item-button' },
+           ] },
+        ],
+    },
     creditorEntries: {
         collection: 'CreditorEntries',
         //class: 'modal-edit',
@@ -221,6 +236,7 @@ Mapping = {
             { header: 'Løbenummer', key: 'key' },
             { header: 'Kreditor', key: 'creditor_number' },
             { header: 'BilagsNr', key: 'record_number' },
+            { header: 'Bogf.gr', key: 'posting_group' },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
             { header: '', key: '', buttons: [
                 { icon: 'wrench', classes: 'show-item-button' },
