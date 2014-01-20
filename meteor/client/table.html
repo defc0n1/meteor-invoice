@@ -29,6 +29,19 @@
                 {{/each}}
             </div>
             {{/if}}
+            {{#if this.options}}
+            <div class="dropdown">
+                <!-- removed class sr-only which made the button hidden...? -->
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">Posteringer<span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                    {{#each this.options}}
+                    {{#With elem=../../../this option=this}}
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{option.text}}</a></li>
+                    {{/With}}
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
         </td>
         {{/each}}
         <td>

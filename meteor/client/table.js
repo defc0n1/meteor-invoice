@@ -140,6 +140,10 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
+    'click .dropdown-menu li': function (event) {
+        var elem = this.elem;
+        console.log(elem);
+    },    
     'click #next-page': function(event) {
         changePage(incrementSize);
     },

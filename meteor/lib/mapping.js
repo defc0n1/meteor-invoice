@@ -65,6 +65,11 @@ Mapping = {
                 { text: 'Vis', classes: ['show-button'] },
 
            ] },
+           { header: 'Posteringer', key: '', options: [
+                { text: 'Vareposteringer' },
+                { text: 'Debitorposteringer' },
+                { text: 'Finansposteringer' },
+           ] },
         ],
     },
     openSalesinvoices: {
