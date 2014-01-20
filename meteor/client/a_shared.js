@@ -2,6 +2,10 @@ Messages = new Meteor.Collection(null);
 incrementSize = 10;
 Session.set('limit', incrementSize);
 
+
+Meteor.subscribe('TradeAccounts');
+Meteor.subscribe('alertChannel');
+
 var collections = [
     'Deptors',
     'Creditors',
@@ -9,6 +13,7 @@ var collections = [
     'ItemEntries',
     'DeptorEntries',
     'CreditorEntries',
+    'FinanceEntries',
     'OpenSalesInvoices',
     'PostedSalesInvoices',
     'SalesCreditnotas',
@@ -38,7 +43,6 @@ Deps.autorun(function() {
             });
 
     });
-    Meteor.subscribe('alertChannel');
 });
 
 
