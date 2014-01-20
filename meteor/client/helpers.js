@@ -49,20 +49,31 @@ register('ListIndex', function (arg) {
 register('Element', function(arg) {
   return Session.get('element');
 });
-register('ElementProp', function(elem, prop, method) {
-    var res = '';
-    if (window[method]) {
-         res = window[method](elem[prop]);
+register('ElementProp', function(elem, prop, method, isLink) {
+
+  if (isLink) {
+    var view = Session.get('type').views[elem.type];
+    
+    if (view) {
+      var path = 'show/' + Session.get('type').views[elem.type].path + '/' + elem['record_number'];
+      var link = '<a class="link", href=/' + path + '>' + elem[prop] + '</a>';
+      return new Handlebars.SafeString(link);
     }
-    else{
-        res = elem[prop];
-    }
-    if (res && res.length > TableMaxLength) {
-        var shortString = res.substr(0, TableMaxLength - 2) + '..';
-        var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
-        return new Handlebars.SafeString(link);
-    }
-    return res;
+  }
+
+  var res = '';
+  if (window[method]) {
+       res = window[method](elem[prop]);
+  }
+  else{
+      res = elem[prop];
+  }
+  if (res && res.length > TableMaxLength) {
+      var shortString = res.substr(0, TableMaxLength - 2) + '..';
+      var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
+      return new Handlebars.SafeString(link);
+  }
+  return res;
 });
 register('Prop', function() {
     var args = _.initial(arguments);

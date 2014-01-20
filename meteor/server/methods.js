@@ -41,23 +41,25 @@ Meteor.methods({
     },
     ItemsSearch: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
+    },    
+    getSalesInvoice: function (key) {
+        return SalesInvoices.findOne({ key: parseInt(key) });
     },
-    getSalesInvoice: function (id) {
-        check(id, String);
-        return SalesInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getSalesCreditnota: function (key) {
+        return SalesCreditnotas.findOne({ key: parseInt(key) });
     },
-    getSalesCreditnota: function (id) {
-        check(id, String);
-        return SalesCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getPurchaseCreditnota: function (key) {
+        return PurchaseCreditnotas.findOne({ key: parseInt(key) });
     },
-    getPurchaseCreditnota: function (id) {
-        check(id, String);
-        return PurchaseCreditnotas.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getPurchaseInvoice: function (key) {
+        return PurchaseInvoices.findOne({ key: parseInt(key) });
     },
-    getPurchaseInvoice: function (id) {
-        check(id, String);
-        return PurchaseInvoices.findOne({ _id: new Meteor.Collection.ObjectID(id) });
+    getInvoiceKeyByRecordNumber: function (number) {
+        return PurchaseInvoices.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
     },
+    getCreditnotaKeyByRecordNumber: function (number) {
+        return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
+    },    
     getItemStats: function (number, startDate, endDate) {
         var match = { item_number: number };
         if (endDate) {

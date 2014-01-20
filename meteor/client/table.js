@@ -69,9 +69,23 @@ Template.table.events({
             });
         }
     },
+    'click .link': function(event) {
+        var type = Session.get('type');
+        
+        if ( type.collection == 'CreditorEntries' ) {
+            event.preventDefault();
+            
+            var elem = this.elem;
+            var view = type.views[elem.type];
+            
+            Meteor.call(view.method, elem.record_number, function (err, result) {
+                Router.go('show', { type: view.path, key: result.key  });
+            });
+        }
+    },
     'click .show-button': function(event) {
         var type = Session.get('type');
-        Router.go('show', { type: type.singleView, key: this.elem._id.valueOf()  });
+        Router.go('show', { type: type.singleView, key: this.elem.key  });
     },
     'click .delete-button': function(event) {
         var id = this.elem._id;

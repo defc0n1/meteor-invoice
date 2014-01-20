@@ -215,12 +215,22 @@ Mapping = {
     creditorEntries: {
         collection: 'CreditorEntries',
         //class: 'modal-edit',
+        views: {
+            'Faktura': {
+                path: 'postedPurchaseinvoice',
+                method: 'getInvoiceKeyByRecordNumber'
+            },
+            'Kreditnota': {
+                path: 'postedPurchasecreditnota',
+                method: 'getCreditnotaKeyByRecordNumber'
+            }
+        },
         table: [
             { header: 'Type', key: 'type' },
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
             { header: 'Løbenummer', key: 'key' },
             { header: 'Kreditor', key: 'creditor_number' },
-            { header: 'BilagsNr', key: 'record_number' },
+            { header: 'BilagsNr', key: 'record_number', isLink: true },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
             { header: '', key: '', buttons: [
                 { icon: 'wrench', classes: 'show-item-button' },
@@ -229,19 +239,27 @@ Mapping = {
     },
     deptorEntries: {
         collection: 'DeptorEntries',
-        //class: 'modal-edit',
+        views: {
+            'Faktura': {
+                path: 'postedSalesinvoice'
+            },
+            'Kreditnota': {
+                path: 'postedSalescreditnota'
+            }
+        },        
         table: [
             { header: 'Type', key: 'type' },
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
             { header: 'Løbenummer', key: 'key' },
             { header: 'Debitor', key: 'deptor_number' },
-            { header: 'BilagsNr', key: 'record_number', link: true },
+            { header: 'BilagsNr', key: 'record_number', isLink: true },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
-            { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-item-button' },
+            { header: 'Send', key: '', buttons: [
+                { text: 'Vis', classes: ['show-button'] },
+
            ] },
         ],
-    },       
+    },   
     newSalesinvoice: {
         modalText: 'Salgsfakturanummer',
         headerFields: [
