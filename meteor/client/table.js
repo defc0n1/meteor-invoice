@@ -1,23 +1,23 @@
 Template.table.rendered = function () {
     var type = Session.get('type');
-    var doit = false
+    var doit = false;
     if (type.new) {
-        doit = true
+        doit = true;
         type = type.background;
         Session.set('type', type);
     }
     Session.set('modalFields', type.modalFields);
-    var col = type.subCollection || type.collection 
+    var col = type.subCollection || type.collection;
     Session.setDefault(col + 'skip', 0);
     if (doit) {
         Session.set('selected', {});
         $('#myModal').modal({});
     }
     $('.table-tooltip').tooltip();
-}
+};
 
 Template.table.created = function () {
-}
+};
 Template.table.items = function () {
     var type = Session.get('type');
     return window[type.collection].find(type.filter || {}, { sort: { key: -1 }}); // .fetch();
@@ -27,7 +27,7 @@ changePage = function (count) {
     var collection = Session.get('type').subCollection || Session.get('type').collection;
     Session.set(collection + 'skip',
             Session.get(collection + 'skip') + count);
-}
+};
 Template.table.events({
     'click .edi-button': function(event) {
         // if already sent, we ask if user would like to resend
@@ -71,17 +71,21 @@ Template.table.events({
     },
     'click .link': function(event) {
         var type = Session.get('type');
-        
+
         if ( type.collection == 'CreditorEntries' ) {
             event.preventDefault();
-            
+
             var elem = this.elem;
             var view = type.views[elem.type];
-            
+
             Meteor.call(view.method, elem.record_number, function (err, result) {
                 Router.go('show', { type: view.path, key: result.key  });
             });
         }
+    },
+    'click .goto-dropdown li': function (event) {
+        console.log(this);
+        Router.go('dynamic', { type: this.mapping, key: this.elem.key });
     },
     'click .show-button': function(event) {
         var type = Session.get('type');
@@ -95,7 +99,6 @@ Template.table.events({
                 DoCount();
             }
         });
-
     },
     'click .edit-button': function(event) {
         var type = Session.get('type');
@@ -140,10 +143,6 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
-    'click .dropdown-menu li': function (event) {
-        var elem = this.elem;
-        console.log(elem);
-    },    
     'click #next-page': function(event) {
         changePage(incrementSize);
     },
@@ -156,7 +155,6 @@ Template.table.events({
 var processing = function (element, type) {
     var sent = element.sent && (element.sent[type] !== undefined);
     return sent && element.sent[type].state === 'processing';
-
 };
 Template.table.helpers({
     showModal: Session.get('showModal'),

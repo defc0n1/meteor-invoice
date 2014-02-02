@@ -53,7 +53,7 @@ register('ElementProp', function(elem, prop, method, isLink) {
 
   if (isLink) {
     var view = Session.get('type').views[elem.type];
-    
+
     if (view) {
       var path = 'show/' + Session.get('type').views[elem.type].path + '/' + elem['record_number'];
       var link = '<a class="link", href=/' + path + '>' + elem[prop] + '</a>';

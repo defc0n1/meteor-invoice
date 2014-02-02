@@ -8,6 +8,7 @@ Template.sidebar.events = {
 
 
 Template.sidebar.items = function () {
+    var key = Router.current().params.key;
     var sidebar = {
         items: [
             { name: 'Ny vare', path: '#', id: 'newItem', click: 'new-item' },
@@ -42,6 +43,11 @@ Template.sidebar.items = function () {
         edit: [
             { name: 'Bogfør', path: Router.routes.main.path({ root: 'sale', type:  'openSalesinvoices' }) },
             { name: 'Slet', path: Router.routes.main.path({ root: 'sale', type:  'postedSalesinvoices'  }) },
+        ],
+        show: [
+            { name: 'Vareposteringer', path: Router.routes.dynamic.path({ type: 'itemEntries', key: key }) },
+            { name: 'Debitorposteringer', path: Router.routes.dynamic.path({ type: 'deptorEntries', key: key }) },
+            { name: 'Finansposteringer', path: Router.routes.dynamic.path({ type: 'financeEntries', key: key }) },
         ],
     };
     var root = Router.current().params.root;

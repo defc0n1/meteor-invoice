@@ -21,25 +21,21 @@
                 {{#each this.buttons}}
                 {{#With elem=../../../this button=this}}
                 {{#if button.icon}}
-                <button type="button" {{processing button.key}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}"><span class="glyphicon glyphicon-{{button.icon}}"</span></button>
+                <button type="button" {{processing button.key}} data-toggle="dropdown" class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}"><span class="glyphicon glyphicon-{{button.icon}}"</span></button>
                 {{else}}
-                <button type="button" {{processing button.key}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
+                <button type="button" {{processing button.key}} data-toggle="dropdown" id="{{button.id}}" class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
                 {{/if}}
-                {{/With}}
-                {{/each}}
-            </div>
-            {{/if}}
-            {{#if this.options}}
-            <div class="dropdown">
-                <!-- removed class sr-only which made the button hidden...? -->
-                <button class="btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">Posteringer<span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                    {{#each this.options}}
-                    {{#With elem=../../../this option=this}}
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{option.text}}</a></li>
+                {{#if button.options}}
+                <ul class="dropdown-menu goto-dropdown" role="menu">
+                    {{#each button.options}}
+                    {{#With elem=../this.elem}}
+                    <li role="presentation"><a class="dropdown-option" role="menuitem" tabindex="-1" href="#">{{this.text}}</a></li>
                     {{/With}}
                     {{/each}}
                 </ul>
+                {{/if}}
+                {{/With}}
+                {{/each}}
             </div>
             {{/if}}
         </td>

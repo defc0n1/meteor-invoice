@@ -41,7 +41,7 @@ Meteor.methods({
     },
     ItemsSearch: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
-    },    
+    },
     getSalesInvoice: function (key) {
         return SalesInvoices.findOne({ key: parseInt(key) });
     },
@@ -59,7 +59,7 @@ Meteor.methods({
     },
     getCreditnotaKeyByRecordNumber: function (number) {
         return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
-    },    
+    },
     getItemStats: function (number, startDate, endDate) {
         var match = { item_number: number };
         if (endDate) {

@@ -75,7 +75,21 @@ Router.map(function () {
             this.render('posted');
         },
         before: function () {
+            this.params.root = 'show';
             Session.set('key', this.params.key);
+            Session.set('type', Mapping[this.params.type]);
+        }
+    });
+    this.route('dynamic', {
+        path: '/dynamic/:type/:key',
+        layoutTemplate: 'layout',
+        action: function () {
+            this.render('table');
+        },
+        before: function() {
+            //TODO: Capitalize mapping names
+            var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
+            Session.set(capString + 'filter', { record_number: parseInt(this.params.key) });
             Session.set('type', Mapping[this.params.type]);
         }
     });

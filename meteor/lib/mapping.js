@@ -63,12 +63,11 @@ Mapping = {
                 { text: 'Edi', key: 'amqp' , classes:'edi-button' },
                 { icon: 'envelope', key: 'mail' , classes:'email-button'  },
                 { text: 'Vis', classes: ['show-button'] },
-
-           ] },
-           { header: 'Posteringer', key: '', options: [
-                { text: 'Vareposteringer' },
-                { text: 'Debitorposteringer' },
-                { text: 'Finansposteringer' },
+                { icon: 'chevron-down', options: [
+                    { text: 'Vareposteringer', mapping: 'itemEntries' },
+                    { text: 'Debitorposteringer', mapping: 'deptorEntries' },
+                    { text: 'Finansposteringer', mapping: 'financeEntries' },
+                ] },
            ] },
         ],
     },
@@ -250,7 +249,7 @@ Mapping = {
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
             { header: 'Løbenummer', key: 'key' },
             { header: 'Kreditor', key: 'creditor_number' },
-            { header: 'BilagsNr', key: 'record_number' },
+            { header: 'BilagsNr', key: 'record_number', isLink: true },
             { header: 'Bogf.gr', key: 'posting_group' },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
             { header: '', key: '', buttons: [
