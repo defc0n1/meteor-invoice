@@ -108,18 +108,8 @@ Template.table.events({
         //Session.set('selected', this);
         //$('#myModal').modal({});
     //},
-    'click .show-deptor-button': function(event) {
-        Session.set('selected', this.elem);
-        $('#myModal').modal({});
-    },
-    'click .show-creditor-button': function(event) {
-        Session.set('selected', this.elem);
-        $('#myModal').modal({});
-    },
-    'click .show-item-button': function(event) {
-        Session.set('selected', this.elem);
-        Session.set('showModal', true);
-        $('#myModal').modal({});
+    'click .table-edit-element-button': function(event) {
+        Router.go('edit2', { type: GetCurrentType() , key: this.elem.key });
     },
     'click .item-statistics-button': function (event) {
         Session.set('element', this);

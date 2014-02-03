@@ -59,6 +59,16 @@ Router.map(function () {
             this.render('table');
         },
     });
+    this.route('edit2', {
+        path: '/edit2/:type/:key',
+        layoutTemplate: 'layout',
+        action: function () {
+            //Session.set('type', Mapping[this.params.type]);
+            var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
+            Session.set(capString + 'filter', { key: this.params.key });
+            this.render('editelement');
+        },
+    });
     this.route('edit', {
         path: '/edit/:type/:key',
         layoutTemplate: 'layout',

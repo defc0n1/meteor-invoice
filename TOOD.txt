@@ -1,0 +1,9 @@
+Reset filters on navigation
+Reset viewHeader on navigation
+
+Uniqueness constraint on all keys (items)
+
+Add ean dropdown for possible recipients on deptors
+Add ean key field
+
+Use GetMapping and similar methods everywhere instead of directly accessing the router, window object, etc.

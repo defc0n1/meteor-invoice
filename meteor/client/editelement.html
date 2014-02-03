@@ -1,0 +1,24 @@
+<template name="editelement">
+{{#each messages}}
+<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    <strong>Æv, der er sket en fejl!</strong> {{this.message}}.
+</div>
+{{/each}}
+<div class="content">
+    <table class="table table-bordered talbe-striped">
+        <tbody>
+        {{#each fields}}
+        <tr>
+            <td class="modal-left-td">
+                {{this.name}}
+            </td>
+            <td>
+                <a href="#" class="edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
+            </td>
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>
+</template>

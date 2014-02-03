@@ -126,7 +126,7 @@ Mapping = {
             { header: 'By', key: 'zip' },
             { header: 'Saldo', key: '' },
             { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-deptor-button' },
+                { icon: 'wrench', classes: 'table-edit-element-button' },
                 { text: 'Kontokort', classes: 'account-deptor-button' },
                 { text: 'Statistik', classes: 'deptor-statistics-button' },
                 ] },
@@ -151,7 +151,7 @@ Mapping = {
             { header: 'By', key: 'zip' },
             { header: 'Saldo', key: '' },
             { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-creditor-button' },
+                { icon: 'wrench', classes: 'table-edit-element-button' },
                 { text: 'Kontokort', classes: 'account-creditor-button' },
                 { text: 'Statistik', classes: 'creditor-statistics-button' },
                 ] },
@@ -177,7 +177,7 @@ Mapping = {
             { header: 'Salgspris', key: 'price', formatter: 'GetPrice' },
             { header: 'Beholdning', key: 'quantity' },
             { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-item-button' },
+                { icon: 'wrench', classes: 'table-edit-element-button' },
                 { text: 'Statistik', classes: 'item-statistics-button' },
            ] },
         ],
@@ -325,21 +325,17 @@ Mapping = {
             collection: 'Items',
             background: this.items,
             modalFields: this.items.modalFields,
-            create: function (key) {
-
-
-        bootbox.prompt(mapping.modalText, function(result) {
-            if (result === null) {
-                // pass
-            } else {
-                //create element and move to it's page
-            }
-        });
-                var id = Items.insert({ key: key });
-                var element = Items.findOne({ _id : id });
-                Session.set('selected', element);
-                Session.set('showModal', true);
-                $('#myModal').modal({});
+            create: function () {
+                bootbox.prompt(this.modalText, function(result) {
+                    if (result === null) {
+                        // pass
+                    } else {
+                        var id = Items.insert({ key: result });
+                        //TODO catch duplicate key error
+                        var element = Items.findOne({ _id : id });
+                        Router.go('edit2', { type: 'items' , key: result });
+                    }
+                });
             },
         }
     }

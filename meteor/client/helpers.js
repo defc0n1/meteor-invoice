@@ -35,6 +35,7 @@ register('GetDate', GetDate);
 register('GetPrice', GetPrice);
 
 register('Session', function(arg) {
+    // return the value of arg in session
     return Session.get(arg);
 });
 register('Shorten', function(arg) {

@@ -1,7 +1,7 @@
 <template name="layout">
 {{>topbar}}
-<div class="container" style="{{width}}" id="main-container">
-    {{width}}
+<div class="container" id="main-container">
+    <h4 class="modal-title" id="myModalLabel">{{Session 'viewTitle'}}</h4>
     {{#each alerts}}
     <div class="row">
         <div class="col-xs-12">

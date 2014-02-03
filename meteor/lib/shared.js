@@ -13,6 +13,22 @@ CreditorEntries = new Meteor.Collection('creditorentries');
 DeptorEntries = new Meteor.Collection('deptorentries');
 FinanceEntries = new Meteor.Collection('financeentries');
 
+GetCurrentCollection = function (capitalize) {
+    var typeName = Router.current().params.type;
+    var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+    return window[capString]; 
+};
+
+GetCurrentMapping = function () {
+    return Mapping[Router.current().params.type];
+};
+GetCurrentKey = function () {
+    return Router.current().params.key;
+};
+GetCurrentType = function () {
+    return Router.current().params.type;
+};
+
 GetDate = function (date) {
     if (date) {
         return moment(date).format('DD MMM YYYY');
