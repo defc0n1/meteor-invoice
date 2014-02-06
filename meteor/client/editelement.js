@@ -5,10 +5,10 @@ Template.editelement.rendered = function () {
     var elem = GetCurrentCollection().findOne({ key: Router.current().params.key });
 
     //TODO guard against non existing route
-    
+
     Session.set('element', elem);
     Session.set('viewTitle', 'Redigerer ' + elem.key);
-    
+
     // We attach an observed handler and update the
     // editable value on change
     var query = Items.find({ _id: elem._id });
@@ -74,9 +74,9 @@ Template.editelement.rendered = function () {
 }
 Template.editelement.helpers({
     fields: function (element) {
-        // this may be called before session.element is set 
+        // this may be called before session.element is set
         // thus we guard against undefined element
-        var element = Session.get('element'); 
+        var element = Session.get('element');
         if (!element) return [];
         var list = GetCurrentMapping().modalFields;
         list = _.map(list, function (elem) {
@@ -85,4 +85,25 @@ Template.editelement.helpers({
         });
         return list;
     },
-})
+});
+
+Template.editelement.events({
+    'change .gln-group-select': function(event) {
+        var gln_group = event.target.value;
+        console.log(gln_group)
+        var element = Session.get('element');
+        if (gln_group) {
+            var res = GetCurrentCollection().update({ _id: element._id }, { $set: { gln_group: gln_group } },
+                function (err, msg) {
+                    console.log(err, msg)
+                }
+            );
+        }
+        else{
+            var res = GetCurrentCollection().update({ _id: element._id }, { $unset: { gln_group: "" } },
+                function (err, msg) {
+                }
+            );
+        }
+    }
+});

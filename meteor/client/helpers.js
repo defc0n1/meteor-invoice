@@ -34,6 +34,19 @@ register('GetDate', GetDate);
 
 register('GetPrice', GetPrice);
 
+register('ElementKeyEquals', function(key, val, out) {
+    // return the out string if element.key == val,
+    // otherwise, return ""
+    console.log(key, val, out)
+    var element = Session.get('element');
+    if (element[key] && element[key] == val){
+        return out;
+    }
+    else {
+        return '';
+    }
+});
+
 register('Session', function(arg) {
     // return the value of arg in session
     return Session.get(arg);

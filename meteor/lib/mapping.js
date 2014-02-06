@@ -139,7 +139,15 @@ Mapping = {
         { name: 'Adresse', key: 'address'},
         { name: 'By', key: 'city'},
         { name: 'Postnummer', key: 'zip'},
-        { name: 'Att.', key: 'attention'} ],
+        { name: 'Att.', key: 'attention'},
+        { name: 'GLN-nummer', key: 'gln'},
+        { name: 'GLN-gruppe', key: 'gln_group', dropdown: true, classes: 'gln-group-select', content: [
+            { value: '', name: 'Ikke EDI'},
+            { value: 'supergross', name: 'Super Gross'},
+            { value: 'dansksupermarked', name: 'Dansk Supermarked'}
+        ]
+        },
+        ],
     },
     creditors: {
         collection: 'Creditors',

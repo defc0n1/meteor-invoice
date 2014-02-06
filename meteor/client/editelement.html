@@ -14,7 +14,15 @@
                 {{this.name}}
             </td>
             <td>
+                {{#if this.dropdown}}
+                <select class="form-control {{this.classes}}">
+                {{#each this.content}}
+                <option {{ElementKeyEquals ../this.key this.value 'selected'}} value={{this.value}}>{{this.name}}</option>
+                {{/each}}
+                </select>
+                {{else}}
                 <a href="#" class="edit-field" id="{{this.key}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.value}}</a>
+                {{/if}}
             </td>
         </tr>
         {{/each}}

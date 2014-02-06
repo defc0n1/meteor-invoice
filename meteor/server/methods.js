@@ -103,7 +103,8 @@ Meteor.methods({
         invoice.lines = lines_with_ean;
 
         // construct the message
-        var object = { invoice: invoice, deptor: deptor.search_name };
+        //var object = { invoice: invoice, deptor: deptor.search_name, amqp: deptor.amqp_type };
+        var object = { invoice: invoice, edi_key: deptor.edi_key, edi_path: deptor.edi_path };
         if (Meteor.settings.env !== 'prod') {
             log.info('Adding dry run property');
             object.dry_run = true;
