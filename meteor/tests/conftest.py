@@ -9,6 +9,8 @@ def auth(wd):
     util.form_fill_by_id(wd, 'login-email', 'test')
     util.form_fill_by_id(wd, 'login-password', 'test')
     util.click_button_by_id(wd, 'login-button')
+    # make sure login is done before returning
+    util.click_button_by_id(wd, 'logout-dropdown')
 
 @pytest.yield_fixture
 def wd(request):
@@ -18,7 +20,7 @@ def wd(request):
     driver.goto = lambda x: driver.get(domain.format(x))
     driver.auth = lambda: auth(driver)
     yield driver
-    #driver.close()
+    # driver.close()
 
 
 @pytest.yield_fixture
@@ -30,5 +32,4 @@ def db():
     res = db.alerts.drop()
     #print res
     #print db.last_status()
-    db.salesinvoices.find_and_modify({ 'key': 89583 }, { '$unset': { 'sent': '' } })
     client.close()

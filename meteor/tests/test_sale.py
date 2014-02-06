@@ -16,6 +16,7 @@ def test_send_edi(wd, db):
     assert len(elems) == 1, 'to many errors'
     red_buttons = wd.find_elements_by_class_name("btn-danger")
     assert len(red_buttons) == 1, 'one red button should be present'
+    db.salesinvoices.find_and_modify({ 'key': 89583 }, { '$unset': { 'sent': '' } })
 #def teardown_module(mongo):
     #mongo.alerts.drop()
     
