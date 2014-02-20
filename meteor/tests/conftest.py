@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import util
 from pymongo import MongoClient
+from bson.son import SON
 
 def auth(wd):
     wd.goto('')
@@ -20,16 +21,19 @@ def wd(request):
     driver.goto = lambda x: driver.get(domain.format(x))
     driver.auth = lambda: auth(driver)
     yield driver
-    # driver.close()
+    driver.close()
 
-
-@pytest.yield_fixture
+@pytest.yield_fixture(scope='module')
 def db():
     client = MongoClient()
-    db = client.invoice
-    print list(db.alerts.find())
+    client.drop_database('invoice_test')
+    print 'copying database'
+    client.admin.command(SON([('copydb', 1), ('fromdb', 'invoice'), ('todb', 'invoice_test')]))
+    print 'done copying database'
+    db = client.invoice_test
     yield db
-    res = db.alerts.drop()
+    print 'cleaning up'
+    client.drop_database('invoice_test')
     #print res
     #print db.last_status()
     client.close()
