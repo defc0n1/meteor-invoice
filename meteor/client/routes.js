@@ -55,12 +55,10 @@ Router.map(function () {
         path: '/:root/:type',
         layoutTemplate: 'layout',
         action: function () {
-            console.log('test1')
             this.render('table');
         },
         before: function () {
             ClearFilters()
-            console.log('test')
             Session.set('type', Mapping[this.params.type]);
         }
     });
@@ -106,8 +104,6 @@ Router.map(function () {
         },
         before: function() {
             //TODO: Capitalize mapping names
-            //var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
-            //Session.set(capString + 'filter', { record_number: parseInt(this.params.key) });
             SetFilter({ customer_number: this.params.key });
             Session.set('type', Mapping[this.params.type]);
         }
