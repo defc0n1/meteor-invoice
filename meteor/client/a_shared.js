@@ -6,7 +6,6 @@ Session.set('limit', incrementSize);
 Meteor.subscribe('TradeAccounts');
 Meteor.subscribe('alertChannel');
 
-Subs = []
 var collections = [
     'Deptors',
     'Creditors',
@@ -23,10 +22,8 @@ Deps.autorun(function() {
     catch (err) {
         log.error('err', err);
     }
-    Subs = []
     _.each(collections, function (collection) {
         //progressCount += 1
-        console.log(Session.get(collection + 'limit'), 'test', collection)
         var handle = Meteor.subscribe(collection,
             Session.get(collection + 'limit'),
             Session.get(collection + 'skip'),
@@ -38,8 +35,6 @@ Deps.autorun(function() {
                     NProgress.done();
                 }
             });
-        Subs.push(handle);
-
     });
 });
 Deps.autorun(function () {
