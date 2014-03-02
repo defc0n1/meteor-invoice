@@ -72,7 +72,7 @@ Meteor.publish('alertChannel', function (){
 Meteor.publish('TradeAccounts', function (){
     return TradeAccounts.find();
 });
-Meteor.publish('CollectionCounts', function (collection, query){
+Meteor.publish('CollectionCounts', function (collection){
     return CollectionCounts.find();
 });
 Meteor.publish('Custom', function (collection, query){

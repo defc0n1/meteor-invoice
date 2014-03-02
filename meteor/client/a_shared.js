@@ -5,6 +5,7 @@ Session.set('limit', incrementSize);
 
 Meteor.subscribe('TradeAccounts');
 Meteor.subscribe('alertChannel');
+Meteor.subscribe("CollectionCounts");
 
 var collections = [
     'Deptors',
@@ -36,10 +37,4 @@ Deps.autorun(function() {
                 }
             });
     });
-});
-Deps.autorun(function () {
-    var type = Session.get('type');
-    if (type) {
-        Meteor.subscribe("CollectionCounts", type.collection, type.filter || {});
-    }
 });
