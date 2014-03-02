@@ -72,47 +72,9 @@ Meteor.publish('alertChannel', function (){
 Meteor.publish('TradeAccounts', function (){
     return TradeAccounts.find();
 });
-
-//throttle = _.debounce(function (collection, count, ref) {
-    //self.changed("counts", collection, {count: count});
-//}, 10);
-
-//Meteor.publish("CollectionCounts", function (collection, filter) {
-  //var self = this;
-  //var count = 0;
-  //var initializing = true;
-  //var handle = global[collection].find(filter).observeChanges({
-    //added: function (id) {
-      //count++;
-      ////if (!initializing)
-        ////self.changed("counts", collection, {count: count});
-    //},
-    //removed: function (id) {
-      ////count--;
-      ////self.changed("counts", collection, {count: count});
-    //}
-    //// don't care about moved or changed
-  //});
-
-  //// Observe only returns after the initial added callbacks have
-  //// run.  Now return an initial value and mark the subscription
-  //// as ready.
-  //initializing = false;
-  //self.added("counts", collection, {count: count});
-  //self.ready();
-
-  //// Stop observing the cursor when client unsubs.
-  //// Stopping a subscription automatically takes
-  //// care of sending the client any removed messages.
-  //self.onStop(function () {
-    //handle.stop();
-  //});
-//});
-
 Meteor.publish('CollectionCounts', function (collection, query){
     return CollectionCounts.find();
 });
-
 Meteor.publish('Custom', function (collection, query){
     return global[collection].find(query);
 });

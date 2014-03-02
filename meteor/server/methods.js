@@ -15,10 +15,6 @@ Meteor.methods({
         }
         return next;
     },
-    Count: function (collection, query, filter) {
-        console.log('test', filter)
-        return FilterQuery(global[collection], global[collection + 'SearchFields'], query, { filter: filter }).count();
-    },
     DeptorsSearch: function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
     },

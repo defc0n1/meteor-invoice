@@ -21,9 +21,9 @@
                 {{#each this.buttons}}
                 {{#With elem=../../../this button=this}}
                 {{#if button.icon}}
-                <button type="button" {{processing button.key}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}"><span class="glyphicon glyphicon-{{button.icon}}"</span></button>
+                <button type="button" {{processing button.key}} {{#if button.options}}data-toggle="dropdown"{{/if}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}"><span class="glyphicon glyphicon-{{button.icon}}"</span></button>
                 {{else}}
-                <button type="button" {{processing button.key}} id="{{button.id}}" class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
+                <button type="button" {{processing button.key}} id="{{button.id}}" {{#if button.options}}data-toggle="dropdown"{{/if}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
                 {{/if}}
                 {{#if button.options}}
                 <ul class="dropdown-menu goto-dropdown" role="menu">
