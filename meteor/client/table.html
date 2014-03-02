@@ -14,16 +14,16 @@
         {{#each Prop 'type' 'table'}}
         <td>
             {{#With elem=../this props=this}}
-            {{ElementProp elem props.key props.formatter props.isLink}}
+            {{ElementProp elem props.key props.formatter props.link}}
             {{/With}}
             {{#if this.buttons}}
             <div class="table-buttons btn-group">
                 {{#each this.buttons}}
                 {{#With elem=../../../this button=this}}
                 {{#if button.icon}}
-                <button type="button" {{processing button.key}} data-toggle="dropdown" class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}"><span class="glyphicon glyphicon-{{button.icon}}"</span></button>
+                <button type="button" {{processing button.key}} class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}"><span class="glyphicon glyphicon-{{button.icon}}"</span></button>
                 {{else}}
-                <button type="button" {{processing button.key}} data-toggle="dropdown" id="{{button.id}}" class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
+                <button type="button" {{processing button.key}} id="{{button.id}}" class="{{button.classes}} btn btn-default btn-sm {{sentBy button.key}}">{{button.text}}</button>
                 {{/if}}
                 {{#if button.options}}
                 <ul class="dropdown-menu goto-dropdown" role="menu">

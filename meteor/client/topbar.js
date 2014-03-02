@@ -3,13 +3,13 @@ Template.topbar.events({
     'keyup #search-query': function(event) {
         console.log('test1')
         var type = Session.get('type');
-        var collection = type.subCollection || type.collection;
+        var collection = type.collection;
         Session.set(collection + 'query', event.target.value);
         Session.set(collection + 'skip', 0);
     },
     'click #search-query': function(event) {
         if (event.target.value === '') {
-            var collection = type.subCollection || type.collection;
+            var collection = type.collection;
             var type = Session.get('type');
             Session.set(collection + 'query', '');
             Session.set(collection + 'skip', 0);

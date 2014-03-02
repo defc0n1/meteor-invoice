@@ -1,18 +1,10 @@
 Template.table.rendered = function () {
     var type = Session.get('type');
-    var doit = false;
-    if (type.new) {
-        doit = true;
-        type = type.background;
-        Session.set('type', type);
+    if(type.filter) {
+        SetFilter(type.filter, true);
     }
     Session.set('modalFields', type.modalFields);
-    var col = type.subCollection || type.collection;
-    Session.setDefault(col + 'skip', 0);
-    if (doit) {
-        Session.set('selected', {});
-        $('#myModal').modal({});
-    }
+    Session.setDefault(type.collection + 'skip', 0);
     $('.table-tooltip').tooltip();
 };
 
@@ -20,11 +12,11 @@ Template.table.created = function () {
 };
 Template.table.items = function () {
     var type = Session.get('type');
-    return window[type.collection].find(type.filter || {}, { sort: { key: -1 }}); // .fetch();
+    return window[type.collection].find({}, { sort: { key: -1 }});
 };
 
 changePage = function (count) {
-    var collection = Session.get('type').subCollection || Session.get('type').collection;
+    var collection = Session.get('type').collection;
     Session.set(collection + 'skip',
             Session.get(collection + 'skip') + count);
 };
@@ -85,7 +77,8 @@ Template.table.events({
     },
     'click .goto-dropdown li': function (event) {
         console.log(this);
-        Router.go('dynamic', { type: this.mapping, key: this.elem.key });
+        //Router.go('dynamic', { type: this.mapping, key: this.elem.key });
+        Router.go('dynamic', { type: this.mapping, key: this.elem.customer_number });
     },
     'click .show-button': function(event) {
         var type = Session.get('type');
@@ -96,7 +89,6 @@ Template.table.events({
         bootbox.confirm('Vil du slette denne faktura?', function (res) {
             if (res) {
                 window[Session.get('type').collection].remove({ _id: id });
-                DoCount();
             }
         });
     },
@@ -155,10 +147,6 @@ Template.table.helpers({
         return this.elem.sent[type].state === 'success' ? 'btn-success' : 'btn-danger';
     },
     processing: function (type) {
-        //speical case for edi invoices, only show if field is defined
-        if (type === 'amqp' && !this.elem.customer_order_number) {
-            return 'disabled';
-        }
         var state = processing(this.elem, type) ? 'disabled'  : '';
         return state;
     },
@@ -168,13 +156,13 @@ Template.table.helpers({
     },
     showPrevious: function() {
         var type = Session.get('type');
-        var collection = type.subCollection || type.collection;
+        var collection = type.collection;
         var disable = Session.equals(collection + 'skip', 0);
         return disable ? 'disabled' : '';
     },
     showNext: function() {
         var type = Session.get('type');
-        var collection = type.subCollection || type.collection;
+        var collection = type.collection;
         var disable = Session.get(collection + 'skip') + incrementSize >= Session.get(collection + 'itemCount');
         return disable ? 'disabled' : '';
     },

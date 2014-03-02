@@ -6,19 +6,14 @@ Session.set('limit', incrementSize);
 Meteor.subscribe('TradeAccounts');
 Meteor.subscribe('alertChannel');
 
+Subs = []
 var collections = [
     'Deptors',
     'Creditors',
     'Items',
-    'ItemEntries',
-    'DeptorEntries',
-    'CreditorEntries',
     'FinanceEntries',
-    'OpenSalesInvoices',
-    'PostedSalesInvoices',
-    'SalesCreditnotas',
-    'PurchaseInvoices',
-    'PurchaseCreditnotas',
+    'Sale',
+    'Purchase',
     ];
 Deps.autorun(function() {
     var progressCount = 1;
@@ -28,9 +23,11 @@ Deps.autorun(function() {
     catch (err) {
         log.error('err', err);
     }
+    Subs = []
     _.each(collections, function (collection) {
         //progressCount += 1
-        Meteor.subscribe(collection,
+        console.log(Session.get(collection + 'limit'), 'test', collection)
+        var handle = Meteor.subscribe(collection,
             Session.get(collection + 'limit'),
             Session.get(collection + 'skip'),
             Session.get(collection + 'query'),
@@ -41,49 +38,13 @@ Deps.autorun(function() {
                     NProgress.done();
                 }
             });
+        Subs.push(handle);
 
     });
 });
-
-
-var updateCounts = function (collections) {
-    _.each(collections, function (collection) {
-    Meteor.call('Count', collection,
-            Session.get(collection + 'query'),
-            { filter: Session.get(collection + 'filter') },
-            function(err, result) {
-                err && log.error(err);
-                Session.set(collection + 'itemCount', result);
-            });
-    });
-};
-var cols = {
-    'Deptors': undefined,
-    'Creditors': undefined,
-    'Items': undefined,
-    'ItemEntries': undefined,
-    'DeptorEntries': undefined,
-    'CreditorEntries': undefined,
-    'SalesInvoices': ['OpenSalesInvoices', 'PostedSalesInvoices'],
-    'SalesCreditnotas': undefined,
-    'PurchaseInvoices': undefined,
-    'PurchaseCreditnotas': undefined,
-};
-DoCount = function () {
-    _.chain(cols).keys().each(function (key) {
-        extra = []
-        if (cols[key]) {
-            extra = cols[key];
-        }
-        else {
-            extra = [key];
-        }
-        updateCounts(extra);
-        //return window[key].find().observeChanges({
-            //added: updateCounts(extra),
-            //removed: updateCounts(extra),
-        //});
-    });
-}
-DoCount();
-
+Deps.autorun(function () {
+    var type = Session.get('type');
+    if (type) {
+        Meteor.subscribe("CollectionCounts", type.collection, type.filter || {});
+    }
+});
