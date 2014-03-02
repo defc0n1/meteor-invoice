@@ -1,26 +1,63 @@
+CollectionCounts = new Meteor.Collection('counts');
 Counters = new Meteor.Collection('counters');
-SalesInvoices = new Meteor.Collection('salesinvoices');
-SalesCreditnotas = new Meteor.Collection('salescreditnotas');
-PurchaseInvoices = new Meteor.Collection('purchaseinvoices');
-PurchaseCreditnotas = new Meteor.Collection('purchasecreditnotas');
+Sale = new Meteor.Collection('sale');
+Purchase = new Meteor.Collection('purchase');
 Deptors = new Meteor.Collection('deptors');
 Creditors = new Meteor.Collection('creditors');
 Alerts = new Meteor.Collection('alerts');
 TradeAccounts = new Meteor.Collection('accounts');
 Items = new Meteor.Collection('items');
-ItemEntries = new Meteor.Collection('itementries');
-CreditorEntries = new Meteor.Collection('creditorentries');
-DeptorEntries = new Meteor.Collection('deptorentries');
 FinanceEntries = new Meteor.Collection('financeentries');
 
 GetCurrentCollection = function (capitalize) {
     var typeName = Router.current().params.type;
     var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
-    return window[capString]; 
+    return window[capString];
 };
 
+ClearFilters = function () {
+var collections = [
+    'Deptors',
+    'Creditors',
+    'Items',
+    'FinanceEntries',
+    'Sale',
+    'Purchase',
+    ];
+    _.each(collections, function (collection) {
+            Session.set(collection + 'limit', null),
+            Session.set(collection + 'skip', null),
+            Session.set(collection + 'query', null),
+            Session.set(collection + 'filter', null)
+
+    });
+    //$('#search-query').val('');
+    Session.set('viewTitle', '');
+}
+
+SetFilter = function(filter, extend, router) {
+    var typeName = Router.current().params.type;
+    var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+    var mapping = GetCurrentMapping();
+    if (extend) {
+        var oldFilter = Session.get(mapping.collection + 'filter');
+        filter = _.extend(oldFilter || {}, filter);
+    }
+    Session.set(mapping.collection + 'filter', filter);
+    console.log(router)
+    if (router) {
+        //router.subscribe(mapping.collection, router.params.key).wait();
+    }
+};
+
+GetCurrentMappingName = function () {
+    return Router.current().params.type;
+};
 GetCurrentMapping = function () {
     return Mapping[Router.current().params.type];
+};
+GetCurrentCollectionName = function () {
+    return Mapping[Router.current().params.type].collection
 };
 GetCurrentKey = function () {
     return Router.current().params.key;
@@ -51,8 +88,17 @@ GetPrice = function (amount) {
     //return money;
         amount = amount + '';
         amount = amount.replace('.', ',');
-        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
+        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         return val;
+};
+BuildLink = function (elem, props, key) { 
+    console.log(key)
+    if (props.key) {
+        return props.root + props.map[elem[props.key]] + key;
+    }
+    else {
+        return props.root + key;
+    }
 };
 
 

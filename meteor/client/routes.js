@@ -55,28 +55,34 @@ Router.map(function () {
         path: '/:root/:type',
         layoutTemplate: 'layout',
         action: function () {
-            Session.set('type', Mapping[this.params.type]);
             this.render('table');
         },
+        before: function () {
+            ClearFilters()
+            Session.set('type', Mapping[this.params.type]);
+        }
     });
     this.route('edit2', {
         path: '/edit2/:type/:key',
         layoutTemplate: 'layout',
         action: function () {
-            //Session.set('type', Mapping[this.params.type]);
-            var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
-            Session.set(capString + 'filter', { key: this.params.key });
             this.render('editelement');
         },
+        waitOn: function () {
+            return Meteor.subscribe('Custom', GetCurrentMapping().collection, {key: this.params.key});
+        }
     });
     this.route('edit', {
         path: '/edit/:type/:key',
         layoutTemplate: 'layout',
         action: function () {
-            Session.set('key', this.params.key);
-            Session.set('type', Mapping[this.params.type]);
             this.render('new');
         },
+        before: function () {
+            Session.set('key', this.params.key);
+            //Session.set('type', Mapping[this.params.type]);
+            Session.set('type', Mapping['newSalesinvoice']);
+        }
     });
     this.route('show', {
         path: '/show/:type/:key',
@@ -98,8 +104,7 @@ Router.map(function () {
         },
         before: function() {
             //TODO: Capitalize mapping names
-            var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
-            Session.set(capString + 'filter', { record_number: parseInt(this.params.key) });
+            SetFilter({ customer_number: this.params.key });
             Session.set('type', Mapping[this.params.type]);
         }
     });

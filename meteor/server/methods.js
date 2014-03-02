@@ -3,10 +3,10 @@ Meteor.methods({
     GetNextSequence: function (name) {
         var next = -1;
         for( var i = 0; i <= 10; i++) {
-            var cursor = SalesInvoices.find({}, { fields: { key: 1 } , sort: { key: -1 }, limit: 1 })
+            var cursor = Sale.find({}, { fields: { key: 1 } , sort: { key: -1 }, limit: 1 })
             next = cursor.fetch()[0].key + 1;
             try{
-                SalesInvoices.insert( {_id: new Meteor.Collection.ObjectID(), key: next, lines: [] });
+                Sale.insert( {_id: new Meteor.Collection.ObjectID(), key: next, lines: [], type: 'invoice' });
                 break;
             }
             catch(err) {
@@ -15,38 +15,17 @@ Meteor.methods({
         }
         return next;
     },
-    Count: function (collection, query, merger) {
-        var filter = {}
-        if (collection == 'OpenSalesInvoices') {
-            collection = 'SalesInvoices';
-            filter = { posting_date: { $exists: false } };
-        }
-        else if (collection == 'PostedSalesInvoices') {
-            collection = 'SalesInvoices';
-            filter = { posting_date: { $exists: true } };
-        }
-        return FilterQuery(global[collection], global[collection + 'SearchFields'], query, _.defaults(merger, { filter: filter })).count();
-    },
     DeptorsSearch: function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
-    },
-    ItemEntries: function (query, merger) {
-        return FilterQuery(ItemEntries, ItemEntriesSearchFields, query, merger).count();
-    },
-    CreditorEntries: function (query, merger) {
-        return FilterQuery(CreditorEntries, CreditorEntriesSearchFields, query, merger).count();
-    },
-    DeptorEntries: function (query, merger) {
-        return FilterQuery(DeptorEntries, DeptorEntriesSearchFields, query, merger).count();
     },
     ItemsSearch: function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
     },
     getSalesInvoice: function (key) {
-        return SalesInvoices.findOne({ key: parseInt(key) });
+        return Sale.findOne({ key: parseInt(key) });
     },
     getSalesCreditnota: function (key) {
-        return SalesCreditnotas.findOne({ key: parseInt(key) });
+        return Sale.findOne({ key: parseInt(key) });
     },
     getPurchaseCreditnota: function (key) {
         return PurchaseCreditnotas.findOne({ key: parseInt(key) });
@@ -87,9 +66,22 @@ Meteor.methods({
         ]);
     },
     sendAmqp: function (invoiceNumber) {
-        var invoice = SalesInvoices.findOne({ key: invoiceNumber });
+        var invoice = Sale.findOne({ key: invoiceNumber });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
+        if(!deptor.gln){
+            log.info("AMQP edi send cancelled, no gln on deptor", deptor.key);
+            Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
+                invoiceNumber + ' mislykkedes. GLN nummer mangler på debitor'});
+            return;
+        }
+        if(!deptor.gln_group){
+            log.info("AMQP edi send cancelled, no gln_group on deptor", deptor.key);
+            Alerts.insert({ message: 'Afsendelse af EDI faktura ' + invoiceNumber +
+                ' mislykkedes. GLN gruppe mangler på debitor' });
+            return;
+        }
         log.info('Sending invoice over amqp:', invoiceNumber);
+        log.info('Sending invoice over amqp:', deptor.gln_group);
 
         // add ean to all items
         var lines_with_ean = [];
@@ -104,16 +96,17 @@ Meteor.methods({
 
         // construct the message
         //var object = { invoice: invoice, deptor: deptor.search_name, amqp: deptor.amqp_type };
-        var object = { invoice: invoice, edi_key: deptor.edi_key, edi_path: deptor.edi_path };
-        if (Meteor.settings.env !== 'prod') {
-            log.info('Adding dry run property');
-            object.dry_run = true;
-        }
-        else {
-            object.dry_run = false;
-        }
+        var object = { invoice: invoice, deptor: deptor };
+        object.dry_run = false;
+        //if (Meteor.settings.env !== 'prod') {
+            //log.info('Adding dry run property');
+            //object.dry_run = true;
+        //}
+        //else {
+            //object.dry_run = false;
+        //}
         // set invoice state to processing
-        SalesInvoices.update(
+        Sale.update(
                 { key: invoiceNumber },
                 { $set: { 'sent.amqp.state': 'processing',
                           'sent.amqp.time': new Date() } }
@@ -121,7 +114,7 @@ Meteor.methods({
         // call in case of error
         var error = function (message) {
             log.error('Unsuccessful send of invoice:', invoiceNumber);
-            SalesInvoices.update(
+            Sale.update(
                     { key: invoiceNumber },
                     { $set: { 'sent.amqp.state': 'error' } });
             Alerts.insert({ message: 'Afsendelse af EDI faktura ' + invoiceNumber + ' mislykkedes pga.: ' + message });
@@ -130,7 +123,7 @@ Meteor.methods({
         amqp.rpc(object, 'test', Meteor.bindEnvironment(function (response) {
             if (response.success === true) {
                 console.log('successful send of invoice:', invoiceNumber);
-                SalesInvoices.update(
+                Sale.update(
                     { key: invoiceNumber },
                     { $push: { 'sent.amqp.history': new Date() },
                       $set: { 'sent.amqp.state': 'success' } });
@@ -147,12 +140,12 @@ Meteor.methods({
         check(id, String);
         log.debug('Send mail called', id);
         var objectId = new Meteor.Collection.ObjectID(id)
-        var invoice = SalesInvoices.findOne({ _id: objectId });
+        var invoice = Sale.findOne({ _id: objectId });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
         if (!deptor.email) {
             //errors.sync(errors.missingMail, '', log.warning);
         }
-        SalesInvoices.update(
+        Sale.update(
                 { _id: objectId },
                 { $set: { 'sent.mail.time': new Date(),
                           'sent.mail.state': 'processing' } }
@@ -178,7 +171,7 @@ Meteor.methods({
         message.attachments = [ { filename: 'faktura.pdf', filePath: '/tmp/' + id + '.pdf' } ];
 
         var error = function (err, msg) {
-                SalesInvoices.update(
+                Sale.update(
                     { _id: objectId },
                     { $set: { 'sent.mail.state': 'error' } });
                 errors.async(err, msg, log.error);
@@ -196,7 +189,7 @@ Meteor.methods({
                 else if (message.failedRecipients.length > 0) error(errors.recipients, message.failedRecipients);
                 else {
                     log.info('Email successfully send', deptor.email);
-                    SalesInvoices.update(
+                    Sale.update(
                         { _id: objectId },
                         { $push: { 'sent.mail.history': new Date() },
                             $set: { 'sent.mail.state': 'success' } });

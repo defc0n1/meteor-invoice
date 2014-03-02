@@ -1,14 +1,14 @@
 
 TableMaxLength = 22;
 Shorten = function(arg) {
-    if (arg.length > TableMaxLength) {
+    if (arg && arg.length > TableMaxLength) {
         return arg.substr(0, 24);
     }
     return arg;
 
 };
 
-var handlebarHelpers = {}
+var handlebarHelpers = {};
 
 var register = function(name, func) {
     handlebarHelpers[name] = func;
@@ -16,17 +16,19 @@ var register = function(name, func) {
 
 }
 register('CountText', function () {
-    var type = Session.get('type');
-    var collection = type.subCollection || type.collection;
-    var count = Session.get(collection + 'itemCount');
+    var obj_with_count = CollectionCounts.findOne(GetCurrentMappingName());
+    if (obj_with_count === undefined)
+        return "Beregner størrelse";
+
+    var count = obj_with_count.count
     if (count < incrementSize) {
         return 'Viser alle';
     }
     else {
-        var start = Session.get(collection + 'skip', 0) + 1;
+        var start = Session.get(GetCurrentCollectionName() + 'skip', 0) + 1;
         return 'Viser ' + start + ' til ' +
-        Math.min((start + incrementSize - 1), count)  +
-        ' af ' + count;
+    Math.min((start + incrementSize - 1), count)  +
+    ' af ' + count;
     }
 });
 
@@ -37,7 +39,6 @@ register('GetPrice', GetPrice);
 register('ElementKeyEquals', function(key, val, out) {
     // return the out string if element.key == val,
     // otherwise, return ""
-    console.log(key, val, out)
     var element = Session.get('element');
     if (element[key] && element[key] == val){
         return out;
@@ -56,38 +57,39 @@ register('Shorten', function(arg) {
 });
 register('ListIndex', function (arg) {
     return _.map(arg, function (item, index) {
-      item.index = index;
-      return item;
+        item.index = index;
+        return item;
     });
 });
 register('Element', function(arg) {
-  return Session.get('element');
+    return Session.get('element');
 });
-register('ElementProp', function(elem, prop, method, isLink) {
+register('ElementProp', function(elem, prop, method, link) {
+    // guard against undefined
+    if (!elem)
+        return;
 
-  if (isLink) {
-    var view = Session.get('type').views[elem.type];
-
-    if (view) {
-      var path = 'show/' + Session.get('type').views[elem.type].path + '/' + elem['record_number'];
-      var link = '<a class="link", href=/' + path + '>' + elem[prop] + '</a>';
-      return new Handlebars.SafeString(link);
+    var mapping = Session.get('type');
+    if (link) {
+        console.log(link.method)
+        var path = window[link.method](elem, link.props, elem[prop]);
+        var link = '<a class="link", href=/' + path + '>' + elem[prop] + '</a>';
+        return new Handlebars.SafeString(link);
     }
-  }
 
-  var res = '';
-  if (window[method]) {
-       res = window[method](elem[prop]);
-  }
-  else{
-      res = elem[prop];
-  }
-  if (res && res.length > TableMaxLength) {
-      var shortString = res.substr(0, TableMaxLength - 2) + '..';
-      var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
-      return new Handlebars.SafeString(link);
-  }
-  return res;
+    var res = '';
+    if (window[method]) {
+        res = window[method](elem[prop]);
+    }
+    else{
+        res = elem[prop];
+    }
+    if (res && res.length > TableMaxLength) {
+        var shortString = res.substr(0, TableMaxLength - 2) + '..';
+        var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
+        return new Handlebars.SafeString(link);
+    }
+    return res;
 });
 register('Prop', function() {
     var args = _.initial(arguments);
@@ -104,11 +106,11 @@ register('Multiply', function (arg1, arg2) {
 });
 
 register('key_value', function (context, options) {
-  var result = [];
-  _.each(context, function(value, key, list){
-    result.push({key:key, value:value});
-  });
-  return result;
+    var result = [];
+    _.each(context, function(value, key, list){
+        result.push({key:key, value:value});
+    });
+    return result;
 });
 
 Handlebars.registerHelper('chain', function () {
@@ -127,29 +129,29 @@ Handlebars.registerHelper('chain', function () {
     return value;
 });
 Handlebars.registerHelper('With', function(){
-  // Handlebars passes the options as the last argument.
-  var args = _.initial(arguments);
-  var options = _.last(arguments);
+    // Handlebars passes the options as the last argument.
+    var args = _.initial(arguments);
+    var options = _.last(arguments);
 
-  var withContext = {};
-  var only = false;
+    var withContext = {};
+    var only = false;
 
-  if(args.length >= 1){
-    var onlyArg = _.first(args);
-    if(_.isString(onlyArg) && onlyArg == 'only'){
-      only = true;
-      args = _.tail(args);
+    if(args.length >= 1){
+        var onlyArg = _.first(args);
+        if(_.isString(onlyArg) && onlyArg == 'only'){
+            only = true;
+            args = _.tail(args);
+        }
     }
-  }
 
-  // Extend the current context unless only is specified.
-  var initialContext = only ? {} : this;
+    // Extend the current context unless only is specified.
+    var initialContext = only ? {} : this;
 
-  // Merge all of the passed context arguments.
-  args.unshift({});
-  var argsContext = _.extend.apply(_, args);
+    // Merge all of the passed context arguments.
+    args.unshift({});
+    var argsContext = _.extend.apply(_, args);
 
-  // Finally, merge everything including the hash.
-  var context = _.extend({}, initialContext, argsContext, options.hash);
-  return options.fn(context);
+    // Finally, merge everything including the hash.
+    var context = _.extend({}, initialContext, argsContext, options.hash);
+    return options.fn(context);
 });
