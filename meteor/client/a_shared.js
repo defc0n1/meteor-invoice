@@ -24,7 +24,7 @@ Deps.autorun(function() {
     }
     _.each(collections, function (collection) {
         //progressCount += 1
-        var handle = Meteor.subscribe(collection,
+        Meteor.subscribe(collection,
             Session.get(collection + 'limit'),
             Session.get(collection + 'skip'),
             Session.get(collection + 'query'),
