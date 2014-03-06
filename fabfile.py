@@ -85,7 +85,11 @@ def copy():
         #run('cp deploy/*.conf /etc/supervisor.d/invoice.conf')
 
 def stage_db():
-    run('''mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')"''')
+    run('''
+            sudo supervisorctl stop edi_ftp_stage:* &&
+            mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')" &&
+            sudo supervisorctl start edi_ftp_stage:*
+            ''')
 
 
 def clone():

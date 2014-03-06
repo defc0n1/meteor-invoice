@@ -106,9 +106,9 @@ Meteor.methods({
         // add ean to all items
         var lines_with_ean = [];
         invoice.lines.forEach(function(line) {
-            if(line.item_number && !line.ean) {
+            if(line.item_number && !line.gln_number) {
                 var item = Items.findOne({ key: line.item_number});
-                line.ean = item.ean;
+                line.gln_number = item.gln_number;
             }
             lines_with_ean.push(line);
         });
