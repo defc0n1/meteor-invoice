@@ -10,7 +10,6 @@ env.apps_path = '/apps'
 env.log_dir = '/apps/log'
 env.config_dir = '/apps/config'
 env.pid_dir = '/apps/pid'
-env.monit_dir = '/apps/monit'
 env.hosts = ['144.76.234.182']
 env.user = 'root'
 #env.hosts = ['54.204.24.80']
@@ -31,8 +30,8 @@ def update():
 # prod commands
 
 def restart():
-    run('monit reload')
-    run('monit restart {}'.format(env.monit))
+    run('supervisorctl reload')
+    run('supervisorctl restart {}'.format(env.process))
 
 def start_remote():
     with lcd(env.meteor):
@@ -71,8 +70,6 @@ def mkdirs():
     run('sudo mkdir -p {}'.format(env.apps_path))
     run('sudo chown {} {}'.format(env.user, env.apps_path))
     run('mkdir -p {}'.format(env.log_dir))
-    run('mkdir -p {}'.format(env.pid_dir))
-    run('mkdir -p {}'.format(env.monit_dir))
     run('mkdir -p {}'.format(env.config_dir))
 
 def bundle():
@@ -84,7 +81,7 @@ def bundle():
 
 def copy():
     with cd(env.app_path):
-        run('cp deploy/monit.conf ../monit/invoice.conf')
+        run('cp deploy/*.conf /etc/supervisor.d/invoice.conf')
 
 def stage_db():
     run('''mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')"''')

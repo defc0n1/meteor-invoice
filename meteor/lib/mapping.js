@@ -202,6 +202,7 @@ Mapping = {
         { name: 'Inderkolli', key: 'inner_box'},
         { name: 'Yderkolli', key: 'outer_box'},
         { name: 'EAN', key: 'ean'},
+        { name: 'GLN nummer', key: 'gln_number'},
         { name: 'Beholdning', key: 'quantity'},
         ]
     },
