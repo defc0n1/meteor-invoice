@@ -89,7 +89,7 @@ def stage_db():
 
 def clone():
     with cd(env.apps_path):
-        run('git clone -q --depth 1 {} {}'.format(env.git_clone, env.app_name))
+        run('git clone -q --depth 1 {} {} || true'.format(env.git_clone, env.app_name))
 
 def install_deps():
     run('sudo npm install -g meteorite')
