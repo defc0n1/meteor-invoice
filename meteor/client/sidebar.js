@@ -20,6 +20,12 @@ Template.sidebar.events = {
     'click .new-creditor': function (event) {
         createAndOpen('Kreditor nummer', Creditors, 'creditors');
     },
+    'click .new-salesinvoice': function (event) {
+        Meteor.call('GetNextSequence', 'salesinvoice',
+                function (err, sequence) {
+                    Router.go('edit', { type: Router.current().params.type, key: sequence });
+                });
+    },
 };
 
 
@@ -44,7 +50,7 @@ Template.sidebar.items = function () {
             { name: 'Bogførte kreditnota', path: Router.routes.main.path({ root: 'purchase', type:  'postedPurchasecreditnotas'  }) },
         ],
         sale: [
-            { name: 'Ny faktura', path: '#', id: 'newSalesinvoice', click: 'new-item', goto: Router.routes.main.path({ root: 'new', type:  'newSalesinvoice' }) },
+            { name: 'Ny faktura', path: '#', click: 'new-salesinvoice' },
             { name: 'Åbne fakturaer', path: Router.routes.main.path({ root: 'sale', type:  'openSalesinvoices' }) },
             { name: 'Bogførte fakturaer', path: Router.routes.main.path({ root: 'sale', type:  'postedSalesinvoices'  }) },
             { name: 'Ny kreditnota', path: Router.routes.main.path({ root: 'new', type:  'newSalesCreditnota' }) },

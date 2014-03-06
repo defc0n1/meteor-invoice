@@ -76,9 +76,24 @@ Template.table.events({
         }
     },
     'click .goto-dropdown li': function (event) {
+        event.preventDefault();
         console.log(this);
         //Router.go('dynamic', { type: this.mapping, key: this.elem.key });
-        Router.go('dynamic', { type: this.mapping, key: this.elem.customer_number });
+        if (this.mapping === 'deptorEntries') {
+            SetFilter({ customer_number: this.elem.customer_number });
+            Session.set('viewTitle', 'Debitorposter: ' + this.elem.customer_number);
+            Router.go('dynamic', { type: this.mapping, key: this.elem.customer_number });
+        } else if ( this.mapping === 'itemEntries') {
+            //SetFilter({ customer_number: this.params.key });
+            var that = this;
+            Meteor.call('getItemEntries', this.elem.customer_number, function (err, res) {
+                res.forEach(function (elem) {
+                    ItemEntries.insert(elem);
+                });
+                Router.go('dynamic', { type: that.mapping, key: that.elem.customer_number });
+            });
+        }
+
     },
     'click .show-button': function(event) {
         var type = Session.get('type');

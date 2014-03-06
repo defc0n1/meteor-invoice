@@ -9,6 +9,8 @@ TradeAccounts = new Meteor.Collection('accounts');
 Items = new Meteor.Collection('items');
 FinanceEntries = new Meteor.Collection('financeentries');
 
+ItemEntries = new Meteor.Collection(null);
+
 GetCurrentCollection = function (capitalize) {
     var typeName = Router.current().params.type;
     var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
@@ -44,7 +46,6 @@ SetFilter = function(filter, extend, router) {
         filter = _.extend(oldFilter || {}, filter);
     }
     Session.set(mapping.collection + 'filter', filter);
-    console.log(router)
     if (router) {
         //router.subscribe(mapping.collection, router.params.key).wait();
     }
@@ -91,8 +92,7 @@ GetPrice = function (amount) {
         var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         return val;
 };
-BuildLink = function (elem, props, key) { 
-    console.log(key)
+BuildLink = function (elem, props, key) {
     if (props.key) {
         return props.root + props.map[elem[props.key]] + key;
     }

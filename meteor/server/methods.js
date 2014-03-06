@@ -24,6 +24,26 @@ Meteor.methods({
     getSalesInvoice: function (key) {
         return Sale.findOne({ key: parseInt(key) });
     },
+    getItemEntries: function (cust_num) {
+        console.log(cust_num);
+        ItemEntries.remove({});
+        //var res = Sale.find({customer_number: cust_num}, {fields: { item_entries: 1 }})
+        //_.each(res, function(elem) {
+            //if(elem.item_entries) {
+                //_.each(elem.item_entries, function (entry) {
+                    //ItemEntries.insert(entry);
+                //});
+            //}
+        //});
+
+        var res = Sale.aggregate([ {$match: {customer_number:cust_num}}, {$unwind:"$item_entries"},   {$group:{_id:null, clrs: {$push : "$item_entries"} }},   {$project:{_id:0, colors: "$clrs"}}])
+        console.log(res[0].colors);
+        //_.each(res[0].colors, function(elem) {
+            //console.log('insert');
+            //ItemEntries.insert(elem);
+        //});
+        return res[0].colors;
+    },
     getSalesCreditnota: function (key) {
         return Sale.findOne({ key: parseInt(key) });
     },
@@ -95,16 +115,8 @@ Meteor.methods({
         invoice.lines = lines_with_ean;
 
         // construct the message
-        //var object = { invoice: invoice, deptor: deptor.search_name, amqp: deptor.amqp_type };
         var object = { invoice: invoice, deptor: deptor };
         object.dry_run = false;
-        //if (Meteor.settings.env !== 'prod') {
-            //log.info('Adding dry run property');
-            //object.dry_run = true;
-        //}
-        //else {
-            //object.dry_run = false;
-        //}
         // set invoice state to processing
         Sale.update(
                 { key: invoiceNumber },
@@ -119,8 +131,7 @@ Meteor.methods({
                     { $set: { 'sent.amqp.state': 'error' } });
             Alerts.insert({ message: 'Afsendelse af EDI faktura ' + invoiceNumber + ' mislykkedes pga.: ' + message });
         }
-        // do the rpc
-        amqp.rpc(object, 'test', Meteor.bindEnvironment(function (response) {
+        amqp.rpc(object, Meteor.settings.amqp_queue, Meteor.bindEnvironment(function (response) {
             if (response.success === true) {
                 console.log('successful send of invoice:', invoiceNumber);
                 Sale.update(

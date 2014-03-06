@@ -1,4 +1,6 @@
 Template.new.created = function () {
+    //Hack to ensure that we do not re
+    Template.new.attached = false;
 };
 
 Template.new.newitem = function () {

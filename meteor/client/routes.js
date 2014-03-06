@@ -103,8 +103,6 @@ Router.map(function () {
             this.render('table');
         },
         before: function() {
-            //TODO: Capitalize mapping names
-            SetFilter({ customer_number: this.params.key });
             Session.set('type', Mapping[this.params.type]);
         }
     });
