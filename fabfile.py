@@ -57,12 +57,12 @@ def mongo_prod_admin():
 def staging():
     env.app_name = 'invoice_staging'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    env.monit = 'invoice_staging'
+    env.process = 'invoice_staging'
 
 def prod():
     env.app_name = 'invoice'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    env.monit = 'invoice'
+    env.process  = 'invoice'
 
 #subcommands
 
@@ -80,8 +80,9 @@ def bundle():
         run('rm ../deploy/out.tgz')
 
 def copy():
-    with cd(env.app_path):
-        run('cp deploy/*.conf /etc/supervisor.d/invoice.conf')
+    pass
+    #with cd(env.app_path):
+        #run('cp deploy/*.conf /etc/supervisor.d/invoice.conf')
 
 def stage_db():
     run('''mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')"''')
