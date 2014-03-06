@@ -30,8 +30,7 @@ def update():
 # prod commands
 
 def restart():
-    run('supervisorctl reload')
-    run('supervisorctl restart {}'.format(env.process))
+    run('supervisorctl reload && supervisorctl restart {}'.format(env.process))
 
 def start_remote():
     with lcd(env.meteor):
@@ -57,7 +56,7 @@ def mongo_prod_admin():
 def staging():
     env.app_name = 'invoice_staging'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    env.process = 'invoice_staging'
+    env.process = 'invoice_staging:*'
 
 def prod():
     env.app_name = 'invoice'

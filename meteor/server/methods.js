@@ -113,7 +113,6 @@ Meteor.methods({
             lines_with_ean.push(line);
         });
         invoice.lines = lines_with_ean;
-
         // construct the message
         var object = { invoice: invoice, deptor: deptor };
         object.dry_run = false;

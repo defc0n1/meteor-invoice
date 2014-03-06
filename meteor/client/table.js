@@ -22,23 +22,24 @@ changePage = function (count) {
 };
 Template.table.events({
     'click .edi-button': function(event) {
+        var message = '';
         // if already sent, we ask if user would like to resend
         var sent = this.elem.sent && this.elem.sent.amqp && this.elem.sent.amqp.state === 'success';
         if (sent) {
-            var message = 'Denne faktura blev sendt d. ' +
+            message = 'Denne faktura blev sendt d. ' +
                 moment(this.elem.sent.amqp.date).format('DD MMM YYYY') +
                 ' via AMQP.\n Vil du gensende fakturaen?';
 
-            var element = this.elem;
-            bootbox.confirm(message, function (res) {
-                if (res) {
-                    Meteor.call('sendAmqp', element.key);
-                }
-            });
         }
-        else {
-            Meteor.call('sendAmqp', this.elem.key);
+        else{
+            message = 'Vil du sende denne faktura med Edi?';
         }
+        var element = this.elem;
+        bootbox.confirm(message, function (res) {
+            if (res) {
+                Meteor.call('sendAmqp', element.key);
+            }
+        });
     },
     'click .email-button': function(event, temp) {
         // if already sent, we ask if user would like to resend
