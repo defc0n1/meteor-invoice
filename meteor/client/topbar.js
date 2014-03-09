@@ -29,6 +29,16 @@ Template.topbar.isSelected = function (route) {
     return current.template === route ? 'active' : '';
 
 };
+Template.topbar.helpers({
+    userEmail: function () {
+        var user = Meteor.user();
+        if (user) {
+            return user.emails[0].address;
+        } else {
+            return '';
+        }
+    }
+});
 
 Template.topbar.items = function () {
     var items = [

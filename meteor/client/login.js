@@ -27,5 +27,25 @@ Template.login.events({
             }
         );
         return false;
+    },
+    'click #forgot-password': function (e, t) {
+        var email = t.find('#login-email').value;
+        console.log('cap', email);
+        if (!email) {
+            Session.set('message', 'Indtast venligst email adresse');
+            Session.set('showResult', true);
+        }
+        else{
+            Session.set('showResult', true);
+            Session.set('message', 'Vent et øjeblik');
+            Accounts.forgotPassword({ email: email }, function(err) {
+                if (err) {
+                    Session.set('message', err.message);
+                }
+                else {
+                    Session.set('message', 'Vi har sendt en email med et password nulstillingslink til dig');
+                }
+            });
+        }
     }
 });

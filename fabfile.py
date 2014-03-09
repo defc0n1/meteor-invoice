@@ -61,7 +61,7 @@ def staging():
 def prod():
     env.app_name = 'invoice'
     env.app_path = os.path.join(env.apps_path, env.app_name)
-    env.process  = 'invoice'
+    env.process  = 'invoice_prod'
 
 #subcommands
 

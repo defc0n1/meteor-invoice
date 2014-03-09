@@ -4,8 +4,6 @@
 Router.before(
         function() {
             // clear session variables
-
-
             if (Meteor.loggingIn()) {
                 //NProgress.start();
             }
@@ -18,7 +16,7 @@ Router.before(
             else if(Meteor.user()) {
                 //NProgress.done();
             }
-        }, {except: ['login', 'forgotPassword']});
+        }, {except: ['login', 'forgotPassword', 'setPassword']});
 
 Router.configure({
     //layoutTemplate: 'layout',
@@ -26,6 +24,18 @@ Router.configure({
 });
 
 Router.map(function () {
+    this.route('setPassword', {
+        path: '/set-password',
+        action: function() {
+            console.log('test', this.params.hash);
+            if (Meteor.user()) {
+                this.stop();
+                Router.go('index');
+                return;
+            }
+            this.render('enroll');
+        },
+    });
     this.route('login', {
         path: '/login',
         template: 'login',
