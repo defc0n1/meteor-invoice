@@ -1,6 +1,20 @@
 "use strict";
+
+function auth(f) {        // (1)
+    return function() {
+        if (Meteor.userId()) {
+            return f.apply(this, arguments);
+        } else {
+            return 'Not authorized';
+        }
+    };
+}
 Meteor.methods({
-    GetNextSequence: function (name) {
+    CreateUser: auth(function (email) {
+        var userId = Accounts.createUser({ email: email });
+        Accounts.sendEnrollmentEmail(userId);
+    }),
+    GetNextSequence: auth(function (name) {
         var next = -1;
         for( var i = 0; i <= 10; i++) {
             var cursor = Sale.find({}, { fields: { key: 1 } , sort: { key: -1 }, limit: 1 })
@@ -14,17 +28,17 @@ Meteor.methods({
             }
         }
         return next;
-    },
-    DeptorsSearch: function (query, merger) {
+    }),
+    DeptorsSearch: auth(function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
-    },
-    ItemsSearch: function (query, merger) {
+    }),
+    ItemsSearch: auth(function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
-    },
-    getSalesInvoice: function (key) {
+    }),
+    getSalesInvoice: auth(function (key) {
         return Sale.findOne({ key: parseInt(key) });
-    },
-    getItemEntries: function (cust_num) {
+    }),
+    getItemEntries: auth(function (cust_num) {
         console.log(cust_num);
         ItemEntries.remove({});
         //var res = Sale.find({customer_number: cust_num}, {fields: { item_entries: 1 }})
@@ -43,23 +57,23 @@ Meteor.methods({
             //ItemEntries.insert(elem);
         //});
         return res[0].colors;
-    },
-    getSalesCreditnota: function (key) {
+    }),
+    getSalesCreditnota: auth(function (key) {
         return Sale.findOne({ key: parseInt(key) });
-    },
-    getPurchaseCreditnota: function (key) {
+    }),
+    getPurchaseCreditnota: auth(function (key) {
         return PurchaseCreditnotas.findOne({ key: parseInt(key) });
-    },
-    getPurchaseInvoice: function (key) {
+    }),
+    getPurchaseInvoice: auth(function (key) {
         return PurchaseInvoices.findOne({ key: parseInt(key) });
-    },
-    getInvoiceKeyByRecordNumber: function (number) {
+    }),
+    getInvoiceKeyByRecordNumber: auth(function (number) {
         return PurchaseInvoices.findOne({ creditor_invoice_number: parseInt(number) }, {fields: {key: 1} });
-    },
-    getCreditnotaKeyByRecordNumber: function (number) {
+    }),
+    getCreditnotaKeyByRecordNumber: auth(function (number) {
         return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
-    },
-    getItemStats: function (number, startDate, endDate) {
+    }),
+    getItemStats: auth(function (number, startDate, endDate) {
         var match = { item_number: number };
         if (endDate) {
             match.date = { $lte: endDate };
@@ -72,20 +86,20 @@ Meteor.methods({
                 { $match: match },
                 { $group: { _id: "$type", total: { $sum: "$total_price" }, quantity: { $sum: "$quantity" } } }
                 ]);
-    },
-    getCreditorStats: function (number) {
+    }),
+    getCreditorStats: auth(function (number) {
         return CreditorEntries.aggregate([
                 { $match: { creditor_number: number } },
                 { $group: { _id: "$type", total: { $sum: "$amount" } } }
         ]);
-    },
-    getDeptorStats: function (number) {
+    }),
+    getDeptorStats: auth(function (number) {
         return DeptorEntries.aggregate([
                 { $match: { deptor_number: number } },
                 { $group: { _id: "$type", total: { $sum: "$amount" } } }
         ]);
-    },
-    sendAmqp: function (invoiceNumber) {
+    }),
+    sendAmqp: auth(function (invoiceNumber) {
         var invoice = Sale.findOne({ key: invoiceNumber });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
         if(!deptor.gln){
@@ -145,8 +159,8 @@ Meteor.methods({
         function (e) {
             error(e);
         }));
-    },
-    sendEmail: function (id) {
+    }),
+    sendEmail: auth(function (id) {
         check(id, String);
         log.debug('Send mail called', id);
         var objectId = new Meteor.Collection.ObjectID(id)
@@ -210,5 +224,5 @@ Meteor.methods({
         }, function (e) {
             error(errors.unknown, e);
         }));
-    }
+    })
 });

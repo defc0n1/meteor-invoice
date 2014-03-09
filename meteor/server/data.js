@@ -53,42 +53,86 @@ FilterQuery = function (collection, fields, query, merger) {
     return collection.find(finalQuery, options);
 };
 Meteor.publish('DeptorPostings', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(Sale, SaleSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('Sale', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(Sale, SaleSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('Purchase', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(Purchase, PurchaseSearchFields, query,
         { options: {limit: limit, skip: skip }});
 });
 Meteor.publish('Deptors', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(Deptors, DeptorSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('Creditors', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(Creditors, CreditorSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('Items', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(Items, ItemSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('FinanceEntries', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return FilterQuery(FinanceEntries, FinanceEntriesSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
 Meteor.publish('alertChannel', function (){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return Alerts.find();
 });
 Meteor.publish('TradeAccounts', function (){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return TradeAccounts.find();
 });
 Meteor.publish('CollectionCounts', function (collection){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return CollectionCounts.find();
 });
 Meteor.publish('Custom', function (collection, query){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
     return global[collection].find(query);
 });
