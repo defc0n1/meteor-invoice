@@ -1,4 +1,4 @@
-
+handlebarHelpers = {};
 TableMaxLength = 22;
 Shorten = function(arg) {
     if (arg && arg.length > TableMaxLength) {
@@ -7,14 +7,61 @@ Shorten = function(arg) {
     return arg;
 
 };
-
-var handlebarHelpers = {};
+if( Meteor.isServer) {
+    Handlebars = Meteor.require('handlebars');
+}
 
 var register = function(name, func) {
     handlebarHelpers[name] = func;
     Handlebars.registerHelper(name, func);
 
-}
+};
+
+GetPrice = function (amount) {
+        if(isNaN(amount)){
+            var a = 0;
+            return a.toFixed(2) ;
+        }
+        amount = amount/100;
+        amount = amount.toFixed(2);
+        //if(amount.length === 2){
+        //return '00.' + amount;
+        //}
+    //var money = amount.substring(0, amount.length-2) + '.' + amount.substring(amount.length-2, amount.length);
+    //return money;
+        amount = amount + '';
+        amount = amount.replace('.', ',');
+        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return val;
+};
+register('GetPrice', GetPrice);
+
+GetDate = function (date) {
+    if (date) {
+        return moment(date).format('DD MMM YYYY');
+    }
+    else{
+        return '';
+    }
+};
+register('GetDate', GetDate);
+
+Handlebars.registerHelper('chain', function () {
+    var args = _.initial(arguments);
+    var value = undefined;
+    var dyn_args = [];
+    var that = this;
+    args.reverse().forEach(function (arg, i) {
+        if (handlebarHelpers[arg]) {
+            value = handlebarHelpers[arg].apply(that, dyn_args);
+            dyn_args = [value];
+        }
+        else {
+            dyn_args.push(arg);
+        }
+    });
+    return value;
+});
 register('CountText', function () {
     var obj_with_count = CollectionCounts.findOne(GetCurrentMappingName());
     if (obj_with_count === undefined)
@@ -32,10 +79,6 @@ register('CountText', function () {
     }
 });
 
-register('GetDate', GetDate);
-
-register('GetPrice', GetPrice);
-
 register('ElementKeyEquals', function(key, val, out) {
     // return the out string if element.key == val,
     // otherwise, return ""
@@ -47,10 +90,14 @@ register('ElementKeyEquals', function(key, val, out) {
         return '';
     }
 });
-
 register('Session', function(arg) {
     // return the value of arg in session
-    return Session.get(arg);
+    if (Meteor.isServer) {
+        return this.total;
+    }
+    else {
+        return Session.get(arg);
+    }
 });
 register('Shorten', function(arg) {
     return Session.get('element');
@@ -62,7 +109,12 @@ register('ListIndex', function (arg) {
     });
 });
 register('Element', function(arg) {
-    return Session.get('element');
+    if (Meteor.isServer) {
+        return this;
+    }
+    else {
+        return Session.get('element');
+    }
 });
 register('ElementProp', function(elem, prop, method, link) {
     // guard against undefined
@@ -71,7 +123,6 @@ register('ElementProp', function(elem, prop, method, link) {
 
     var mapping = Session.get('type');
     if (link) {
-        console.log(link.method)
         var path = window[link.method](elem, link.props, elem[prop]);
         var link = '<a class="link", href=/' + path + '>' + elem[prop] + '</a>';
         return new Handlebars.SafeString(link);
@@ -94,7 +145,12 @@ register('ElementProp', function(elem, prop, method, link) {
 register('Prop', function() {
     var args = _.initial(arguments);
     var args = _.rest(args);
-    var elem = Session.get(arguments[0]);
+    if (Meteor.isServer) {
+        var elem = this[arguments[0]];
+    }
+    else { 
+        var elem = Session.get(arguments[0]);
+    }
     args.forEach(function (arg, i) {
         elem = elem[arg];
     });
@@ -113,21 +169,6 @@ register('key_value', function (context, options) {
     return result;
 });
 
-Handlebars.registerHelper('chain', function () {
-    var args = Array.prototype.slice.call(arguments).slice(0, arguments.length - 1);
-    var value = undefined;
-    var dyn_args = [];
-    args.reverse().forEach(function (arg, i) {
-        if (handlebarHelpers[arg]) {
-            value = handlebarHelpers[arg].apply(this, dyn_args);
-            dyn_args = [value];
-        }
-        else {
-            dyn_args.push(arg);
-        }
-    });
-    return value;
-});
 Handlebars.registerHelper('With', function(){
     // Handlebars passes the options as the last argument.
     var args = _.initial(arguments);

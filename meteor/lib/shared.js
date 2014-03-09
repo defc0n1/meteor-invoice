@@ -67,31 +67,7 @@ GetCurrentType = function () {
     return Router.current().params.type;
 };
 
-GetDate = function (date) {
-    if (date) {
-        return moment(date).format('DD MMM YYYY');
-    }
-    else{
-        return '';
-    }
-};
-GetPrice = function (amount) {
-        if(isNaN(amount)){
-            var a = 0;
-            return a.toFixed(2) ;
-        }
-        amount = amount/100;
-        amount = amount.toFixed(2);
-        //if(amount.length === 2){
-        //return '00.' + amount;
-        //}
-    //var money = amount.substring(0, amount.length-2) + '.' + amount.substring(amount.length-2, amount.length);
-    //return money;
-        amount = amount + '';
-        amount = amount.replace('.', ',');
-        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        return val;
-};
+
 BuildLink = function (elem, props, key) {
     if (props.key) {
         return props.root + props.map[elem[props.key]] + key;

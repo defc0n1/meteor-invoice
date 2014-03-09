@@ -192,7 +192,7 @@ Meteor.methods({
 
         var message = Mail.invoice;
         message.to = email;
-        message.attachments = [ { filename: 'faktura.pdf', filePath: '/tmp/' + id + '.pdf' } ];
+        message.attachments = [ { filename: 'faktura.pdf', filePath: '/tmp/' + invoice.key + '.pdf' } ];
 
         var error = function (err, msg) {
                 Sale.update(
@@ -202,11 +202,10 @@ Meteor.methods({
 
 
         };
-        var pages = Print.totalPages(invoice.lines.length);
-        Pdf.getInvoice(invoice, {},  pages, Meteor.bindEnvironment(function (err, msg) {
+        Pdf.getInvoice(invoice, Meteor.bindEnvironment(function (err, msg) {
             console.log(err, msg);
             if (err) error(errors.pdfConversion, err);
-            log.info('File written to /tmp/' + id + '.pdf', err, msg);
+            log.info('File written to /tmp/' + invoice.key + '.pdf', err, msg);
             log.info('Conversion done, sending mail to', email);
             transport.sendMail(message, Meteor.bindEnvironment(function (err, message) {
                 if (err) error(errors.mailSend, err);

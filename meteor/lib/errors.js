@@ -9,7 +9,7 @@ errors = {
         throw new Meteor.Error(err.code, err.msg + ' ' +  msg);
     },
     async: function (err, msg, log) {
-        log.error(err, msg);
+        log && log(err, msg);
         Alerts.insert({ code: err.code, message: err.msg + ' ' +  msg});
     },
 };
