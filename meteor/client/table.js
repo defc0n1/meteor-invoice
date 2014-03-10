@@ -141,6 +141,20 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
+    'click #first-page': function(event) {
+        var collection = Session.get('type').collection;
+        Session.set(collection + 'skip', 0);
+    },
+    'click #last-page': function(event) {
+        var collection = Session.get('type').collection;
+        var size = CollectionCounts.findOne(GetCurrentMappingName()).count
+        var offset = 0;
+        if (size % incrementSize == 0) {
+            offset = -1
+        }
+        var skip = (parseInt(size/incrementSize) + offset) * 10
+        Session.set(collection + 'skip', skip);
+    },
     'click #next-page': function(event) {
         changePage(incrementSize);
     },
@@ -170,16 +184,22 @@ Template.table.helpers({
         var isProcessing = processing(this, 'mail') || processing(this, 'amqp');
         return isProcessing ? 'display: inherit' : 'display:none';
     },
-    showPrevious: function() {
+    showBack: function() {
         var type = Session.get('type');
         var collection = type.collection;
-        var disable = Session.equals(collection + 'skip', 0);
+        var disable = Session.equals(collection + 'skip', 0) || Session.equals(collection + 'skip', null);
         return disable ? 'disabled' : '';
     },
-    showNext: function() {
+    showForward: function() {
         var type = Session.get('type');
         var collection = type.collection;
-        var disable = Session.get(collection + 'skip') + incrementSize >= Session.get(collection + 'itemCount');
-        return disable ? 'disabled' : '';
+        var obj = CollectionCounts.findOne(GetCurrentMappingName());
+        if (obj) {
+            var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
+            return disable ? 'disabled' : '';
+        }
+        else {
+            return false;
+        }
     },
 });

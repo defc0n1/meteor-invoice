@@ -1,9 +1,25 @@
 "use strict";
 
-// helper to determine the current active route
+//helper to preserver skip and query history when using browser history.
+//To preserve set when going back from routeB to routeA
+//set routeA : { routeB: true }
+var historyMap = {
+    'postedSalesinvoices' : { 'postedSalesinvoice' : true }
+}
+var updateFilters = function(type) {
+            var obj = historyMap[type] || {};
+            var skipClear = obj[history.state.type];
+            if (!skipClear)
+                ClearFilters();
+}
+Router.unload(
+    function () {
+        history.pushState({ type: this.params.type }, '');
+    }
+)
 Router.before(
         function() {
-            // clear session variables
+
             if (Meteor.loggingIn()) {
                 //NProgress.start();
             }
@@ -68,7 +84,7 @@ Router.map(function () {
             this.render('table');
         },
         before: function () {
-            ClearFilters()
+            updateFilters(this.params.type);
             Session.set('type', Mapping[this.params.type]);
         }
     });

@@ -9,6 +9,7 @@ Template.topbar.events({
     },
     'click #search-query': function(event) {
         if (event.target.value === '') {
+            var type = Session.get('type');
             var collection = type.collection;
             var type = Session.get('type');
             Session.set(collection + 'query', '');
