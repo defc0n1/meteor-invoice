@@ -1,10 +1,24 @@
 "use strict";
 
-// helper to determine the current active route
+//helper to preserver skip and query history when using browser history.
+//To preserve set when going back from routeB to routeA
+//set routeA : { routeB: true }
+var historyMap = {
+    'postedSalesinvoices' : { 'postedSalesinvoice' : true }
+}
+var updateFilters = function(type) {
+            var obj = historyMap[type] || {};
+            var skipClear = obj[history.state.type];
+            if (!skipClear)
+                ClearFilters();
+}
+Router.unload(
+    function () {
+        history.pushState({ type: this.params.type }, '');
+    }
+)
 Router.before(
         function() {
-            // clear session variables
-
 
             if (Meteor.loggingIn()) {
                 //NProgress.start();
@@ -18,7 +32,7 @@ Router.before(
             else if(Meteor.user()) {
                 //NProgress.done();
             }
-        }, {except: ['login', 'forgotPassword']});
+        }, {except: ['login', 'forgotPassword', 'setPassword']});
 
 Router.configure({
     //layoutTemplate: 'layout',
@@ -26,6 +40,18 @@ Router.configure({
 });
 
 Router.map(function () {
+    this.route('setPassword', {
+        path: '/set-password',
+        action: function() {
+            console.log('test', this.params.hash);
+            if (Meteor.user()) {
+                this.stop();
+                Router.go('index');
+                return;
+            }
+            this.render('enroll');
+        },
+    });
     this.route('login', {
         path: '/login',
         template: 'login',
@@ -55,28 +81,34 @@ Router.map(function () {
         path: '/:root/:type',
         layoutTemplate: 'layout',
         action: function () {
-            Session.set('type', Mapping[this.params.type]);
             this.render('table');
         },
+        before: function () {
+            updateFilters(this.params.type);
+            Session.set('type', Mapping[this.params.type]);
+        }
     });
     this.route('edit2', {
         path: '/edit2/:type/:key',
         layoutTemplate: 'layout',
         action: function () {
-            //Session.set('type', Mapping[this.params.type]);
-            var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
-            Session.set(capString + 'filter', { key: this.params.key });
             this.render('editelement');
         },
+        waitOn: function () {
+            return Meteor.subscribe('Custom', GetCurrentMapping().collection, {key: this.params.key});
+        }
     });
     this.route('edit', {
         path: '/edit/:type/:key',
         layoutTemplate: 'layout',
         action: function () {
-            Session.set('key', this.params.key);
-            Session.set('type', Mapping[this.params.type]);
             this.render('new');
         },
+        before: function () {
+            Session.set('key', this.params.key);
+            //Session.set('type', Mapping[this.params.type]);
+            Session.set('type', Mapping['newSalesinvoice']);
+        }
     });
     this.route('show', {
         path: '/show/:type/:key',
@@ -97,9 +129,6 @@ Router.map(function () {
             this.render('table');
         },
         before: function() {
-            //TODO: Capitalize mapping names
-            var capString = this.params.type.charAt(0).toUpperCase() + this.params.type.slice(1);
-            Session.set(capString + 'filter', { record_number: parseInt(this.params.key) });
             Session.set('type', Mapping[this.params.type]);
         }
     });

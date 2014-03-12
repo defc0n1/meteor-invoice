@@ -11,7 +11,7 @@ Template.editelement.rendered = function () {
 
     // We attach an observed handler and update the
     // editable value on change
-    var query = Items.find({ _id: elem._id });
+    var query = GetCurrentCollection().find({ _id: elem._id });
     var handle = query.observeChanges({
         changed: function (id, fields) {
             _.each(fields, function (v, k) {

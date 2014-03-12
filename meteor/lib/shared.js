@@ -1,26 +1,64 @@
+CollectionCounts = new Meteor.Collection('counts');
 Counters = new Meteor.Collection('counters');
-SalesInvoices = new Meteor.Collection('salesinvoices');
-SalesCreditnotas = new Meteor.Collection('salescreditnotas');
-PurchaseInvoices = new Meteor.Collection('purchaseinvoices');
-PurchaseCreditnotas = new Meteor.Collection('purchasecreditnotas');
+Sale = new Meteor.Collection('sale');
+Purchase = new Meteor.Collection('purchase');
 Deptors = new Meteor.Collection('deptors');
 Creditors = new Meteor.Collection('creditors');
 Alerts = new Meteor.Collection('alerts');
 TradeAccounts = new Meteor.Collection('accounts');
 Items = new Meteor.Collection('items');
-ItemEntries = new Meteor.Collection('itementries');
-CreditorEntries = new Meteor.Collection('creditorentries');
-DeptorEntries = new Meteor.Collection('deptorentries');
 FinanceEntries = new Meteor.Collection('financeentries');
+
+ItemEntries = new Meteor.Collection(null);
 
 GetCurrentCollection = function (capitalize) {
     var typeName = Router.current().params.type;
     var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
-    return window[capString]; 
+    return window[capString];
 };
 
+ClearFilters = function () {
+var collections = [
+    'Deptors',
+    'Creditors',
+    'Items',
+    'FinanceEntries',
+    'Sale',
+    'Purchase',
+    ];
+    _.each(collections, function (collection) {
+            Session.set(collection + 'limit', null),
+            Session.set(collection + 'skip', null),
+            Session.set(collection + 'query', null),
+            Session.set(collection + 'filter', null)
+
+    });
+    //$('#search-query').val('');
+    Session.set('viewTitle', '');
+}
+
+SetFilter = function(filter, extend, router) {
+    var typeName = Router.current().params.type;
+    var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+    var mapping = GetCurrentMapping();
+    if (extend) {
+        var oldFilter = Session.get(mapping.collection + 'filter');
+        filter = _.extend(oldFilter || {}, filter);
+    }
+    Session.set(mapping.collection + 'filter', filter);
+    if (router) {
+        //router.subscribe(mapping.collection, router.params.key).wait();
+    }
+};
+
+GetCurrentMappingName = function () {
+    return Router.current().params.type;
+};
 GetCurrentMapping = function () {
     return Mapping[Router.current().params.type];
+};
+GetCurrentCollectionName = function () {
+    return Mapping[Router.current().params.type].collection
 };
 GetCurrentKey = function () {
     return Router.current().params.key;
@@ -29,30 +67,14 @@ GetCurrentType = function () {
     return Router.current().params.type;
 };
 
-GetDate = function (date) {
-    if (date) {
-        return moment(date).format('DD MMM YYYY');
+
+BuildLink = function (elem, props, key) {
+    if (props.key) {
+        return props.root + props.map[elem[props.key]] + key;
     }
-    else{
-        return '';
+    else {
+        return props.root + key;
     }
-};
-GetPrice = function (amount) {
-        if(isNaN(amount)){
-            var a = 0;
-            return a.toFixed(2) ;
-        }
-        amount = amount/100;
-        amount = amount.toFixed(2);
-        //if(amount.length === 2){
-        //return '00.' + amount;
-        //}
-    //var money = amount.substring(0, amount.length-2) + '.' + amount.substring(amount.length-2, amount.length);
-    //return money;
-        amount = amount + '';
-        amount = amount.replace('.', ',');
-        var val = amount.replace(/\B(?=(\d{3})+(?!\d))/g, ".");;
-        return val;
 };
 
 

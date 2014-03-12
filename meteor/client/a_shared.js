@@ -5,20 +5,15 @@ Session.set('limit', incrementSize);
 
 Meteor.subscribe('TradeAccounts');
 Meteor.subscribe('alertChannel');
+Meteor.subscribe("CollectionCounts");
 
 var collections = [
     'Deptors',
     'Creditors',
     'Items',
-    'ItemEntries',
-    'DeptorEntries',
-    'CreditorEntries',
     'FinanceEntries',
-    'OpenSalesInvoices',
-    'PostedSalesInvoices',
-    'SalesCreditnotas',
-    'PurchaseInvoices',
-    'PurchaseCreditnotas',
+    'Sale',
+    'Purchase',
     ];
 Deps.autorun(function() {
     var progressCount = 1;
@@ -41,49 +36,5 @@ Deps.autorun(function() {
                     NProgress.done();
                 }
             });
-
     });
 });
-
-
-var updateCounts = function (collections) {
-    _.each(collections, function (collection) {
-    Meteor.call('Count', collection,
-            Session.get(collection + 'query'),
-            { filter: Session.get(collection + 'filter') },
-            function(err, result) {
-                err && log.error(err);
-                Session.set(collection + 'itemCount', result);
-            });
-    });
-};
-var cols = {
-    'Deptors': undefined,
-    'Creditors': undefined,
-    'Items': undefined,
-    'ItemEntries': undefined,
-    'DeptorEntries': undefined,
-    'CreditorEntries': undefined,
-    'SalesInvoices': ['OpenSalesInvoices', 'PostedSalesInvoices'],
-    'SalesCreditnotas': undefined,
-    'PurchaseInvoices': undefined,
-    'PurchaseCreditnotas': undefined,
-};
-DoCount = function () {
-    _.chain(cols).keys().each(function (key) {
-        extra = []
-        if (cols[key]) {
-            extra = cols[key];
-        }
-        else {
-            extra = [key];
-        }
-        updateCounts(extra);
-        //return window[key].find().observeChanges({
-            //added: updateCounts(extra),
-            //removed: updateCounts(extra),
-        //});
-    });
-}
-DoCount();
-

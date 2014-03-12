@@ -1,18 +1,10 @@
 Template.table.rendered = function () {
     var type = Session.get('type');
-    var doit = false;
-    if (type.new) {
-        doit = true;
-        type = type.background;
-        Session.set('type', type);
+    if(type.filter) {
+        SetFilter(type.filter, true);
     }
     Session.set('modalFields', type.modalFields);
-    var col = type.subCollection || type.collection;
-    Session.setDefault(col + 'skip', 0);
-    if (doit) {
-        Session.set('selected', {});
-        $('#myModal').modal({});
-    }
+    Session.setDefault(type.collection + 'skip', 0);
     $('.table-tooltip').tooltip();
 };
 
@@ -20,33 +12,34 @@ Template.table.created = function () {
 };
 Template.table.items = function () {
     var type = Session.get('type');
-    return window[type.collection].find(type.filter || {}, { sort: { key: -1 }}); // .fetch();
+    return window[type.collection].find({}, { sort: { key: -1 }});
 };
 
 changePage = function (count) {
-    var collection = Session.get('type').subCollection || Session.get('type').collection;
+    var collection = Session.get('type').collection;
     Session.set(collection + 'skip',
             Session.get(collection + 'skip') + count);
 };
 Template.table.events({
     'click .edi-button': function(event) {
+        var message = '';
         // if already sent, we ask if user would like to resend
         var sent = this.elem.sent && this.elem.sent.amqp && this.elem.sent.amqp.state === 'success';
         if (sent) {
-            var message = 'Denne faktura blev sendt d. ' +
+            message = 'Denne faktura blev sendt d. ' +
                 moment(this.elem.sent.amqp.date).format('DD MMM YYYY') +
                 ' via AMQP.\n Vil du gensende fakturaen?';
 
-            var element = this.elem;
-            bootbox.confirm(message, function (res) {
-                if (res) {
-                    Meteor.call('sendAmqp', element.key);
-                }
-            });
         }
-        else {
-            Meteor.call('sendAmqp', this.elem.key);
+        else{
+            message = 'Vil du sende denne faktura med Edi?';
         }
+        var element = this.elem;
+        bootbox.confirm(message, function (res) {
+            if (res) {
+                Meteor.call('sendAmqp', element.key);
+            }
+        });
     },
     'click .email-button': function(event, temp) {
         // if already sent, we ask if user would like to resend
@@ -84,8 +77,24 @@ Template.table.events({
         }
     },
     'click .goto-dropdown li': function (event) {
+        event.preventDefault();
         console.log(this);
-        Router.go('dynamic', { type: this.mapping, key: this.elem.key });
+        //Router.go('dynamic', { type: this.mapping, key: this.elem.key });
+        if (this.mapping === 'deptorEntries') {
+            SetFilter({ customer_number: this.elem.customer_number });
+            Session.set('viewTitle', 'Debitorposter: ' + this.elem.customer_number);
+            Router.go('dynamic', { type: this.mapping, key: this.elem.customer_number });
+        } else if ( this.mapping === 'itemEntries') {
+            //SetFilter({ customer_number: this.params.key });
+            var that = this;
+            Meteor.call('getItemEntries', this.elem.customer_number, function (err, res) {
+                res.forEach(function (elem) {
+                    ItemEntries.insert(elem);
+                });
+                Router.go('dynamic', { type: that.mapping, key: that.elem.customer_number });
+            });
+        }
+
     },
     'click .show-button': function(event) {
         var type = Session.get('type');
@@ -96,7 +105,6 @@ Template.table.events({
         bootbox.confirm('Vil du slette denne faktura?', function (res) {
             if (res) {
                 window[Session.get('type').collection].remove({ _id: id });
-                DoCount();
             }
         });
     },
@@ -133,6 +141,20 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
+    'click #first-page': function(event) {
+        var collection = Session.get('type').collection;
+        Session.set(collection + 'skip', 0);
+    },
+    'click #last-page': function(event) {
+        var collection = Session.get('type').collection;
+        var size = CollectionCounts.findOne(GetCurrentMappingName()).count
+        var offset = 0;
+        if (size % incrementSize == 0) {
+            offset = -1
+        }
+        var skip = (parseInt(size/incrementSize) + offset) * 10
+        Session.set(collection + 'skip', skip);
+    },
     'click #next-page': function(event) {
         changePage(incrementSize);
     },
@@ -155,10 +177,6 @@ Template.table.helpers({
         return this.elem.sent[type].state === 'success' ? 'btn-success' : 'btn-danger';
     },
     processing: function (type) {
-        //speical case for edi invoices, only show if field is defined
-        if (type === 'amqp' && !this.elem.customer_order_number) {
-            return 'disabled';
-        }
         var state = processing(this.elem, type) ? 'disabled'  : '';
         return state;
     },
@@ -166,16 +184,22 @@ Template.table.helpers({
         var isProcessing = processing(this, 'mail') || processing(this, 'amqp');
         return isProcessing ? 'display: inherit' : 'display:none';
     },
-    showPrevious: function() {
+    showBack: function() {
         var type = Session.get('type');
-        var collection = type.subCollection || type.collection;
-        var disable = Session.equals(collection + 'skip', 0);
+        var collection = type.collection;
+        var disable = Session.equals(collection + 'skip', 0) || Session.equals(collection + 'skip', null);
         return disable ? 'disabled' : '';
     },
-    showNext: function() {
+    showForward: function() {
         var type = Session.get('type');
-        var collection = type.subCollection || type.collection;
-        var disable = Session.get(collection + 'skip') + incrementSize >= Session.get(collection + 'itemCount');
-        return disable ? 'disabled' : '';
+        var collection = type.collection;
+        var obj = CollectionCounts.findOne(GetCurrentMappingName());
+        if (obj) {
+            var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
+            return disable ? 'disabled' : '';
+        }
+        else {
+            return false;
+        }
     },
 });
