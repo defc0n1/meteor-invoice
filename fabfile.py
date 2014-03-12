@@ -30,7 +30,7 @@ def update():
 # prod commands
 
 def restart():
-    run('supervisorctl reload && supervisorctl restart {}'.format(env.process))
+    run('supervisorctl reload && sleep 3 && supervisorctl restart {}'.format(env.process))
 
 def start_remote():
     with lcd(env.meteor):
