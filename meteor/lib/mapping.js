@@ -133,7 +133,7 @@ Mapping = {
         ],
         modalFields: [ { name: 'Nummer', key: 'key'},
         { name: 'Navn', key: 'name'},
-        { name: 'Email', key: 'email'},
+        { name: 'Emails', key: 'emails', list: true, classes: 'list-group' },
         { name: 'Telefon', key: 'phone'},
         { name: 'Fax', key: 'fax'},
         { name: 'Adresse', key: 'address'},
