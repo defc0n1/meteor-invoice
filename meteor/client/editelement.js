@@ -36,6 +36,7 @@ Template.editelement.rendered = function () {
     $('.edit-field').editable({
         emptytext: 'Indtast værdi',
         success: function(response, newValue) {
+            console.log($(this), this);
             var update = {};
             var field = $(this).attr('id');
 
@@ -43,9 +44,21 @@ Template.editelement.rendered = function () {
                 Messages.insert({ message: 'Nøglen kan ikke ændres på nuværende tidspunkt.' });
                 return;
             }
-            update[field] = newValue;
             var selected = Session.get('element');
             console.log(selected, newValue, response);
+
+            var dataIndex = $(this).attr('data-index');
+            // if ( _.isArray(selected[field]) ) {
+            if ( dataIndex ) {
+                var dataKey = $(this).attr('data-key');
+                var newList = selected[dataKey];
+                newList.splice(selected[dataKey][dataIndex], 1);
+                newList.push(newValue);
+                newList = _.uniq(newList);
+                update[field] = newList;
+            } else {
+                update[field] = newValue;
+            }
             var res = GetCurrentCollection().update({ _id: selected._id }, { $set: update }, function (err, msg) {
                 console.log(err, msg);
                 if (err) {
@@ -55,7 +68,7 @@ Template.editelement.rendered = function () {
                     //Messages.insert({ message: 'Nøgle eksisterer allerede' });
                 }
             });
-            //we might need to run the update sync, as editable expects the error to be returned
+            // we might need to run the update sync, as editable expects the error to be returned
         },
         display: function (value) {
 

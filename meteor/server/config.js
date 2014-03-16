@@ -1,5 +1,5 @@
 Accounts.config({
-    forbidClientAccountCreation: true
+    forbidClientAccountCreation: false
 });
 Accounts.urls.resetPassword = function (token) {
     return Meteor.absoluteUrl('set-password/#/reset-password/' + token);

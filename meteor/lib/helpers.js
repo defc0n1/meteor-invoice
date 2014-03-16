@@ -104,6 +104,10 @@ register('Shorten', function(arg) {
 });
 register('ListIndex', function (arg) {
     return _.map(arg, function (item, index) {
+        // In case each item is not object, we wrap it inside an object with a value key
+        if ( !_.isObject() ) {
+            item = { value: item };
+        }
         item.index = index;
         return item;
     });
