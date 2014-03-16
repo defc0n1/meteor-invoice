@@ -27,6 +27,9 @@ def update():
     with cd(os.path.join(env.app_path, env.meteor)):
         run('mrt install')
 
+def test():
+        local("py.test -xs meteor/tests")
+
 # prod commands
 
 def restart():

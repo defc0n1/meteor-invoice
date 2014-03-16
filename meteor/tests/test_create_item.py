@@ -2,7 +2,7 @@ import time
 import util
 
 item_key = '123456789'
-def test_create_item(wd, db):
+def test_create_item(wd):
     wd.auth()
     util.click_button_by_id(wd, 'Varer')
     util.click_button_by_id(wd, 'newItem')
@@ -22,12 +22,13 @@ def test_create_item(wd, db):
         'outer_box': '8',
         'ean': '9',
         'quantity': '10',
+        'gln_number': '12345',
     }
 
     for key, value in test_item.iteritems():
         util.fill_xeditable_field(wd, key, value);
 
-    item = db.items.find_one({ 'key': item_key })
+    item = wd.db.items.find_one({ 'key': item_key })
     assert item != None
 
     for key, value in test_item.iteritems():

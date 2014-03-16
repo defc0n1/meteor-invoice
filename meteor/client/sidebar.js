@@ -33,7 +33,7 @@ Template.sidebar.items = function () {
     var key = Router.current().params.key;
     var sidebar = {
         items: [
-            { name: 'Ny vare', path: '#', click: 'new-item' },
+            { name: 'Ny vare', path: '#', id: 'newItem', click: 'new-item' },
             { name: 'Varer', path: Router.routes.main.path({ root: 'items', type:  'items' }) },
             { name: 'Varegrupper', path: Router.routes.main.path({ root: 'items', type:  'itemGroups'  }) },
         ],
