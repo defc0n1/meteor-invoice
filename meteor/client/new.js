@@ -1,17 +1,19 @@
 Template.new.created = function () {
+    //Hack to ensure that we do not re
+    Template.new.attached = false;
 };
 
 Template.new.newitem = function () {
-    return SalesInvoices.findOne({ key: parseInt(Router.current().params.key ) });
+    return Sale.findOne({ key: parseInt(Router.current().params.key ) });
 };
 
 Template.new.rendered = function () {
-    Session.set('type', Mapping['newSalesinvoice']);
-    var elem = SalesInvoices.findOne({ key: parseInt(Router.current().params.key) });
+    //Session.set('type', Mapping['newSalesinvoice']);
+    var elem = Sale.findOne({ key: parseInt(Router.current().params.key) });
     Session.set('element', elem);
     // attach an observed handler and update the
     // editable value on change
-    var query = SalesInvoices.find({ key: parseInt(Router.current().params.key) });
+    var query = Sale.find({ key: parseInt(Router.current().params.key) });
     var handle = query.observeChanges({changed: function(id, fields) {
         _.each(fields, function (v, k) {
             // go through every item line in case that property has changed
@@ -76,7 +78,7 @@ Template.new.rendered = function () {
                     update[map.key] = props[map.from];
                 }
             });
-            var res = SalesInvoices.update({ _id: elem._id }, { $set: update });
+            var res = Sale.update({ _id: elem._id }, { $set: update });
         });
 
         $("#item-select").on('change', function (val) {
@@ -88,7 +90,7 @@ Template.new.rendered = function () {
                 item_number: props.key,
                 price: props.price
             };
-            var res = SalesInvoices.update({ _id: elem._id }, { $push: { lines: update } }, function (err, msg) {
+            var res = Sale.update({ _id: elem._id }, { $push: { lines: update } }, function (err, msg) {
                 console.log(err, msg);
             });
         });
@@ -112,7 +114,7 @@ Template.new.rendered = function () {
             console.log(update);
 
 
-            var res = SalesInvoices.update({ _id: elem.id }, { $set: update });
+            var res = Sale.update({ _id: elem.id }, { $set: update });
         },
         display: function (value) {
             var formatter = $(this).attr('data-formatter');

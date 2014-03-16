@@ -17,10 +17,6 @@ body {
 body .modal-open {
     margin-right: 0px;
 }
-#main-search {
-    width: 300px;
-}
-
 #sidebar {
     /*padding-top: 30px;*/
     width: 200px;

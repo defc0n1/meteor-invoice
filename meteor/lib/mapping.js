@@ -34,7 +34,8 @@ Mapping = {
         },
     },
     postedSalescreditnotas: {
-        collection: 'SalesCreditnotas',
+        collection: 'Sale',
+        filter: { $and: [ { type: 'creditnota' }, { posting_date: { $exists: true } } ] },
         singleView: 'postedSalescreditnota',
         table: [
             { header: 'Nummer', key: 'key' },
@@ -50,9 +51,8 @@ Mapping = {
         ],
     },
     postedSalesinvoices: {
-        collection: 'SalesInvoices',
-        subCollection: 'PostedSalesInvoices',
-        filter: { $or: [ { posting_date: { $exists: true } } ] },
+        collection: 'Sale',
+        filter: { $and: [ { type: 'invoice' }, { posting_date: { $exists: true } } ] },
         singleView: 'postedSalesinvoice',
         table: [
             { header: 'Nummer', key: 'key' },
@@ -72,8 +72,8 @@ Mapping = {
         ],
     },
     openSalesinvoices: {
-        collection: 'SalesInvoices',
-        subCollection: 'OpenSalesInvoices',
+        collection: 'Sale',
+        filter: { $and: [ { type: 'invoice' }, { posting_date: { $exists: false } } ] },
         singleView: 'openSalesinvoice',
         filter: { $or: [ { posting_date: { $exists: false } },
             { posting_date: null }, { posting_date: '' } ] },
@@ -88,34 +88,34 @@ Mapping = {
            ] },
         ],
     },
-    postedPurchasecreditnotas: {
-        collection: 'PurchaseCreditnotas',
-        singleView: 'postedPurchasecreditnota',
-        table: [
-            { header: 'Nummer', key: 'key' },
-            { header: 'Leverendørnummer', key: 'supplier_number' },
-            { header: 'Navn', key: 'name' },
-            { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
-            { header: 'Send', key: '', buttons: [
-                { text: 'Vis', classes: 'show-button' },
+    //postedPurchasecreditnotas: {
+        //collection: 'PurchaseCreditnotas',
+        //singleView: 'postedPurchasecreditnota',
+        //table: [
+            //{ header: 'Nummer', key: 'key' },
+            //{ header: 'Leverendørnummer', key: 'supplier_number' },
+            //{ header: 'Navn', key: 'name' },
+            //{ header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
+            //{ header: 'Send', key: '', buttons: [
+                //{ text: 'Vis', classes: 'show-button' },
 
-           ] },
-        ],
-    },
-    postedPurchaseinvoices: {
-        collection: 'PurchaseInvoices',
-        singleView: 'postedPurchaseinvoice',
-        table: [
-            { header: 'Nummer', key: 'key' },
-            { header: 'Leverendørnummer', key: 'supplier_number' },
-            { header: 'Navn', key: 'name' },
-            { header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
-            { header: 'Send', key: '', buttons: [
-                { text: 'Vis', classes: ['show-button'] },
+           //] },
+        //],
+    //},
+    //postedPurchaseinvoices: {
+        //collection: 'PurchaseInvoices',
+        //singleView: 'postedPurchaseinvoice',
+        //table: [
+            //{ header: 'Nummer', key: 'key' },
+            //{ header: 'Leverendørnummer', key: 'supplier_number' },
+            //{ header: 'Navn', key: 'name' },
+            //{ header: 'Bogf. dato', key: 'posting_date', formatter: 'GetDate' },
+            //{ header: 'Send', key: '', buttons: [
+                //{ text: 'Vis', classes: ['show-button'] },
 
-           ] },
-        ],
-    },
+           //] },
+        //],
+    //},
     deptors: {
         collection: 'Deptors',
         class: 'modal-edit',
@@ -143,7 +143,7 @@ Mapping = {
         { name: 'GLN-nummer', key: 'gln'},
         { name: 'GLN-gruppe', key: 'gln_group', dropdown: true, classes: 'gln-group-select', content: [
             { value: '', name: 'Ikke EDI'},
-            { value: 'supergross', name: 'Super Gross'},
+            { value: 'supergros', name: 'Super Gross'},
             { value: 'dansksupermarked', name: 'Dansk Supermarked'}
         ]
         },
@@ -202,27 +202,9 @@ Mapping = {
         { name: 'Inderkolli', key: 'inner_box'},
         { name: 'Yderkolli', key: 'outer_box'},
         { name: 'EAN', key: 'ean'},
+        { name: 'GLN nummer', key: 'gln_number'},
         { name: 'Beholdning', key: 'quantity'},
         ]
-    },
-    itemEntries: {
-        collection: 'ItemEntries',
-        //class: 'modal-edit',
-        table: [
-            { header: 'Løbenummer', key: 'key' },
-            { header: 'Varenummer', key: 'item_number' },
-            { header: 'Gruppe', key: 'item_group' },
-            { header: 'Beholdning', key: 'quantity' },
-            { header: 'BilagsNr', key: 'record_number' },
-            { header: 'Type', key: 'type' },
-            { header: 'Pris', key: 'item_price', formatter: 'GetPrice' },
-            { header: 'Pris total', key: 'total_price', formatter: 'GetPrice' },
-            { header: 'Dato', key: 'date', formatter: 'GetDate' },
-            { header: 'Kontakt', key: 'contact_number' },
-            { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-item-button' },
-           ] },
-        ],
     },
     financeEntries: {
         collection: 'FinanceEntries',
@@ -239,53 +221,84 @@ Mapping = {
            ] },
         ],
     },
-    creditorEntries: {
-        collection: 'CreditorEntries',
+    //creditorEntries: {
+        //collection: 'CreditorEntries',
+        ////class: 'modal-edit',
+        //views: {
+            //'Faktura': {
+                //path: 'postedPurchaseinvoice',
+                //method: 'getInvoiceKeyByRecordNumber'
+            //},
+            //'Kreditnota': {
+                //path: 'postedPurchasecreditnota',
+                //method: 'getCreditnotaKeyByRecordNumber'
+            //}
+        //},
+        //table: [
+            //{ header: 'Type', key: 'type' },
+            //{ header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
+            //{ header: 'Løbenummer', key: 'key' },
+            //{ header: 'Kreditor', key: 'creditor_number' },
+            //{ header: 'BilagsNr', key: 'record_number', isLink: true },
+            //{ header: 'Bogf.gr', key: 'posting_group' },
+            //{ header: 'Dato', key: 'date', formatter: 'GetDate' },
+            //{ header: '', key: '', buttons: [
+                //{ icon: 'wrench', classes: 'show-item-button' },
+           //] },
+        //],
+    //},
+    itemEntries: {
+        collection: 'ItemEntries',
         //class: 'modal-edit',
-        views: {
-            'Faktura': {
-                path: 'postedPurchaseinvoice',
-                method: 'getInvoiceKeyByRecordNumber'
-            },
-            'Kreditnota': {
-                path: 'postedPurchasecreditnota',
-                method: 'getCreditnotaKeyByRecordNumber'
-            }
-        },
         table: [
-            { header: 'Type', key: 'type' },
-            { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
             { header: 'Løbenummer', key: 'key' },
-            { header: 'Kreditor', key: 'creditor_number' },
-            { header: 'BilagsNr', key: 'record_number', isLink: true },
-            { header: 'Bogf.gr', key: 'posting_group' },
+            { header: 'Varenummer', key: 'item_number' },
+            { header: 'Antal', key: 'quantity' },
+            { header: 'Type', key: 'type' },
+            { header: 'Pris', key: 'item_price', formatter: 'GetPrice' },
+            { header: 'Pris total', key: 'total_price', formatter: 'GetPrice' },
             { header: 'Dato', key: 'date', formatter: 'GetDate' },
-            { header: '', key: '', buttons: [
-                { icon: 'wrench', classes: 'show-item-button' },
-           ] },
+            { header: 'BilagsNr', key: 'record_number', link: { method: 'BuildLink', props: {
+                                                                                      root: 'show/',
+                                                                                      key: 'type',
+                                                                                      map: {
+                                                                                          Salg: 'postedSalesinvoice/',
+                                                                                          //TODO: find the other types in here
+                                                                                          creditnota:' postedSalescreditnota/'
+                                                                                      }
+                                                                                  },
+                                                    }
+            },
         ],
     },
     deptorEntries: {
-        collection: 'DeptorEntries',
+        collection: 'Sale',
+        filter: { sort: { entry_number: -1 } },
         views: {
-            'Faktura': {
+            'invoice': {
                 path: 'postedSalesinvoice'
             },
-            'Kreditnota': {
+            'creditnota': {
                 path: 'postedSalescreditnota'
             }
         },
         table: [
-            { header: 'Type', key: 'type' },
             { header: 'Beløb', key: 'amount', formatter: 'GetPrice' },
-            { header: 'Løbenummer', key: 'key' },
-            { header: 'Debitor', key: 'deptor_number' },
-            { header: 'BilagsNr', key: 'record_number', isLink: true },
-            { header: 'Dato', key: 'date', formatter: 'GetDate' },
-            { header: 'Send', key: '', buttons: [
-                { text: 'Vis', classes: ['show-button'] },
-
-           ] },
+            { header: 'Løbenummer', key: 'entry_number' },
+            { header: 'Debitor', key: 'deptor_number', link: { method: 'BuildLink', props: { root: 'edit2/deptors/' } } },
+            { header: 'Kunde', key: 'customer_number', link: { method: 'BuildLink', props: { root: 'edit2/deptors/'} } },
+            { header: 'BilagsNr', key: 'key', link: { method: 'BuildLink', props: {
+                                                                                      root: 'show/',
+                                                                                      key: 'type',
+                                                                                      map: {
+                                                                                          invoice: 'postedSalesinvoice/',
+                                                                                          creditnota:' postedSalescreditnota/'
+                                                                                      }
+                                                                                  },
+                                                    }
+            },
+            { header: 'Bogf.Gr.', key: 'posting_group' },
+            { header: 'Dato', key: 'posting_date', formatter: 'GetDate' },
         ],
     },
     accounts: {
@@ -319,32 +332,5 @@ Mapping = {
             { from: 'key', key: 'item_number' },
             { from: 'price', key: 'price', formatter: 'GetPrice' },
         ],
-        create: function () {
-            Meteor.call('GetNextSequence', 'salesinvoice',
-                    function (err, sequence) {
-                        Router.go('edit', { type: Router.current().params.type, key: sequence });
-                    });
-        }
     },
-    get newItem () {
-        return {
-            new: true,
-            modalText: 'Varenummer',
-            collection: 'Items',
-            background: this.items,
-            modalFields: this.items.modalFields,
-            create: function () {
-                bootbox.prompt(this.modalText, function(result) {
-                    if (result === null) {
-                        // pass
-                    } else {
-                        var id = Items.insert({ key: result });
-                        //TODO catch duplicate key error
-                        var element = Items.findOne({ _id : id });
-                        Router.go('edit2', { type: 'items' , key: result });
-                    }
-                });
-            },
-        }
-    }
 };
