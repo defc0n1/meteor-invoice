@@ -29,6 +29,8 @@ def update():
 
 def test():
         local("py.test -xs meteor/tests")
+        with lcd(env.meteor):
+            local('laika -s ../config/test-settings.json -V -t 50000')
 
 # prod commands
 
