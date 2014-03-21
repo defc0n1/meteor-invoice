@@ -166,8 +166,8 @@ Meteor.methods({
         var objectId = new Meteor.Collection.ObjectID(id)
         var invoice = Sale.findOne({ _id: objectId });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
-        if (!deptor.email) {
-            //errors.sync(errors.missingMail, '', log.warning);
+        if (!deptor.emails || deptor.emails.length == 0) {
+            errors.sync(errors.missingMail, '', log.warning);
         }
         Sale.update(
                 { _id: objectId },
@@ -184,14 +184,15 @@ Meteor.methods({
             host: Meteor.settings.smtp_host,
             //secureConnection: 'true'
         });
-        var email = deptor.email;
+        var emails = deptor.emails.join(',');
         if (Meteor.settings.env !== 'prod') {
             log.info('Sending to test email', Meteor.settings.test_mail);
-            email = Meteor.settings.test_mail;
+            emails = Meteor.settings.test_mail;
         }
 
         var message = Mail.invoice;
-        message.to = email;
+        message.subject = 'Faktura ' + invoice.key;
+        message.to = emails;
         message.attachments = [ { filename: 'faktura.pdf', filePath: '/tmp/' + invoice.key + '.pdf' } ];
 
         var error = function (err, msg) {
@@ -204,14 +205,14 @@ Meteor.methods({
         };
         Pdf.getInvoice(invoice, Meteor.bindEnvironment(function (err, msg) {
             console.log(err, msg);
-            if (err) error(errors.pdfConversion, err);
+            //if (err) error(errors.pdfConversion, err);
             log.info('File written to /tmp/' + invoice.key + '.pdf', err, msg);
-            log.info('Conversion done, sending mail to', email);
+            log.info('Conversion done, sending mail to', emails);
             transport.sendMail(message, Meteor.bindEnvironment(function (err, message) {
                 if (err) error(errors.mailSend, err);
                 else if (message.failedRecipients.length > 0) error(errors.recipients, message.failedRecipients);
                 else {
-                    log.info('Email successfully send', deptor.email);
+                    log.info('Email successfully sent', emails);
                     Sale.update(
                         { _id: objectId },
                         { $push: { 'sent.mail.history': new Date() },

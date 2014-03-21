@@ -15,8 +15,12 @@ Template.editelement.rendered = function () {
     var handle = query.observeChanges({
         changed: function (id, fields) {
             _.each(fields, function (v, k) {
-                $('#' + k).editable('setValue', v);
-                console.log(k, v);
+                if ( _.isArray(v)) {
+                    $('#main-content').html(Meteor.render(Template.editelement));
+                }
+                else {
+                    $('#' + k).editable('setValue', v);
+                }
             });
         }
     });
@@ -36,7 +40,6 @@ Template.editelement.rendered = function () {
     $('.edit-field').editable({
         emptytext: 'Indtast værdi',
         success: function(response, newValue) {
-            console.log($(this), this);
             var update = {};
             var field = $(this).attr('id');
 
@@ -45,19 +48,22 @@ Template.editelement.rendered = function () {
                 return;
             }
             var selected = Session.get('element');
-            console.log(selected, newValue, response);
-
             var dataIndex = $(this).attr('data-index');
-            // if ( _.isArray(selected[field]) ) {
-            if ( dataIndex ) {
+            var forceReload = false;
+            if (dataIndex) {
                 var dataKey = $(this).attr('data-key');
-                var newList = selected[dataKey];
-                newList.splice(selected[dataKey][dataIndex], 1);
-                newList.push(newValue);
+                var newList = selected[dataKey] || [];
+                if (dataIndex == -1) {
+                    newList.push(newValue);
+                    forceReload = true;
+                }
+                else{
+                    newList.splice(dataIndex, 1, newValue);
+                }
                 newList = _.uniq(newList);
-                update[field] = newList;
+                update[dataKey] = newList;
             } else {
-                update[field] = newValue;
+                update[dataKey] = newValue;
             }
             var res = GetCurrentCollection().update({ _id: selected._id }, { $set: update }, function (err, msg) {
                 console.log(err, msg);
@@ -67,6 +73,8 @@ Template.editelement.rendered = function () {
                     //$(selector).editable('setValue', selected[field] , true);
                     //Messages.insert({ message: 'Nøgle eksisterer allerede' });
                 }
+                if (forceReload){$('#main-content').html(Meteor.render(Template.editelement));}
+
             });
             // we might need to run the update sync, as editable expects the error to be returned
         },
@@ -101,6 +109,24 @@ Template.editelement.helpers({
 });
 
 Template.editelement.events({
+    'click .remove-list-item': function(event) {
+        var selected = Session.get('element');
+        var key = this.elem.key;
+        var list = selected[key];
+        list.splice(this.index, 1);
+        var update = {};
+        update[key] = list;
+        GetCurrentCollection().update({ _id: selected._id }, { $set: update }, function (err, msg) {
+            console.log(err, msg);
+            if (err) {
+                console.log(err);
+                //var selector = '#' + field;
+                //$(selector).editable('setValue', selected[field] , true);
+                //Messages.insert({ message: 'Nøgle eksisterer allerede' });
+            }
+        });
+        $('#main-content').html(Meteor.render(Template.editelement));
+    },
     'change .gln-group-select': function(event) {
         var gln_group = event.target.value;
         console.log(gln_group)
