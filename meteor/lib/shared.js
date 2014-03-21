@@ -79,21 +79,9 @@ BuildLink = function (elem, props, key) {
 
 
 // these settings makes the stuff fit on the pdf conversion
-lpp = 30;
-lfirst = 18;
-llast = 23;
-
-Print = {
-    totalPages: function (nLines) {
-        var pages = 1;
-        for(var i = 1; i <= nLines; i++) {
-            if (i > lfirst +  lpp * (pages -  1)) {
-                pages += 1;
-            }
-        };
-        return pages;
-    },
-};
+lpp = 39;
+lfirst = 26;
+llast = 31;
 
 log = {
     log: function (level, args) {

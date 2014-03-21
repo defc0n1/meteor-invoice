@@ -27,6 +27,11 @@ def update():
     with cd(os.path.join(env.app_path, env.meteor)):
         run('mrt install')
 
+def test():
+        local("py.test -xs meteor/tests")
+        with lcd(env.meteor):
+            local('laika -s ../config/test-settings.json -V -t 50000')
+
 # prod commands
 
 def restart():
@@ -86,6 +91,7 @@ def copy():
 def stage_db():
     run('''
             sudo supervisorctl stop invoice_staging:* &&
+            mongo invoice_staging --eval "db.dropDatabase()" &&
             mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')" &&
             sudo supervisorctl start invoice_staging:*
             ''')
