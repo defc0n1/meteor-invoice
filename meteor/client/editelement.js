@@ -40,6 +40,7 @@ Template.editelement.rendered = function () {
     $('.edit-field').editable({
         emptytext: 'Indtast værdi',
         success: function(response, newValue) {
+            console.log($(this), this);
             var update = {};
             var field = $(this).attr('id');
 
