@@ -1,5 +1,5 @@
+
 var getLines = function (elem, page) {
-        console.log(page);
         if (elem) {
             if (!page) return elem.lines;
             if (page === 1) {
@@ -12,16 +12,23 @@ var getLines = function (elem, page) {
         return [];
 };
 Pdf = {
-    getFooter: function (page, elem) {
-        var height = 31;
-        var px = height * llast - (height * (elem.lines.length - (lfirst + (page - 2 ) * lpp)))
-        if (page !== '1'){
-            px += 100;
+    totalPages: function (nLines) {
+        var pages = 1;
+        var linesOnLast = 0;
+        for(var i = 1; i <= nLines; i++) {
+            linesOnLast++;
+            if (i > lfirst +  lpp * (pages -  1)) {
+                pages += 1;
+                linesOnLast = 0;
+            }
+        };
+        if (pages > 1 && linesOnLast > llast){
+            pages++;
         }
-        return 'padding-top:' + px + 'px;';
+            return pages;
     },
     getInvoice: function (invoice, cb) {
-        var pages = Print.totalPages(invoice.lines.length);
+        var pages = Pdf.totalPages(invoice.lines.length);
         var fs = Meteor.require('fs');
         var url = '';
 
@@ -37,8 +44,8 @@ Pdf = {
                         style: res,
                         firstPage: i == 1,
                         lastPage: i == pages,
+                        pageText: 'Side ' + i + ' af ' + pages,
                         total: total,
-                        footerStyle: Pdf.getFooter(i, invoice),
                         getLines: getLines(invoice, i),
                         Element: invoice,
                         type: Mapping['postedSalesinvoice'] });
@@ -52,8 +59,10 @@ Pdf = {
                     var stream = fs.writeFile(fileName, html, onComp);
                     fut.wait();
                 }
-                Wkhtmltopdf(url, { output: '/tmp/' + invoice.key + '.pdf', encoding: 'utf8'});
-                cb(undefined, "ok");
+                Wkhtmltopdf(url, { output: '/tmp/' + invoice.key + '.pdf', encoding: 'utf8'}, function(code, signal){
+                    console.log(code, signal);
+                    cb(pages, invoice.key);
+                });
             });
         });
     },

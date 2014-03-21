@@ -89,6 +89,7 @@ def copy():
 def stage_db():
     run('''
             sudo supervisorctl stop invoice_staging:* &&
+            mongo invoice_staging --eval "db.dropDatabase()" &&
             mongo invoice --eval "db.copyDatabase('invoice', 'invoice_staging')" &&
             sudo supervisorctl start invoice_staging:*
             ''')

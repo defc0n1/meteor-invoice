@@ -130,6 +130,7 @@
         </div>
         {{/if}}
         {{/if}}
+        {{#if getLines}}
         <div class="row" id="invoice-items-list">
             <div class="col-xs-12">
                 <table class="table table-condensed">
@@ -166,43 +167,49 @@
                 </table>
             </div>
         </div>
+        {{/if}}
+        <div class="pageNumber" style="position:absolute;top:1280px;right:10px">
+            {{pageText}}
+        </div>
         {{#if lastPage}}
-        <div class="row" style="{{footerStyle}}" id="invoice-totals">
-            <div class="col-xs-12">
-                <table class="table">
-                    <thead>
+        <div class="footer" style="position:absolute;top:1120px">
+            <div class="row" id="invoice-totals">
+                <div class="col-xs-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Varebeløb</th>
+                                <th>Moms</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <tr>
-                            <th>Varebeløb</th>
-                            <th>Moms</th>
-                            <th>Total</th>
+                            <td>
+                                {{ chain 'GetPrice' 'Session' 'total'}}
+                            </td>
+                            <td>
+                                {{ chain 'GetPrice' 'Multiply' '0.25' 'Session' 'total'}}
+                            </td>
+                            <td>
+                                {{ chain 'GetPrice' 'Multiply' '1.25' 'Session' 'total'}}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            {{ chain 'GetPrice' 'Session' 'total'}}
-                        </td>
-                        <td>
-                            {{ chain 'GetPrice' 'Multiply' '0.25' 'Session' 'total'}}
-                        </td>
-                        <td>
-                            {{ chain 'GetPrice' 'Multiply' '1.25' 'Session' 'total'}}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-9">
-                <hr>
+            <div class="row">
+                <div class="col-xs-12">
+                    <hr>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-9">
-                Betalingsbetingelser: 30 dage netto.
-                Efter forfald beregnes 2% rente pr. måned.<br>
-                Oplys venligst kunde- & fakturanummer ved indbetaling.
+            <div class="row">
+                <div class="col-xs-12">
+                    Betalingsbetingelser: 30 dage netto.
+                    Efter forfald beregnes 2% rente pr. måned.<br>
+                    Oplys venligst kunde- & fakturanummer ved indbetaling.
+                </div>
             </div>
         </div>
         {{/if}}
