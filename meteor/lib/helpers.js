@@ -105,7 +105,7 @@ register('Shorten', function(arg) {
 register('ListIndex', function (arg) {
     return _.map(arg, function (item, index) {
         // In case each item is not object, we wrap it inside an object with a value key
-        if ( !_.isObject() ) {
+        if ( !_.isObject(arg) ) {
             item = { value: item };
         }
         item.index = index;
@@ -152,7 +152,7 @@ register('Prop', function() {
     if (Meteor.isServer) {
         var elem = this[arguments[0]];
     }
-    else { 
+    else {
         var elem = Session.get(arguments[0]);
     }
     args.forEach(function (arg, i) {

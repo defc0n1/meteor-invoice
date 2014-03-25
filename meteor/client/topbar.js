@@ -53,7 +53,7 @@ Template.topbar.items = function () {
     ];
     var path = Router.current().path;
     items = _.map(items, function (item) {
-        item.active = path.split('/')[1] == item.path.split('/')[1] ? 'active' : '';
+        item.active = path.split('/')[2] == item.path.split('/')[2] ? 'active' : '';
         return item;
     });
     return items;

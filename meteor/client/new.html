@@ -37,18 +37,29 @@
                     <th>Varenummer</th>
                     <th>Stk. pris</th>
                     <th>Beløb</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             {{#each ListIndex newitem.lines}}
             <tr>
-                {{#each Prop 'type' 'lineFields'}}
-                <td>
-                    <a href="#" class="new-edit-field" id="{{this.key}}-{{../this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{ElementProp ../this this.key}}</a>
+                <td class="right-align-td">
+                    <a href="#" class="new-edit-field" id="quantity-{{this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.quantity}}</a>
                 </td>
-                {{/each}}
+                <td>
+                    <a href="#" class="new-edit-field" id="info-{{this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{this.info}}</a>
+                </td>
+                <td>
+                    {{this.item_number}}
+                </td>
+                <td class="right-align-td">
+                    <a href="#" class="new-edit-field" id="price-{{this.index}}" data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{GetPrice this.price}}</a>
+                </td>
                 <td class="right-align-td">
                     {{ chain 'GetPrice' 'Multiply' this.price this.quantity}}
+                </td>
+                <td class="right-align-td">
+                                <div style=""><button type="button" data-key="{{../this.key}}" class="btn btn-default btn-sm remove-list-item"><span class="glyphicon glyphicon-remove-circle"</span></button></div>
                 </td>
             </tr>
             {{/each}}
@@ -69,13 +80,13 @@
             <tbody>
             <tr>
                 <td>
-                    {{ chain 'GetPrice' 'Session' 'total'}}
+                    {{GetPrice total}}
                 </td>
                 <td>
-                    {{ chain 'GetPrice' 'Multiply' '0.25' 'Session' 'total'}}
+                    {{chain 'GetPrice' 'Multiply' '0.25' total}}
                 </td>
                 <td>
-                    {{ chain 'GetPrice' 'Multiply' '1.25' 'Session' 'total'}}
+                    {{chain 'GetPrice' 'Multiply' '1.25' total}}
                 </td>
             </tr>
             </tbody>

@@ -6,7 +6,14 @@ Template.new.created = function () {
 Template.new.newitem = function () {
     return Sale.findOne({ key: parseInt(Router.current().params.key ) });
 };
-
+Template.new.total = function () {
+    var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
+    var total = 0;
+    elem.lines.forEach(function (line) {
+        total += line.price * line.quantity;
+    });
+    return total;
+};
 Template.new.rendered = function () {
     //Session.set('type', Mapping['newSalesinvoice']);
     var elem = Sale.findOne({ key: parseInt(Router.current().params.key) });
@@ -79,20 +86,30 @@ Template.new.rendered = function () {
                 }
             });
             var res = Sale.update({ _id: elem._id }, { $set: update });
+            $("#deptor-select").select2('val', undefined);
         });
 
         $("#item-select").on('change', function (val) {
             props = val.added.data;
             var elem = Session.get('element');
-            var update = {
-                quantity: 1,
-                info: props.name,
-                item_number: props.key,
-                price: props.price
-            };
-            var res = Sale.update({ _id: elem._id }, { $push: { lines: update } }, function (err, msg) {
-                console.log(err, msg);
+            var duplicate = _.any(elem.lines, function(line){
+                return line.item_number == props.key;
             });
+            if(duplicate){
+                bootbox.alert('Dette varenummer er allerede tilføjet');
+            }
+            else{
+                var update = {
+                    quantity: 1,
+                    info: props.name,
+                    item_number: props.key,
+                    price: props.price
+                };
+                var res = Sale.update({ _id: elem._id }, { $push: { lines: update } }, function (err, msg) {
+                    console.log(err, msg);
+                });
+            }
+            $("#item-select").select2('val', undefined);
         });
     }
 
@@ -102,19 +119,31 @@ Template.new.rendered = function () {
         emptytext: 'Indtast værdi',
         success: function(response, newValue) {
             var elem = Session.get('element');
-            var update = {};
             var field = $(this).attr('id');
 
             var parts = field.split('-');
             var key = parts[0];
-            var id = parts[1];
+            var index = parts[1];
 
-            update[key] = newValue;
+            var newLine = elem.lines[index];
+            newLine[key] = newValue;
+            elem.lines.splice(index, 1, newLine);
 
+            var update = {lines: elem.lines};
             console.log(update);
 
 
-            var res = Sale.update({ _id: elem.id }, { $set: update });
+            var res = Sale.update({ _id: elem._id }, { $set: update }, function (err, msg) {
+                console.log(err, msg);
+                if (err) {
+                    console.log(err);
+                    //var selector = '#' + field;
+                    //$(selector).editable('setValue', selected[field] , true);
+                    //Messages.insert({ message: 'Nøgle eksisterer allerede' });
+                }
+                //if (forceReload){$('#main-content').html(Meteor.render(Template.editelement));}
+
+            });
         },
         display: function (value) {
             var formatter = $(this).attr('data-formatter');
@@ -131,3 +160,22 @@ Template.new.rendered = function () {
     });
 
 };
+Template.new.events({
+    'click .remove-list-item': function(event) {
+        console.log(this)
+        var selected = Session.get('element');
+        var list = selected.lines;
+        list.splice(this.index, 1);
+        var update = {lines: list};
+        Sale.update({ _id: selected._id }, { $set: update }, function (err, msg) {
+            console.log(err, msg);
+            if (err) {
+                console.log(err);
+                //var selector = '#' + field;
+                //$(selector).editable('setValue', selected[field] , true);
+                //Messages.insert({ message: 'Nøgle eksisterer allerede' });
+            }
+        });
+        //$('#main-content').html(Meteor.render(Template.editelement));
+    },
+})

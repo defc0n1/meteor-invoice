@@ -78,7 +78,7 @@ Router.map(function () {
         template: 'index'
     });
     this.route('main', {
-        path: '/:root/:type',
+        path: '/table/:root/:type',
         layoutTemplate: 'layout',
         action: function () {
             this.render('table');
@@ -106,8 +106,10 @@ Router.map(function () {
         },
         before: function () {
             Session.set('key', this.params.key);
-            //Session.set('type', Mapping[this.params.type]);
             Session.set('type', Mapping['newSalesinvoice']);
+        },
+        waitOn: function () {
+            return Meteor.subscribe('Custom', GetCurrentMapping().collection, {key: parseInt(this.params.key)});
         }
     });
     this.route('show', {

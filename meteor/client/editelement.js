@@ -51,8 +51,8 @@ Template.editelement.rendered = function () {
             var selected = Session.get('element');
             var dataIndex = $(this).attr('data-index');
             var forceReload = false;
+            var dataKey = $(this).attr('data-key');
             if (dataIndex) {
-                var dataKey = $(this).attr('data-key');
                 var newList = selected[dataKey] || [];
                 if (dataIndex == -1) {
                     newList.push(newValue);
