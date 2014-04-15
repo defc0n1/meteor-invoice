@@ -27,7 +27,7 @@ Template.table.events({
         var sent = this.elem.sent && this.elem.sent.amqp && this.elem.sent.amqp.state === 'success';
         if (sent) {
             message = 'Denne faktura blev sendt d. ' +
-                moment(this.elem.sent.amqp.date).format('DD MMM YYYY') +
+                moment(this.elem.sent.amqp.time).format('DD MMM YYYY') +
                 ' via AMQP.\n Vil du gensende fakturaen?';
 
         }
@@ -46,7 +46,7 @@ Template.table.events({
         var sent = this.elem.sent && this.elem.sent.mail && this.elem.sent.mail.state === 'success';
         if (sent) {
             var message = 'Denne faktura blev sendt d. ' +
-                moment(this.elem.sent.mail.date).format('DD MMM YYYY') +
+                moment(this.elem.sent.mail.time).format('DD MMM YYYY') +
                 ' via e-mail.\n Vil du gensende fakturaen?';
 
             var element = this.elem;
