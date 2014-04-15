@@ -28,7 +28,7 @@ def update():
         run('mrt install')
 
 def test():
-        local("py.test -xs meteor/tests")
+        local("py.test -s meteor/tests")
         with lcd(env.meteor):
             local('laika -s ../config/test-settings.json -V -t 50000')
 
