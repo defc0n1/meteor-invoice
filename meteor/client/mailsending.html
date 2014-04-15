@@ -1,0 +1,53 @@
+<template name="mailsending">
+    <form role="form">
+        <div class="form-group">
+            <label for="groupname">Email emne</label>
+            <input type="text" class="form-control" id="subject" placeholder="Indtast emne">
+        </div>
+        <div class="form-group">
+            <label for="groupname">Billede navn</label>
+            <input class="form-control" id="image-url" placeholder="Billede navn">
+        </div>
+        <div class="form-group">
+            <select class="form-control" id="group">
+              <option>test</option>
+                {{#each mailgroups}}
+                <option>{{_id}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="groupname">Test email</label>
+            <input type="text" class="form-control" id="email" placeholder="Indtast email adresse">
+        </div>
+            <input type="submit" id="send" class="btn btn-default" value="Send">
+    </form>
+    <div class="history" style="margin-top:50px">
+        <table class="table table-hover list-table">
+            <thead>
+                <tr>
+                    <th>Tid</th>
+                    <th>Bruger</th>
+                    <th>Sendt til</th>
+                    <th>Antal</th>
+                    <th>Gruppe</th>
+                    <th>Billede</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+                {{#each history}}
+                <tr>
+                    <td>{{GetDateTime created}}</td>
+                    <td>{{user}}</td>
+                    <td>{{TooltipShorten data.emails '15'}}</td>
+                    <td>{{data.count}}</td>
+                    <td>{{data.group}}</td>
+                    <td>{{data.imageName}}</td>
+                    <td>{{state}}</td>
+                </tr>
+                {{/each}}
+        </table>
+    </div>
+</template>

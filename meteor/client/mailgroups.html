@@ -1,0 +1,40 @@
+<template name="mailgroups">
+    {{#unless Session 'showEditForm'}}
+    <table class="table list-table">
+        {{#each mailgroups}}
+        <tr>
+            <td width="90%">{{_id}}</td>
+            <td> 
+                <button type="button" class="btn btn-default edit-mailgroup"><span class="glyphicon glyphicon-wrench"</span></button>
+            </td>
+            <td> 
+                <button type="button" class="btn btn-danger delete-mailgroup"><span class="glyphicon glyphicon-remove"</span></button>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+    <button type="button" class="btn btn-success" id="add-mailgroup"><span class="glyphicon glyphicon-plus"</span></button>
+    {{/unless}}
+    {{#if Session 'showEditForm'}}
+        <form role="form">
+            <div class="form-group">
+            {{#if Session 'addMailGroup'}}
+                <label for="groupname">Gruppe navn</label>
+                <input type="text" class="form-control" id="groupname" placeholder="Indtast gruppenavn">
+            {{else}}
+                <h2>{{Session 'mailgroupname'}}</h2>
+            {{/if}}
+            </div>
+
+            {{#each deptors}}
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="{{_id._str}}" {{member}} class="customer"> {{key}}, {{name}}, {{city}}, {{emails}}
+                </label>
+            </div>
+            {{/each}}
+            <button id="save-mailgroup" class="btn btn-default">Gem</button>
+            <button id="cancel-mailgroup" class="btn btn-danger">Annuller</button>
+        </form>
+    {{/if}}
+</template>

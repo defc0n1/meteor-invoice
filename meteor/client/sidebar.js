@@ -68,6 +68,11 @@ Template.sidebar.items = function () {
             { name: 'Bogfør', path: Router.routes.main.path({ root: 'sale', type:  'openSalesinvoices' }) },
             { name: 'Slet', path: Router.routes.main.path({ root: 'sale', type:  'postedSalesinvoices'  }) },
         ],
+        campaigns: [
+            { name: 'Mailgrupper', path: Router.routes.campaigns.path({ root: 'campaigns', type: 'mailgroups'}) },
+            { name: 'Frameldte', path: Router.routes.campaigns.path({ root: 'campaigns', type: 'optouts'}) },
+            { name: 'Send nyhedsbrev', path: Router.routes.campaigns.path({ root: 'campaigns', type: 'mailsending'}) },
+        ],
         //show: [
             //{ name: 'Vareposteringer', path: Router.routes.dynamic.path({ type: 'itemEntries', key: key }) },
             //{ name: 'Debitorposteringer', path: Router.routes.dynamic.path({ type: 'deptorEntries', key: key }) },

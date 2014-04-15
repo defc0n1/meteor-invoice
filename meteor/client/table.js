@@ -65,7 +65,7 @@ Template.table.events({
     'click .link': function(event) {
         var type = Session.get('type');
 
-        if ( type.collection == 'CreditorEntries' ) {
+        if (type.collection == 'CreditorEntries') {
             event.preventDefault();
 
             var elem = this.elem;

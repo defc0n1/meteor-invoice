@@ -32,7 +32,7 @@ Router.before(
             else if(Meteor.user()) {
                 //NProgress.done();
             }
-        }, {except: ['login', 'forgotPassword', 'setPassword']});
+        }, {except: ['login', 'forgotPassword', 'setPassword', 'unsubscribe']});
 
 Router.configure({
     //layoutTemplate: 'layout',
@@ -132,6 +132,30 @@ Router.map(function () {
         },
         before: function() {
             Session.set('type', Mapping[this.params.type]);
+        }
+    });
+    this.route('unsubscribe', {
+        path: '/unsubscribe',
+        //layoutTemplate: 'layout',
+        action: function () {
+            this.render('unsubscribe');
+        },
+        //before: function() {
+            //Session.set('type', Mapping[this.params.type]);
+        //}
+    });
+    this.route('campaigns', {
+        path: '/campaigns/:root/:type',
+        layoutTemplate: 'layout',
+        action: function () {
+            Session.set('addMailGroup', false);
+            Session.set('showEditForm', false);
+            Session.set('mailgroupname', undefined);
+            this.render(this.params.type);
+
+        },
+        waitOn: function () {
+            return Meteor.subscribe('Custom', 'Deptors', {email: {$ne: ''}});
         }
     });
 });

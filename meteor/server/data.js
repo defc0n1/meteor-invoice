@@ -68,6 +68,14 @@ Meteor.publish('Sale', function (limit, skip, query, filter){
     return FilterQuery(Sale, SaleSearchFields, query,
         { options: {limit: limit, skip: skip }, filter: filter});
 });
+Meteor.publish('History', function (limit, skip, query, filter){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
+    return FilterQuery(History,[], query,
+        { options: {limit: limit, skip: skip }, filter: filter});
+});
 Meteor.publish('Purchase', function (limit, skip, query, filter){
     if (!this.userId) {
         this.ready();
@@ -114,6 +122,13 @@ Meteor.publish('alertChannel', function (){
         return;
     }
     return Alerts.find();
+});
+Meteor.publish('MailGroups', function (){
+    if (!this.userId) {
+        this.ready();
+        return;
+    }
+    return MailGroups.find();
 });
 Meteor.publish('TradeAccounts', function (){
     if (!this.userId) {

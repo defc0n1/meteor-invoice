@@ -46,6 +46,16 @@ GetDate = function (date) {
 };
 register('GetDate', GetDate);
 
+GetDateTime = function (date) {
+    if (date) {
+        return moment(date).format('DD MMM YY, HH:mm:ss');
+    }
+    else{
+        return '';
+    }
+};
+register('GetDateTime', GetDateTime);
+
 Handlebars.registerHelper('chain', function () {
     var args = _.initial(arguments);
     var value = undefined;
@@ -120,6 +130,17 @@ register('Element', function(arg) {
         return Session.get('element');
     }
 });
+var tooltipShorten = function (res, length) {
+    if(res && res.length > length){
+        var shortString = res.substr(0, length - 2) + '..';
+        var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
+        return new Handlebars.SafeString(link);
+    }
+    else{
+        return res;
+    }
+};
+register('TooltipShorten', tooltipShorten);
 register('ElementProp', function(elem, prop, method, link) {
     // guard against undefined
     if (!elem)
@@ -139,12 +160,7 @@ register('ElementProp', function(elem, prop, method, link) {
     else{
         res = elem[prop];
     }
-    if (res && res.length > TableMaxLength) {
-        var shortString = res.substr(0, TableMaxLength - 2) + '..';
-        var link = '<a href="#" class="table-tooltip" data-toggle="tooltip" title="' + res + '">' + shortString + '</a>';
-        return new Handlebars.SafeString(link);
-    }
-    return res;
+    return tooltipShorten(res, TableMaxLength);
 });
 register('Prop', function() {
     var args = _.initial(arguments);

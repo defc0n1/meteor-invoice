@@ -10,6 +10,9 @@ function auth(f) {        // (1)
     };
 }
 Meteor.methods({
+    unsubscribe: function (email) {
+        var res = Deptors.update({emails: { $in: [email]}},{$set: {'notifications.newsletter': 0}});
+    },
     CreateUser: auth(function (email) {
         var userId = Accounts.createUser({ email: email });
         Accounts.sendEnrollmentEmail(userId);
@@ -31,6 +34,14 @@ Meteor.methods({
     }),
     DeptorsSearch: auth(function (query, merger) {
         return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
+    }),
+    DeleteMailGroup: auth(function (name) {
+        log.info('Removing mailgroup', name)
+        var update = {};
+        var groupname = 'mailgroups.' + name;
+        update[groupname] = 1;
+        Deptors.update(update, {$unset: update}, {multi: true});
+        MailGroups.remove({_id: name});
     }),
     ItemsSearch: auth(function (query, merger) {
         return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
@@ -160,6 +171,64 @@ Meteor.methods({
             error(e);
         }));
     }),
+    sendNewsletter: auth(function(groupName, email, imageName, subject) {
+        var historyId = UUID.v1()
+        var count = 1;
+        if(email){
+            var emails = email;
+        }
+        else {
+            var group = 'mailgroups.' + groupName;
+            var match = {'notifications.newsletter': {$ne: 0}};
+            match[group] = 1;
+            var recipients = Deptors.find(match).fetch();
+            var emails = [];
+            _.each(recipients, function(v, k) {
+                emails = emails.concat(v.emails);
+            });
+            if (Meteor.settings.env !== 'prod') {
+                log.info('Sending to test email', Meteor.settings.test_mail);
+                emails = Meteor.settings.test_mail;
+            }
+            else{
+                count = emails.length;
+                var emails = emails.join(',')
+            }
+        }
+        History.insert({_id: historyId, state: 'pending', type: 'newsletter', created: new Date(), user: Meteor.user().emails[0].address,
+            data: {emails: emails, group: groupName, imageName: imageName, count: count}});
+        log.info('Preparing to send newsletter to', group, emails);
+        Assets.getText('newsletter.handlebars', function (err, temp) {
+            var template = Handlebars.compile(temp, {noEscape: true});
+            var html = template({
+                subject: subject,
+                imageName: imageName });
+
+            var transport = Mail.getTransport();
+            var message = {
+                sender: 'tradehouse@tradehouse.as',
+                subject: subject,
+                html: html,
+                bcc: emails,
+                replyTo: 'post@tradehouse.as',
+            }
+
+            transport.sendMail(message, Meteor.bindEnvironment(function (err, message) {
+                if (err) errors.async(errors.mailSend, err);
+                else if (message.failedRecipients.length > 0) {
+                    errors.async(errors.recipients, message.failedRecipients, log.error);
+                    History.update({_id: historyId}, { $set: {state: 'error', error: e}});
+                }
+                else {
+                    log.info('Email successfully sent', message.to);
+                    History.update({_id: historyId}, { $set: {state: 'success'}});
+                }
+            }, function (e) {
+                History.update({_id: historyId}, { $set: {state: 'error', error: e}});
+                errors.async(errors.unknown, e, log.warning);
+            }));
+        });
+    }),
     sendEmail: auth(function (id) {
         check(id, String);
         log.debug('Send mail called', id);
@@ -175,15 +244,7 @@ Meteor.methods({
                           'sent.mail.state': 'processing' } }
         );
 
-        var transport = Nodemailer.createTransport('SMTP', {
-            auth: {
-                pass: Meteor.settings.smtp_pass,
-                user: Meteor.settings.smtp_user
-            },
-            port: 587,
-            host: Meteor.settings.smtp_host,
-            //secureConnection: 'true'
-        });
+        var transport = Mail.getTransport();
         var emails = deptor.emails.join(',');
         if (Meteor.settings.env !== 'prod') {
             log.info('Sending to test email', Meteor.settings.test_mail);

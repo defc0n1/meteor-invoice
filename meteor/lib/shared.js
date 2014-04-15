@@ -8,6 +8,8 @@ Alerts = new Meteor.Collection('alerts');
 TradeAccounts = new Meteor.Collection('accounts');
 Items = new Meteor.Collection('items');
 FinanceEntries = new Meteor.Collection('financeentries');
+MailGroups = new Meteor.Collection('mailgroups');
+History = new Meteor.Collection('history');
 
 ItemEntries = new Meteor.Collection(null);
 
@@ -51,6 +53,17 @@ SetFilter = function(filter, extend, router) {
     }
 };
 
+Required = function(name, message, f) {
+
+    var val = $(name).val();
+    if(!val){
+        bootbox.alert(message);
+        return false;
+    }
+    else{
+        f(val);
+    }
+}
 GetCurrentMappingName = function () {
     return Router.current().params.type;
 };
