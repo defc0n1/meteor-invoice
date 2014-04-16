@@ -36,6 +36,7 @@ Template.sidebar.items = function () {
             { name: 'Ny vare', path: '#', id: 'newItem', click: 'new-item' },
             { name: 'Varer', path: Router.routes.main.path({ root: 'items', type:  'items' }) },
             { name: 'Varegrupper', path: Router.routes.main.path({ root: 'items', type:  'itemGroups'  }) },
+            { name: 'Lyn gln', path: Router.routes.dynamic.path({ root: 'items', type: 'quickgln'}) },
         ],
         contacts: [
             { name: 'Ny debitor', path: '#', id: 'newDeptor', click: 'new-deptor' },

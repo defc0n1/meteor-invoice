@@ -158,4 +158,12 @@ Router.map(function () {
             return Meteor.subscribe('Custom', 'Deptors', {email: {$ne: ''}});
         }
     });
+    this.route('dynamic', {
+        path: '/custom/:root/:type',
+        layoutTemplate: 'layout',
+        action: function () {
+            Session.set('Itemslimit', 200);
+            this.render(this.params.type);
+        },
+    });
 });

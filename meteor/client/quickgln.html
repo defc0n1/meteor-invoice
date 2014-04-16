@@ -1,0 +1,29 @@
+<template name="quickglneditfield">
+        <tr>
+            <td>
+                {{key}}
+            </td>
+            <td>
+                {{ean}} {{_id._str}}
+            </td>
+            <td>
+                <a href="#" class="edit-field" data-id="{{_id._str}}"  data-type="text" >{{gln_number}}</a>
+            </td>
+        </tr>
+</template>
+<template name="quickgln">
+<table class="table table-hover list-table">
+    <thead>
+        <tr>
+            <th>Varenummer</th>
+            <th>EAN</th>
+            <th>GLN</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each items}}
+        {{>quickglneditfield}}
+        {{/each}}
+    </tbody>
+</table>
+</template>
