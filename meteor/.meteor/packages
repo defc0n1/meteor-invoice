@@ -5,7 +5,6 @@
 
 standard-app-packages
 insecure
-preserve-inputs
 accounts-password
 accounts-base
 bootstrap-3
@@ -22,3 +21,4 @@ when
 mongodb-server-aggregation
 bootboxjs
 bootstrap-datepicker2
+auto-nprogress

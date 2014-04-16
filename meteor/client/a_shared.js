@@ -19,12 +19,6 @@ var collections = [
     ];
 Deps.autorun(function() {
     var progressCount = 1;
-    try {
-        NProgress.start();
-    }
-    catch (err) {
-        log.error('err', err);
-    }
     _.each(collections, function (collection) {
         //progressCount += 1
         Meteor.subscribe(collection,
@@ -32,11 +26,7 @@ Deps.autorun(function() {
             Session.get(collection + 'skip'),
             Session.get(collection + 'query'),
             Session.get(collection + 'filter'),
-            function () {
-                progressCount -= 1;
-                if (progressCount <= 0) {
-                    NProgress.done();
-                }
-            });
+            function () { }
+        );
     });
 });

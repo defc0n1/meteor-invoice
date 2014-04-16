@@ -11,6 +11,7 @@
     "mongodb-server-aggregation": {},
     "handlebars-server": {},
     "bootstrap-datepicker2": {},
-    "mocha-web": {}
+    "mocha-web": {},
+    "auto-nprogress": {}
   }
 }

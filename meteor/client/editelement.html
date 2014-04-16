@@ -9,6 +9,13 @@
     <table class="table table-bordered talbe-striped">
         <tbody>
         {{#each fields}}
+        {{>editelementedit}}
+        {{/each}}
+        </tbody>
+    </table>
+</div>
+</template>
+<template name="editelementedit">
         <tr>
             <td class="modal-left-td">
                 {{this.name}}
@@ -17,7 +24,7 @@
                 {{#if this.dropdown}}
                 <select class="form-control {{this.classes}}">
                 {{#each this.content}}
-                <option {{ElementKeyEquals ../this.key this.value 'selected'}} value={{this.value}}>{{this.name}}</option>
+                <option {{ElementKeyEquals ../key this.value 'selected'}} value={{this.value}}>{{this.name}}</option>
                 {{/each}}
                 </select>
                 {{else}}
@@ -25,14 +32,18 @@
                         <ul class="list-group">
                             {{#each ListIndex this.value}}
                                 <li class="list-group-item">
-                                <a href="#" class="edit-field" data-key="{{../this.key}}" data-index="{{this.index}}" id="{{this.index}}-{{../this.key}}" data-type="text" data-formatter="{{../this.formatter}}" data-title="Enter username">{{this.value}}</a>
-                    {{#With elem=../../this this=this}}
-                                <div style="position:absolute;right:10px;top:5px"><button type="button" data-key="{{../this.key}}" class="btn btn-default btn-sm remove-list-item"><span class="glyphicon glyphicon-remove-circle"</span></button></div>
-                                {{/With}}
+                                <a href="#" class="edit-field" data-key="{{../key}}" data-index="{{this.index}}" id="{{this.index}}-{{../key}}" data-type="text" data-formatter="{{../formatter}}" data-title="Enter username">{{this.value}}</a>
+                    {{#with elem=../.. this=this}}
+                    <div style="position:absolute;right:10px;top:5px">
+                        <button type="button" data-key="{{../key}}" class="btn btn-default btn-sm remove-list-item">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                        </button>
+                    </div>
+                                {{/with}}
                                 </li>
                             {{/each}}
                                 <li class="list-group-item">
-                                    <a href="#" class="edit-field" data-key="{{../this.key}}" data-index="-1" id="-1-{{../this.key}}" data-type="text" data-formatter="{{../this.formatter}}" data-title="Enter username"></a>
+                                    <a href="#" class="edit-field" data-key="{{../key}}" data-index="-1" id="-1-{{../key}}" data-type="text" data-formatter="{{../formatter}}" data-title="Enter username"></a>
                                 </li>
                         </ul>
                     {{else}}
@@ -41,8 +52,4 @@
                 {{/if}}
             </td>
         </tr>
-        {{/each}}
-        </tbody>
-    </table>
-</div>
 </template>

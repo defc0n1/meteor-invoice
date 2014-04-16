@@ -12,16 +12,15 @@ var updateFilters = function(type) {
             if (!skipClear)
                 ClearFilters();
 }
-Router.unload(
+Router.onStop(
     function () {
         history.pushState({ type: this.params.type }, '');
     }
 )
-Router.before(
+Router.onBeforeAction(
         function() {
 
             if (Meteor.loggingIn()) {
-                //NProgress.start();
             }
             else if (!Meteor.user() && !Meteor.loggingIn()) {
                 //this.render('login');
@@ -30,7 +29,6 @@ Router.before(
                 this.stop();
             }
             else if(Meteor.user()) {
-                //NProgress.done();
             }
         }, {except: ['login', 'forgotPassword', 'setPassword', 'unsubscribe']});
 
@@ -55,21 +53,18 @@ Router.map(function () {
     this.route('login', {
         path: '/login',
         template: 'login',
-        before: function() {
+        onBeforeAction: function() {
 
             if (Meteor.loggingIn()) {
-                //NProgress.start();
 
             }
             if (Meteor.user()) {
-                //NProgress.done();
                 this.stop();
                 Router.go('index');
                 //this.redirect('/');
             }
         },
-        after: function () {
-            //NProgress.done();
+        onAfterAction: function () {
         }
     });
     this.route('index', {
@@ -83,7 +78,7 @@ Router.map(function () {
         action: function () {
             this.render('table');
         },
-        before: function () {
+        onBeforeAction: function () {
             updateFilters(this.params.type);
             Session.set('type', Mapping[this.params.type]);
         }
@@ -92,7 +87,11 @@ Router.map(function () {
         path: '/edit2/:type/:key',
         layoutTemplate: 'layout',
         action: function () {
-            this.render('editelement');
+            if(this.ready()){
+                console.log(Items.find().fetch());
+                this.render('editelement');
+
+            }
         },
         waitOn: function () {
             return Meteor.subscribe('Custom', GetCurrentMapping().collection, {key: this.params.key});
@@ -104,7 +103,7 @@ Router.map(function () {
         action: function () {
             this.render('new');
         },
-        before: function () {
+        onBeforeAction: function () {
             Session.set('key', this.params.key);
             Session.set('type', Mapping['newSalesinvoice']);
         },
@@ -118,7 +117,7 @@ Router.map(function () {
         action: function () {
             this.render('posted');
         },
-        before: function () {
+        onBeforeAction: function () {
             this.params.root = 'show';
             Session.set('key', this.params.key);
             Session.set('type', Mapping[this.params.type]);
@@ -130,7 +129,7 @@ Router.map(function () {
         action: function () {
             this.render('table');
         },
-        before: function() {
+        onBeforeAction: function() {
             Session.set('type', Mapping[this.params.type]);
         }
     });
@@ -140,7 +139,7 @@ Router.map(function () {
         action: function () {
             this.render('unsubscribe');
         },
-        //before: function() {
+        //onBeforeAction: function() {
             //Session.set('type', Mapping[this.params.type]);
         //}
     });

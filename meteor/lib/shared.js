@@ -6,7 +6,7 @@ Deptors = new Meteor.Collection('deptors');
 Creditors = new Meteor.Collection('creditors');
 Alerts = new Meteor.Collection('alerts');
 TradeAccounts = new Meteor.Collection('accounts');
-Items = new Meteor.Collection('items');
+Items = new Meteor.Collection('items', { idGeneration: 'MONGO'});
 FinanceEntries = new Meteor.Collection('financeentries');
 MailGroups = new Meteor.Collection('mailgroups');
 History = new Meteor.Collection('history');
@@ -71,7 +71,7 @@ GetCurrentMapping = function () {
     return Mapping[Router.current().params.type];
 };
 GetCurrentCollectionName = function () {
-    return Mapping[Router.current().params.type].collection
+    return Mapping[Router.current().params.type].collection;
 };
 GetCurrentKey = function () {
     return Router.current().params.key;

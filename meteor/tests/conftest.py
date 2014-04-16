@@ -23,7 +23,7 @@ def auth(wd):
 def wd(request, db):
     driver = webdriver.Chrome()
     driver.implicitly_wait(3)
-    domain = "http://localhost:3000/{}"
+    domain = "http://localhost:4000/{}"
     driver.goto = lambda x: driver.get(domain.format(x))
     driver.auth = lambda: auth(driver)
     driver.real_auth = lambda: real_auth(driver)
@@ -39,11 +39,13 @@ def meteor():
     client = MongoClient()
     print 'dropping db'
     client.drop_database('invoice_test')
-    p = subprocess.Popen('MONGO_URL="mongodb://localhost:27017/invoice_test" meteor --settings ../config/test-settings.json', cwd='meteor', shell=True, stdout=subprocess.PIPE)
+    p = subprocess.Popen('MONGO_URL="mongodb://localhost:27017/invoice_test" meteor --settings ../config/test-settings.json --port 4000', cwd='meteor', shell=True, stdout=subprocess.PIPE)
     print 'starting meteor'
     yield p
     print 'terminating meteor'
     p.terminate()
+    for g in p.communicate():
+        print g
     p.wait()
     print 'dropping db'
     client.drop_database('invoice_test')

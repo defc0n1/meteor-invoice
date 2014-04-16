@@ -13,13 +13,14 @@
       "mongodb-server-aggregation": {},
       "handlebars-server": {},
       "bootstrap-datepicker2": {},
-      "mocha-web": {}
+      "mocha-web": {},
+      "auto-nprogress": {}
     },
     "packages": {
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v0.3.7",
-        "commit": "5dd0d142c870647b910be80bc777b96f0dd45e5e"
+        "tag": "v3.1.1-1",
+        "commit": "63dd38968828bb8963636df93e9a1c45e2dfe67e"
       },
       "font-awesome": {
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
@@ -28,13 +29,13 @@
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.6.1",
-        "commit": "4e1ee0581d68bff422a915dacb0bd30eae10fe08"
+        "tag": "v0.7.0",
+        "commit": "05f34bc48c4cad9fdaa366c1ddcabe6980232ece"
       },
       "moment": {
         "git": "https://github.com/acreeger/meteor-moment.git",
-        "tag": "v2.2.1",
-        "commit": "9ee12e714afe56b189f53076447b7b54f3012065"
+        "tag": "v2.5.1",
+        "commit": "8c9bc5d3fc96705057737cb9743d555417f6e551"
       },
       "npm": {
         "git": "https://github.com/arunoda/meteor-npm.git",
@@ -48,8 +49,8 @@
       },
       "x-editable-bootstrap3": {
         "git": "https://github.com/JustinSGray/meteor-x-editable-bootstrap.git",
-        "tag": "v1.5.1",
-        "commit": "33eeb067df8e68f2db0c66dabc4ae9de2bdd5906"
+        "tag": "v1.5.2",
+        "commit": "1e5e6d7bddf0b17cc6ea2fc1f50c3f9fd2cfc3f3"
       },
       "when": {
         "git": "https://github.com/awwx/meteor-when",
@@ -63,8 +64,8 @@
       },
       "handlebars-server": {
         "git": "https://github.com/EventedMind/meteor-handlebars-server.git",
-        "tag": "v1.1.0",
-        "commit": "ed99c8e9280894519f44a5b4c84f66ff596c5450"
+        "tag": "v1.2.0",
+        "commit": "1b72c4e9d82af66293e50be4516c487d15d97464"
       },
       "bootstrap-datepicker2": {
         "git": "https://github.com/deepwell/meteor-bootstrap-datepicker.git",
@@ -73,8 +74,23 @@
       },
       "mocha-web": {
         "git": "https://github.com/mad-eye/meteor-mocha-web.git",
-        "tag": "v0.1.5",
-        "commit": "76583213dbea2c5459bcf5197a2267b71877b99c"
+        "tag": "v0.2.2",
+        "commit": "cc58d823457944334ed70e2569147856bbc2ef66"
+      },
+      "auto-nprogress": {
+        "git": "https://github.com/settinghead/meteor-auto-nprogress.git",
+        "tag": "v0.2.7",
+        "commit": "3fa87d5244e140cc5b49696585cd23b110c36467"
+      },
+      "blaze-layout": {
+        "git": "https://github.com/EventedMind/blaze-layout.git",
+        "tag": "v0.2.2",
+        "commit": "8bc53798fe5965669ae67c72f91829fcfdceabfd"
+      },
+      "nprogress": {
+        "git": "https://github.com/zhouzhuojie/meteor-nprogress.git",
+        "tag": "v0.0.4",
+        "commit": "8333206b751a24fac1fbd1b03fa37621bcefe50c"
       }
     }
   }

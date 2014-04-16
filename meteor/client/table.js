@@ -37,7 +37,9 @@ Template.table.events({
         var element = this.elem;
         bootbox.confirm(message, function (res) {
             if (res) {
-                Meteor.call('sendAmqp', element.key);
+                Meteor.call('sendAmqp', element.key, function(err, res){
+                    err && bootbox.alert(err);
+                })
             }
         });
     },
@@ -179,6 +181,14 @@ Template.table.helpers({
     processing: function (type) {
         var state = processing(this.elem, type) ? 'disabled'  : '';
         return state;
+    },
+    dropdown: function(arg) {
+        if(arg){
+            return {'data-toggle': 'dropdown'};
+        }
+        else{
+            return undefined;
+        }
     },
     showSpinner: function () {
         var isProcessing = processing(this, 'mail') || processing(this, 'amqp');

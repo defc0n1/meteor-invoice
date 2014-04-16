@@ -9,6 +9,12 @@ def click_button_by_id(wd, id_element):
 def click_button_by_css_selector(wd, selector):
 	element = wd.find_elements_by_css_selector(selector)[0].click()
 
+def click_button_by_xpath_selector(wd, selector):
+	#wd.find_elements_by_xpath(selector)[0].click()
+	elem = wd.find_elements_by_xpath(selector)[0]
+        print elem, elem.text
+        elem.click()
+
 def form_fill(element, value):
     element.click()
     element.clear()

@@ -60,14 +60,34 @@ Meteor.methods({
                 //});
             //}
         //});
-
         var res = Sale.aggregate([ {$match: {customer_number:cust_num}}, {$unwind:"$item_entries"},   {$group:{_id:null, clrs: {$push : "$item_entries"} }},   {$project:{_id:0, colors: "$clrs"}}])
-        console.log(res[0].colors);
+        console.log(res[0]);
         //_.each(res[0].colors, function(elem) {
             //console.log('insert');
             //ItemEntries.insert(elem);
         //});
         return res[0].colors;
+    }),
+    getBalance: auth(function () {
+        //var res = Sale.find({customer_number: cust_num}, {fields: { item_entries: 1 }})
+        //_.each(res, function(elem) {
+            //if(elem.item_entries) {
+                //_.each(elem.item_entries, function (entry) {
+                    //ItemEntries.insert(entry);
+                //});
+            //}
+        //});
+        var res = Sale.aggregate([ {$project: {'entries': 1}},
+            {$unwind:"$entries"},
+            { $match: {
+                         'entries.account_number': '1000'}},
+            {$group: {_id: null, total: {$sum : "$entries.amount"}}}]);
+        console.log(res);
+        //_.each(res[0].colors, function(elem) {
+            //console.log('insert');
+            //ItemEntries.insert(elem);
+        //});
+        return res;
     }),
     getSalesCreditnota: auth(function (key) {
         return Sale.findOne({ key: parseInt(key) });
@@ -113,6 +133,12 @@ Meteor.methods({
     sendAmqp: auth(function (invoiceNumber) {
         var invoice = Sale.findOne({ key: invoiceNumber });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
+        if(!deptor){
+            log.info("AMQP edi send cancelled, no deptor", invoice.customer_number);
+            Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
+                invoiceNumber + ' mislykkedes. Debitor findes ikke'});
+            return;
+        }
         if(!deptor.gln){
             log.info("AMQP edi send cancelled, no gln on deptor", deptor.key);
             Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
@@ -126,13 +152,18 @@ Meteor.methods({
             return;
         }
         log.info('Sending invoice over amqp:', invoiceNumber);
-        log.info('Sending invoice over amqp:', deptor.gln_group);
 
         // add ean to all items
         var lines_with_ean = [];
         invoice.lines.forEach(function(line) {
             if(line.item_number && !line.gln_number) {
                 var item = Items.findOne({ key: line.item_number});
+                if(!item){
+                    log.info("AMQP edi send cancelled, item does not exist", line.item_number);
+                    Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
+                        invoiceNumber + ' mislykkedes. Vare eksisterer ikke:' + line.item_number});
+                    errors.sync('test', 'test');
+                }
                 line.gln_number = item.gln_number;
             }
             lines_with_ean.push(line);

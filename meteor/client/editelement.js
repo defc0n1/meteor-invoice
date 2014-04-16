@@ -1,30 +1,5 @@
-Template.editelement.rendered = function () {
-
+Template.editelementedit.rendered = function () {
     $.fn.editable.defaults.mode = 'inline';
-
-    var elem = GetCurrentCollection().findOne({ key: Router.current().params.key });
-
-    //TODO guard against non existing route
-
-    Session.set('element', elem);
-    Session.set('viewTitle', 'Redigerer ' + elem.key);
-
-    // We attach an observed handler and update the
-    // editable value on change
-    var query = GetCurrentCollection().find({ _id: elem._id });
-    var handle = query.observeChanges({
-        changed: function (id, fields) {
-            _.each(fields, function (v, k) {
-                if ( _.isArray(v)) {
-                    $('#main-content').html(Meteor.render(Template.editelement));
-                }
-                else {
-                    $('#' + k).editable('setValue', v);
-                }
-            });
-        }
-    });
-
     // auto move to the next editable when user clicks enter
     $('.edit-field').on('hidden', function (e, reason) {
         if (reason === 'save' || reason === 'nochange') {
@@ -35,9 +10,8 @@ Template.editelement.rendered = function () {
             }
         }
     });
-
     //initialize the editable fields and update the element on edit
-    $('.edit-field').editable({
+    this.$('.edit-field:not(.editable-click)').editable('destroy').editable({
         emptytext: 'Indtast værdi',
         success: function(response, newValue) {
             console.log($(this), this);
@@ -66,6 +40,7 @@ Template.editelement.rendered = function () {
             } else {
                 update[dataKey] = newValue;
             }
+            console.log(update)
             var res = GetCurrentCollection().update({ _id: selected._id }, { $set: update }, function (err, msg) {
                 console.log(err, msg);
                 if (err) {
@@ -94,6 +69,34 @@ Template.editelement.rendered = function () {
         },
     });
 }
+Template.editelement.rendered = function () {
+
+
+    var elem = GetCurrentCollection().findOne({ key: Router.current().params.key });
+
+    //TODO guard against non existing route
+
+    Session.set('element', elem);
+    Session.set('viewTitle', 'Redigerer ' + elem.key);
+
+    // We attach an observed handler and update the
+    // editable value on change
+    var query = GetCurrentCollection().find({ _id: elem._id });
+    var handle = query.observeChanges({
+        changed: function (id, fields) {
+            _.each(fields, function (v, k) {
+                if ( _.isArray(v)) {
+                    $('#main-content').html(Meteor.render(Template.editelement));
+                }
+                else {
+                    $('#' + k).editable('setValue', v);
+                }
+            });
+        }
+    });
+
+
+};
 Template.editelement.helpers({
     fields: function (element) {
         // this may be called before session.element is set
