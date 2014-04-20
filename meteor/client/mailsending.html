@@ -16,11 +16,13 @@
                 {{/each}}
             </select>
         </div>
+        {{#if Session 'showTestMail'}}
         <div class="form-group">
             <label for="groupname">Test email</label>
             <input type="text" class="form-control" id="email" placeholder="Indtast email adresse">
         </div>
-            <input type="submit" id="send" class="btn btn-default" value="Send">
+        {{/if}}
+        <input type="submit" id="send" class="btn btn-default" value="Send">
     </form>
     <div class="history" style="margin-top:50px">
         <table class="table table-hover list-table">

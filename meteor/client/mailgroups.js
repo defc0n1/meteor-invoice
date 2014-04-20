@@ -51,7 +51,6 @@ Template.mailgroups.events({
         });
     },
     'click #save-mailgroup': function (event) {
-        console.log('clicked')
         event.preventDefault();
         if(Session.get('addMailGroup') === true) {
             var name = $("#groupname").val();
@@ -61,11 +60,12 @@ Template.mailgroups.events({
                 bootbox.alert('Æv, gruppe navnet er ugyldigt. Kun tal og a-z bogstaver!');
                 return;
             }
-            if (MailGroups.find({_id: name}).count() > 0){
+            // ensure that name doesn't exist already, and that the reserved name, test is not used
+            if (MailGroups.find({_id: name}).count() > 0 || name === 'test'){
                 bootbox.alert('Æv, gruppe navnet eksisterer allerade. Prøv et andet!');
                 return;
             }
-            MailGroups.insert({_id: name}, function (err, msg) {})
+            MailGroups.insert({_id: name}, function (err, msg) {});
             Session.set('addMailGroup', false);
         }
         else {

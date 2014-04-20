@@ -1,6 +1,7 @@
 
 Template.mailsending.rendered = function() {
     $('.table-tooltip').tooltip();
+    Session.set('showTestMail', true);
 };
 Template.mailsending.helpers({
     mailgroups: function () {
@@ -12,6 +13,9 @@ Template.mailsending.helpers({
 });
 
 Template.mailsending.events({
+    'change #group': function(event){
+        Session.set('showTestMail', event.target.value == 'test');
+    },
     'click #send': function (event) {
         event.preventDefault();
         var group = $('#group').val();
