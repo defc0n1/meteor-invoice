@@ -22,15 +22,14 @@ Template.editelementedit.rendered = function () {
                 Messages.insert({ message: 'Nøglen kan ikke ændres på nuværende tidspunkt.' });
                 return;
             }
-            var selected = Session.get('element');
+            var selected = GetCurrentCollection().findOne({ key: Router.current().params.key });
             var dataIndex = $(this).attr('data-index');
-            var forceReload = false;
             var dataKey = $(this).attr('data-key');
             if (dataIndex) {
                 var newList = selected[dataKey] || [];
                 if (dataIndex == -1) {
                     newList.push(newValue);
-                    forceReload = true;
+                    var reset = true;
                 }
                 else{
                     newList.splice(dataIndex, 1, newValue);
@@ -41,18 +40,11 @@ Template.editelementedit.rendered = function () {
                 update[dataKey] = newValue;
             }
             console.log(update)
-            var res = GetCurrentCollection().update({ _id: selected._id }, { $set: update }, function (err, msg) {
-                console.log(err, msg);
-                if (err) {
-                    console.log(err);
-                    //var selector = '#' + field;
-                    //$(selector).editable('setValue', selected[field] , true);
-                    //Messages.insert({ message: 'Nøgle eksisterer allerede' });
-                }
-                if (forceReload){$('#main-content').html(Meteor.render(Template.editelement));}
-
-            });
+            UpdateCollection(GetCurrentCollection(), selected._id, update) 
             // we might need to run the update sync, as editable expects the error to be returned
+            if(reset){
+                return {newValue: null};
+            }
         },
         display: function (value) {
 
@@ -70,38 +62,15 @@ Template.editelementedit.rendered = function () {
     });
 }
 Template.editelement.rendered = function () {
-
-
-    var elem = GetCurrentCollection().findOne({ key: Router.current().params.key });
-
-    //TODO guard against non existing route
-
-    Session.set('element', elem);
-    Session.set('viewTitle', 'Redigerer ' + elem.key);
-
-    // We attach an observed handler and update the
-    // editable value on change
-    var query = GetCurrentCollection().find({ _id: elem._id });
-    var handle = query.observeChanges({
-        changed: function (id, fields) {
-            _.each(fields, function (v, k) {
-                if ( _.isArray(v)) {
-                    $('#main-content').html(Meteor.render(Template.editelement));
-                }
-                else {
-                    $('#' + k).editable('setValue', v);
-                }
-            });
-        }
-    });
-
-
+    var element = GetCurrentCollection().findOne({ key: Router.current().params.key });
+    //guard against non existing route
+    if (!element) return; 
+    Session.set('viewTitle', 'Redigerer ' + element.key);
 };
 Template.editelement.helpers({
     fields: function (element) {
-        // this may be called before session.element is set
-        // thus we guard against undefined element
-        var element = Session.get('element');
+        var element = GetCurrentCollection().findOne({ key: Router.current().params.key });
+        //guard against non existing route
         if (!element) return [];
         var list = GetCurrentMapping().modalFields;
         list = _.map(list, function (elem) {
@@ -111,36 +80,22 @@ Template.editelement.helpers({
         return list;
     },
 });
-
 Template.editelement.events({
     'click .remove-list-item': function(event) {
-        var selected = Session.get('element');
-        var key = this.elem.key;
+        var selected = GetCurrentCollection().findOne({ key: Router.current().params.key });
+        console.log(this);
+        var key = this.key;
         var list = selected[key];
         list.splice(this.index, 1);
         var update = {};
         update[key] = list;
-        GetCurrentCollection().update({ _id: selected._id }, { $set: update }, function (err, msg) {
-            console.log(err, msg);
-            if (err) {
-                console.log(err);
-                //var selector = '#' + field;
-                //$(selector).editable('setValue', selected[field] , true);
-                //Messages.insert({ message: 'Nøgle eksisterer allerede' });
-            }
-        });
-        $('#main-content').html(Meteor.render(Template.editelement));
+        UpdateCollection(GetCurrentCollection(), selected._id, update) 
     },
     'change .gln-group-select': function(event) {
         var gln_group = event.target.value;
-        console.log(gln_group)
-        var element = Session.get('element');
+        var element = GetCurrentCollection().findOne({ key: Router.current().params.key });
         if (gln_group) {
-            var res = GetCurrentCollection().update({ _id: element._id }, { $set: { gln_group: gln_group } },
-                function (err, msg) {
-                    console.log(err, msg)
-                }
-            );
+            UpdateCollection(GetCurrentCollection(), element._id, {gln_group: gln_group}) 
         }
         else{
             var res = GetCurrentCollection().update({ _id: element._id }, { $unset: { gln_group: "" } },
@@ -150,3 +105,4 @@ Template.editelement.events({
         }
     }
 });
+

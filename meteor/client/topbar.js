@@ -45,7 +45,7 @@ Template.topbar.items = function () {
     var items = [
         { name: 'Salg', path: Router.routes['main'].path({ root: 'sale', type: 'postedSalesinvoices' }) },
         { name: 'Køb', path: Router.routes['main'].path({ root: 'purchase', type: 'postedPurchaseinvoices' }) },
-        { name: 'Kontaker', path: Router.routes['main'].path({ root: 'contacts', type: 'deptors' }) },
+        { name: 'Kontakter', path: Router.routes['main'].path({ root: 'contacts', type: 'deptors' }) },
         { name: 'Varer', path: Router.routes['main'].path({ root: 'items', type: 'items' }) },
         { name: 'Posteringer', path: Router.routes['main'].path({ root: 'entries', type: 'itemEntries' }) },
         { name: 'Kampagner', path: Router.routes['campaigns'].path({ root: 'campaigns', type: 'mailgroups' }) },

@@ -1,7 +1,6 @@
 import util
 import ftplib
 import time
-from selenium.webdriver.support.ui import WebDriverWait
 import fixtures
 from datetime import datetime
 
@@ -35,7 +34,7 @@ def test_send_edi_no_gln_group(wd, db):
 
 def test_send_edi_no_gln_number_deptor(wd, db):
     deptor = fixtures.DEPTOR.copy()
-    deptor.pop('gln_number')
+    deptor.pop('gln')
     db.deptors.insert(deptor)
     insert_invoice(wd, db)
     elems = wd.find_elements_by_class_name("alert")
@@ -106,7 +105,6 @@ def test_send_edi(wd, db):
     def get_time(l):
         split = [x.strip() for x in l.split(' ') if x.strip()]
         print split
-        #t = str(time.gmtime().tm_year) + '-' + split[5].strip() + '-'+split[6].strip() + '-' +split[7].strip()
         t = str(time.gmtime().tm_year) + '-' + split[5].strip() + '-'+split[6].strip() + '-' + split[7].strip()
         tt = datetime.strptime(t,"%Y-%b-%d-%H:%M")
         files.append((tt, split[8]))

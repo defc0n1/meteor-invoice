@@ -89,11 +89,8 @@ register('CountText', function () {
     }
 });
 
-register('ElementKeyEquals', function(key, val, out) {
-    // return the out string if element.key == val,
-    // otherwise, return ""
-    var element = Session.get('element');
-    if (element[key] && element[key] == val){
+register('Equals', function(val1, val2, out) {
+    if (val1 == val2){
         return out;
     }
     else {
@@ -111,6 +108,19 @@ register('Session', function(arg) {
 });
 register('Shorten', function(arg) {
     return Session.get('element');
+});
+register('xEditable', function() {
+    var args = _.initial(arguments);
+    var value = _.first(args);
+    var selector = _.rest(args).join('');
+    var el = $(selector);
+    if(value){
+        el.editable('setValue', value);
+    }
+    else{
+        el.editable('setValue', null);
+    }
+return value;
 });
 register('ListIndex', function (arg) {
     return _.map(arg, function (item, index) {
@@ -187,32 +197,4 @@ register('key_value', function (context, options) {
         result.push({key:key, value:value});
     });
     return result;
-});
-
-Handlebars.registerHelper('With', function(){
-    // Handlebars passes the options as the last argument.
-    var args = _.initial(arguments);
-    var options = _.last(arguments);
-
-    var withContext = {};
-    var only = false;
-
-    if(args.length >= 1){
-        var onlyArg = _.first(args);
-        if(_.isString(onlyArg) && onlyArg == 'only'){
-            only = true;
-            args = _.tail(args);
-        }
-    }
-
-    // Extend the current context unless only is specified.
-    var initialContext = only ? {} : this;
-
-    // Merge all of the passed context arguments.
-    args.unshift({});
-    var argsContext = _.extend.apply(_, args);
-
-    // Finally, merge everything including the hash.
-    var context = _.extend({}, initialContext, argsContext, options.hash);
-    return options.fn(context);
 });

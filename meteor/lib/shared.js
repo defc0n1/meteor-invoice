@@ -13,6 +13,17 @@ History = new Meteor.Collection('history');
 
 ItemEntries = new Meteor.Collection(null);
 
+
+UpdateCollection = function(collection, id, update){
+        collection.update({ _id: id }, { $set: update }, function (err, msg) {
+            console.log(err, msg);
+            if (err) {
+                console.log(err);
+                //Messages.insert({ message: 'Nøgle eksisterer allerede' });
+            }
+        });
+
+}
 GetCurrentCollection = function (capitalize) {
     var typeName = Router.current().params.type;
     var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);

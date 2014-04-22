@@ -7,13 +7,13 @@ def click_button_by_id(wd, id_element):
     wd.find_element_by_id(id_element).click()
 
 def click_button_by_css_selector(wd, selector):
-	element = wd.find_elements_by_css_selector(selector)[0].click()
+    element = wd.find_elements_by_css_selector(selector)[0].click()
 
 def click_button_by_xpath_selector(wd, selector):
-	#wd.find_elements_by_xpath(selector)[0].click()
-	elem = wd.find_elements_by_xpath(selector)[0]
-        print elem, elem.text
-        elem.click()
+    #wd.find_elements_by_xpath(selector)[0].click()
+    elem = wd.find_elements_by_xpath(selector)[0]
+    print elem, elem.text
+    elem.click()
 
 def form_fill(element, value):
     element.click()
@@ -32,8 +32,8 @@ def form_fill_by_css_selector(wd, selector, value):
     element = wd.find_elements_by_css_selector(selector)[0]
     form_fill(element, value)
 
-def fill_xeditable_field(wd, id, value):
-    elem = wd.find_element_by_id(id)
+
+def fill_xeditable_field(wd, elem, value):
     elem.send_keys(Keys.ENTER) # chrome issue --> we cannot click on xeditable field
     elem2 = wd.find_element_by_class_name('input-sm')
     elem2.send_keys(value)
@@ -41,5 +41,3 @@ def fill_xeditable_field(wd, id, value):
     ac = ActionChains(wd)
     ac.key_down(Keys.ESCAPE)
     ac.perform()
-    # if not is_last:
-    #     wd.find_elements_by_class_name('editable-cancel')[0].click()
