@@ -32,19 +32,19 @@ FilterQuery = function (collection, fields, query, merger) {
         }
     }
     if (!merger.options.limit) merger.options.limit = 10;
+    if (!merger.options.skip) merger.options.skip = 0;
 
 
     var sort = merger.filter && merger.filter.sort ? merger.filter.sort : { key: -1};
     if(merger.filter && merger.filter.sort)
         delete merger.filter.sort;
 
-     
     var finalQuery = {}
     //hack to allow us to use 123..234 syntax, TODO: fix this and simplify input
    if(filter.$and) {
        finalQuery = filter;
    } else {
-        finalQuery = _.extend(filter, merger.filter);
+       finalQuery = _.extend(filter, merger.filter);
    }
 
     var options = _.extend(merger.options, { sort: sort });

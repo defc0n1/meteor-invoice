@@ -15,6 +15,11 @@ ItemEntries = new Meteor.Collection(null);
 
 
 UpdateCollection = function(collection, id, update){
+        // accepts both string objectIds and
+        // mongo object Ids, and converts accordingly
+        if(_.isString(id)){
+            id = new Meteor.Collection.ObjectID(id)
+        }
         collection.update({ _id: id }, { $set: update }, function (err, msg) {
             console.log(err, msg);
             if (err) {

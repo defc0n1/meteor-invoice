@@ -1,7 +1,6 @@
 "use strict";
 Template.topbar.events({
     'keyup #search-query': function(event) {
-        console.log('test1')
         var type = Session.get('type');
         var collection = type.collection;
         Session.set(collection + 'query', event.target.value);

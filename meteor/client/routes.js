@@ -143,6 +143,14 @@ Router.map(function () {
             //Session.set('type', Mapping[this.params.type]);
         //}
     });
+    this.route('dynamic', {
+        path: '/custom/:root/:type',
+        layoutTemplate: 'layout',
+        action: function () {
+            Session.set('Itemslimit', 200);
+            this.render(this.params.type);
+        },
+    });
     this.route('campaigns', {
         path: '/campaigns/:root/:type',
         layoutTemplate: 'layout',
@@ -157,12 +165,15 @@ Router.map(function () {
             return Meteor.subscribe('Custom', 'Deptors', {email: {$ne: ''}});
         }
     });
-    this.route('dynamic', {
-        path: '/custom/:root/:type',
+    this.route('customerordernumber', {
+        path: '/customerordernumber',
         layoutTemplate: 'layout',
         action: function () {
-            Session.set('Itemslimit', 200);
-            this.render(this.params.type);
+            //Session.set('Itemslimit', 200);
+            this.render('customerordernumber');
         },
+        //waitOn: function () {
+            //return Meteor.subscribe('Custom', 'Deptors', {email: {$ne: ''}});
+        //}
     });
 });

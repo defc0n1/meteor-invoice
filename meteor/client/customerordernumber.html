@@ -1,0 +1,23 @@
+<template name="customerordernumberrow">
+            <tr>
+                <td>{{key}}</td>
+                <td>
+                    <a href="#" class="edit-field" data-id="{{_id._str}}"  data-type="text" >{{gln_number}}</a>
+                </td>
+            </tr>
+</template>
+<template name="customerordernumber">
+    <table class="table list-table">
+        <thead>
+            <tr>
+                <th>Nummer</th>
+                <th>Kundeordrenummer</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{#each items}}
+            {{>customerordernumberrow}}
+        {{/each}}
+        </tbody>
+    </table>
+</template>
