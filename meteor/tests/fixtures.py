@@ -36,7 +36,6 @@ DEPTOR = {
 	"address" : "Annemiek Bangma",
 	"attention" : "",
 	"city" : "Rd Waddinxveen",
-	"email" : "",
 	"fax" : "",
 	"key" : "87274000",
 	"name" : "This is it/Intertoys Holland",
