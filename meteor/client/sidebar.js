@@ -57,7 +57,7 @@ Template.sidebar.items = function () {
             { name: 'Ny kreditnota', path: Router.routes.main.path({ root: 'new', type:  'newSalesCreditnota' }) },
             { name: 'Åbne kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'openSalescreditnotas'  }) },
             { name: 'Bogførte kreditnota', path: Router.routes.main.path({ root: 'sale', type:  'postedSalescreditnotas'  }) },
-            { name: 'Tilføj kundeordrenummer', id: 'customer-order-number', path: Router.routes.customerordernumber.path()},
+            { name: 'Tilføj kundeordrenummer', id: 'customer-order-number', path: Router.routes.customerordernumber.path({root: 'sale'})},
         ],
         entries: [
             { name: 'Konti', path: Router.routes.main.path({ root: 'entries', type:  'accounts'  }) },

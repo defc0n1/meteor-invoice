@@ -166,7 +166,7 @@ Router.map(function () {
         }
     });
     this.route('customerordernumber', {
-        path: '/customerordernumber',
+        path: '/customerordernumber/:root',
         layoutTemplate: 'layout',
         action: function () {
             //Session.set('Itemslimit', 200);
