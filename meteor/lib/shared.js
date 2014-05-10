@@ -46,6 +46,7 @@ var collections = [
     ];
     _.each(collections, function (collection) {
             Session.set(collection + 'limit', null),
+            //delete Session[collection + 'skip'],
             Session.set(collection + 'skip', null),
             Session.set(collection + 'query', null),
             Session.set(collection + 'filter', null)
