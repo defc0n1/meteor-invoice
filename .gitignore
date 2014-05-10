@@ -4,3 +4,4 @@ settings.json
 *.pyc
 tags
 */.build
+*/_build
