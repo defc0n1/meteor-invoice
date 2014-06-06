@@ -205,6 +205,7 @@ Mapping = {
         { name: 'EAN', key: 'ean'},
         { name: 'GLN nummer', key: 'gln_number'},
         { name: 'Beholdning', key: 'quantity'},
+        { name: 'Billede:', key: 'key', src: 'http://ettienne.webfactional.com/media/billeder/small/', image: true},
         ]
     },
     financeEntries: {

@@ -49,8 +49,12 @@
                         </ul>
                     </div>
                     {{else}}
+                    {{#if this.image}}
+                    <img src="{{this.src}}{{value}}.JPG">
+                    {{else}}
                     <a href="#" class="edit-field" id="{{this.key}}" data-key="{{this.key}}"  data-type="text" data-formatter="{{this.formatter}}" data-title="Enter username">{{xEditable this.value '#' this.key}}</a>
                     {{/if}}
+                {{/if}}
                 {{/if}}
             </td>
         </tr>
