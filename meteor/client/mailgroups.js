@@ -18,7 +18,7 @@ Template.mailgroups.helpers({
         return MailGroups.find();
     },
     deptors: function () {
-        return Deptors.find({emails: {$ne: ''}});
+        return Deptors.find({'secondary_emails.0': {$exists: true}});
     },
     member: function (elem) {
         if(this.mailgroups && this.mailgroups[Session.get('mailgroupname')] === 1) {

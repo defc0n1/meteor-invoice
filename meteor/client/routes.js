@@ -162,7 +162,7 @@ Router.map(function () {
 
         },
         waitOn: function () {
-            return Meteor.subscribe('Custom', 'Deptors', {email: {$ne: ''}});
+            return Meteor.subscribe('Custom', 'Deptors', {'secondary_emails.0': {$exists: true}});
         }
     });
     this.route('customerordernumber', {

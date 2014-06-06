@@ -37,7 +37,8 @@ def fill_xeditable_field(wd, elem, value):
     elem.send_keys(Keys.ENTER) # chrome issue --> we cannot click on xeditable field
     elem2 = wd.find_element_by_class_name('input-sm')
     elem2.send_keys(value)
-    wd.find_elements_by_class_name('editable-submit')[0].click()
+    ok_btn = wd.find_elements_by_class_name('editable-submit')[0]
+    ok_btn.send_keys(Keys.ENTER) # chrome issue --> we cannot click on xeditable field
     ac = ActionChains(wd)
     ac.key_down(Keys.ESCAPE)
     ac.perform()

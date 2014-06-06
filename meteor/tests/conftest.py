@@ -45,7 +45,7 @@ def meteor():
     print 'terminating meteor'
     p.terminate()
     for g in p.communicate():
-        print g
+        print 'Meteor com:', g
     p.wait()
     print 'dropping db'
     client.drop_database('invoice_test')

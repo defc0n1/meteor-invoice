@@ -11,7 +11,7 @@ function auth(f) {        // (1)
 }
 Meteor.methods({
     unsubscribe: function (email) {
-        var res = Deptors.update({emails: { $in: [email]}},{$set: {'notifications.newsletter': 0}});
+        var res = Deptors.update({secondary_emails: { $in: [email]}},{$set: {'notifications.newsletter': 0}});
     },
     CreateUser: auth(function (email) {
         var userId = Accounts.createUser({ email: email });
@@ -215,7 +215,7 @@ Meteor.methods({
             var recipients = Deptors.find(match).fetch();
             var emails = [];
             _.each(recipients, function(v, k) {
-                emails = emails.concat(v.emails);
+                emails = emails.concat(v.secondary_emails);
             });
             if (Meteor.settings.env !== 'prod') {
                 log.info('Sending to test email', Meteor.settings.test_mail);
@@ -266,7 +266,7 @@ Meteor.methods({
         var objectId = new Meteor.Collection.ObjectID(id)
         var invoice = Sale.findOne({ _id: objectId });
         var deptor = Deptors.findOne({ key: invoice.customer_number });
-        if (!deptor.emails || deptor.emails.length == 0) {
+        if (!deptor.primary_emails || deptor.primary_emails.length == 0) {
             errors.sync(errors.missingMail, '', log.warning);
         }
         Sale.update(
@@ -276,7 +276,7 @@ Meteor.methods({
         );
 
         var transport = Mail.getTransport();
-        var emails = deptor.emails.join(',');
+        var emails = deptor.primary_emails.join(',');
         if (Meteor.settings.env !== 'prod') {
             log.info('Sending to test email', Meteor.settings.test_mail);
             emails = Meteor.settings.test_mail;
