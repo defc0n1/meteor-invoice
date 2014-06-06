@@ -8,7 +8,7 @@ Template.mailsending.helpers({
         return MailGroups.find();
     },
     history: function () {
-        return History.find();
+        return History.find({type: 'newsletter'});
     },
 });
 

@@ -173,6 +173,9 @@ Meteor.methods({
         var object = { invoice: invoice, deptor: deptor };
         object.dry_run = false;
         // set invoice state to processing
+        var historyId = UUID.v1()
+        History.insert({_id: historyId, state: 'pending', type: 'edi', created: new Date(), user: Meteor.user().emails[0].address,
+            data: {number: invoiceNumber}});
         Sale.update(
                 { key: invoiceNumber },
                 { $set: { 'sent.amqp.state': 'processing',
@@ -181,6 +184,7 @@ Meteor.methods({
         // call in case of error
         var error = function (message) {
             log.error('Unsuccessful send of invoice:', invoiceNumber);
+            History.update({_id: historyId}, { $set: {state: 'error', error: message}});
             Sale.update(
                     { key: invoiceNumber },
                     { $set: { 'sent.amqp.state': 'error' } });
@@ -189,6 +193,7 @@ Meteor.methods({
         amqp.rpc(object, Meteor.settings.amqp_queue, Meteor.bindEnvironment(function (response) {
             if (response.success === true) {
                 console.log('successful send of invoice:', invoiceNumber);
+                History.update({_id: historyId}, { $set: {state: 'success'}});
                 Sale.update(
                     { key: invoiceNumber },
                     { $push: { 'sent.amqp.history': new Date() },
