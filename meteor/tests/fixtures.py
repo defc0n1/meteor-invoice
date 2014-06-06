@@ -36,13 +36,16 @@ DEPTOR = {
 	"address" : "Annemiek Bangma",
 	"attention" : "",
 	"city" : "Rd Waddinxveen",
-	"fax" : "",
+	"fax" : "324432 432432",
+	"primary_emails" : ['a@b.dk', 'c@d.dk'],
+	"secondary_emails" : ['a@b.dk', 'c@d.dk'],
 	"key" : "87274000",
 	"name" : "This is it/Intertoys Holland",
-	"phone" : "",
+	"phone" : "123345 234",
 	"gln" : "123",
-	"gln_group" : "supergros",
-	"search_name" : "THIS IS IT/INTERTOYS HOLLAND",
+	"attention" : "123",
+        "gln_group" : "supergros",
+	#"search_name" : "THIS IS IT/INTERTOYS HOLLAND",
 	"zip" : "2742"
 }
 INVOICE = {

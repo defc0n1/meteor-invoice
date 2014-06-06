@@ -17,11 +17,11 @@ def test_create_item(wd):
         elem = wd.find_element_by_id(key)
         util.fill_xeditable_field(wd, elem, value)
 
-    item = wd.db.items.find_one({'key': item_key})
-    assert item != None
+    i = wd.db.items.find_one({'key': item_key})
+    assert i
 
     for key, value in item.iteritems():
-        assert item[key] == value
+        assert i[key] == value
 
 
 def test_create_deptor(wd):
@@ -35,12 +35,24 @@ def test_create_deptor(wd):
     util.click_button_by_css_selector(wd, '.bootbox .btn-primary')
 
     for key, value in deptor.iteritems():
-        elem = wd.find_element_by_id(key)
-        util.fill_xeditable_field(wd, elem, value);
+        if key in ['primary_emails', 'secondary_emails']:
+            for val in value:
+                elem = wd.find_elements_by_css_selector('.add-list-{}'.format(key))[0]
+                util.fill_xeditable_field(wd, elem, val)
+        elif key in ['gln_group']:
+            all_options = wd.find_elements_by_tag_name("option")
+            for option in all_options:
+                o_value = option.get_attribute("value")
+                print "Value is: %s" % o_value
+                if o_value == value:
+                    option.click()
 
-    deptor = wd.db.deptors.find_one({'key': deptor_key})
-    assert deptor != None
+        else:
+            elem = wd.find_element_by_id(key)
+            util.fill_xeditable_field(wd, elem, value)
+
+    d = wd.db.deptors.find_one({'key': deptor_key})
+    assert d
 
     for key, value in deptor.iteritems():
-        assert deptor[key] == value
-
+        assert d[key] == value
