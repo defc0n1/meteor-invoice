@@ -2,7 +2,7 @@ import fixtures
 import util
 import time
 
-def test_customer_order_number_update(wd, db):
+def test_update(wd, db):
     wd.auth()
     invoice = fixtures.INVOICE.copy()
     db.sale.insert(invoice)
@@ -11,6 +11,7 @@ def test_customer_order_number_update(wd, db):
     db.sale.insert(invoice1)
     util.click_button_by_id(wd, 'Salg')
     util.click_button_by_id(wd, 'customer-order-number')
+    time.sleep(1)
     elems = wd.find_elements_by_class_name("edit-field")
     assert len(elems) == 1, 'expected one element without customer_order_number'
     #elems[0] = wd.find_elements_by_class_name("copy-ean")
@@ -25,7 +26,7 @@ def test_customer_order_number_update(wd, db):
     inv = wd.db.sale.find_one({ 'key': invoice1['key'] })
     assert inv['customer_order_number'] == customer_order_number
 
-def test_customer_order_disappear(wd, db):
+def test_disappear(wd, db):
     wd.auth()
     invoice = fixtures.INVOICE.copy()
     invoice.pop('customer_order_number')

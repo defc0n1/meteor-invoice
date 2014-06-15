@@ -10,7 +10,7 @@ def insert_invoice(wd, db):
     util.click_button_by_id(wd, 'Salg')
     util.form_fill_by_id(wd, 'search-query', fixtures.INVOICE['key'])
     elems = wd.find_elements_by_class_name("edi-button")
-    assert len(elems) == 1, 'to many elements after search'
+    assert len(elems) == 1, 'wrong number of elements after search'
     red_buttons = wd.find_elements_by_class_name("btn-danger")
     assert len(red_buttons) == 0, 'no red buttons should be present'
     elems[0].click()
@@ -63,7 +63,7 @@ def test_send_edi(wd, db):
         "UNB+UNOC:3+9000026704561:14+5790000000852:14+140416:1410+1397650243++++0++1'",
         "UNH+1397650243+INVOIC:D:96A:UN:EAN008'",
         "BGM+380+91085+9'",
-        "DTM+137:20140416:102'",
+        "DTM+137:{}:102'".format(datetime.now().strftime('%Y%m%d')),
         "RFF+VN:1197629'",
         "RFF+AAU:91085'",
         "DTM+171::102'",

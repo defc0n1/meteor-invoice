@@ -37,6 +37,7 @@ def wd(request, db):
 #@pytest.yield_fixture(scope='session')
 def meteor():
     client = MongoClient()
+    print ''
     print 'dropping db'
     client.drop_database('invoice_test')
     p = subprocess.Popen('MONGO_URL="mongodb://localhost:27017/invoice_test" meteor --settings ../config/test-settings.json --port 4000', cwd='meteor', shell=True, stdout=subprocess.PIPE)
@@ -53,15 +54,6 @@ def meteor():
 @pytest.yield_fixture()
 def db(meteor):
     client = MongoClient()
-    #print 'dropping db'
-    #client.drop_database('invoice_test')
-    #print 'copying database'
-    #client.admin.command(SON([('copydb', 1), ('fromdb', 'invoice'), ('todb', 'invoice_test')]))
-    print 'done copying database'
     db = client.invoice_test
     yield db
-    print 'cleaning up'
-    #client.drop_database('invoice_test')
-    #print res
-    #print db.last_status()
     client.close()
