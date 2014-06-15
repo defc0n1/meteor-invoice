@@ -1,8 +1,5 @@
 Template.table.rendered = function () {
     var type = Session.get('type');
-    if(type.filter) {
-        SetFilter(type.filter, true);
-    }
     Session.set('modalFields', type.modalFields);
     Session.setDefault(type.collection + 'skip', 0);
     $('.table-tooltip').tooltip();
@@ -13,12 +10,6 @@ Template.table.created = function () {
 Template.table.items = function () {
     var type = Session.get('type');
     return window[type.collection].find({}, { sort: { key: -1 }});
-};
-
-changePage = function (count) {
-    var collection = Session.get('type').collection;
-    Session.set(collection + 'skip',
-            Session.get(collection + 'skip') + count);
 };
 Template.table.events({
     'click .edi-button': function(event) {
@@ -143,25 +134,17 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
-    'click #first-page': function(event) {
-        var collection = Session.get('type').collection;
-        Session.set(collection + 'skip', 0);
+        //var size = CollectionCounts.findOne(GetCurrentMappingName()).count
+        //var offset = 0;
+        //if (size % incrementSize == 0) {
+            //offset = -1
+        //}
+        //var skip = (parseInt(size/incrementSize) + offset) * 10
+    'click #show-more': function(event) {
+        ChangePage(true);
     },
-    'click #last-page': function(event) {
-        var collection = Session.get('type').collection;
-        var size = CollectionCounts.findOne(GetCurrentMappingName()).count
-        var offset = 0;
-        if (size % incrementSize == 0) {
-            offset = -1
-        }
-        var skip = (parseInt(size/incrementSize) + offset) * 10
-        Session.set(collection + 'skip', skip);
-    },
-    'click #next-page': function(event) {
-        changePage(incrementSize);
-    },
-    'click #previous-page': function(event) {
-        changePage(-incrementSize);
+    'click #show-fewer': function(event) {
+        ChangePage(false);
     },
 });
 
@@ -194,22 +177,20 @@ Template.table.helpers({
         var isProcessing = processing(this, 'mail') || processing(this, 'amqp');
         return isProcessing ? 'display: inherit' : 'display:none';
     },
-    showBack: function() {
-        var type = Session.get('type');
-        var collection = type.collection;
-        var disable = Session.equals(collection + 'skip', 0) || Session.equals(collection + 'skip', null);
-        return disable ? 'disabled' : '';
+    showFewer: function() {
+        return (parseInt(Router.current().params.page) || 10) <= 10 ? 'disabled' : '';
     },
-    showForward: function() {
-        var type = Session.get('type');
-        var collection = type.collection;
-        var obj = CollectionCounts.findOne(GetCurrentMappingName());
-        if (obj) {
-            var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
-            return disable ? 'disabled' : '';
-        }
-        else {
-            return false;
-        }
+    showMore: function() {
+        //var type = Session.get('type');
+        //var collection = type.collection;
+        //var obj = CollectionCounts.findOne(GetCurrentMappingName());
+        //if (obj) {
+            //var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
+            //return disable ? 'disabled' : '';
+        //}
+        //else {
+            //return false;
+        //}
+        return '';
     },
 });

@@ -1,5 +1,4 @@
 "use strict";
-
 //helper to preserver skip and query history when using browser history.
 //To preserve set when going back from routeB to routeA
 //set routeA : { routeB: true }
@@ -7,11 +6,12 @@ var historyMap = {
     'postedSalesinvoices' : { 'postedSalesinvoice' : true }
 }
 var updateFilters = function(type) {
-            var obj = historyMap[type] || {};
-            var skipClear = obj[history.state.type];
-            if (!skipClear)
-                ClearFilters();
-}
+    console.log(type)
+    var obj = historyMap[type] || {};
+    var skipClear = obj[history.state.type];
+    if (!skipClear)
+        ClearFilters();
+};
 Router.onStop(
     function () {
         history.pushState({ type: this.params.type }, '');
@@ -70,18 +70,44 @@ Router.map(function () {
     this.route('index', {
         path: '/',
         layoutTemplate: 'layout',
-        template: 'index'
+        template: 'index',
+        waitOn: function () {
+            return Meteor.subscribe('History', 50, 0,
+                this.params.query,
+                {sort: {created: -1}},
+                function () { }
+            );
+        },
     });
     this.route('main', {
-        path: '/table/:root/:type',
+        path: '/table/:root/:type/:page?/:query?',
         layoutTemplate: 'layout',
         action: function () {
             this.render('table');
         },
         onBeforeAction: function () {
-            updateFilters(this.params.type);
-            Session.set('type', Mapping[this.params.type]);
-        }
+            if(!this.params.page){
+                this.params.page = 10;
+            }
+            $('#search-query').val(this.params.query);
+            var map = Mapping[this.params.type];
+            Session.set('type', map);
+        },
+        waitOn: function () {
+            var map = Mapping[this.params.type];
+            //if(map.filter) {
+                return Meteor.subscribe(map.collection,
+                    parseInt(this.params.page) || incrementSize,
+                    0,
+                    this.params.query,
+                    GetFilter(map.filter, true),
+                    function () { }
+                );
+            //}
+        },
+        //unload: function() {
+            //updateFilters(this.params.type);
+        //}
     });
     this.route('edit2', {
         path: '/edit2/:type/:key',
@@ -165,15 +191,29 @@ Router.map(function () {
             return Meteor.subscribe('Custom', 'Deptors', {'secondary_emails.0': {$exists: true}});
         }
     });
+    this.route('quickgln', {
+        path: '/quickgln',
+        layoutTemplate: 'layout',
+        waitOn: function () {
+            //make the correct sidebar show
+            this.params.root = 'items';
+            var filter = { $or: [{gln_number: ''}, {gln_number: { $exists: 0 }}]};
+            return Meteor.subscribe('Items', 10, 0, {}, filter);
+        }
+    });
     this.route('customerordernumber', {
-        path: '/customerordernumber/:root',
+        path: '/customerordernumber',
         layoutTemplate: 'layout',
         action: function () {
-            //Session.set('Itemslimit', 200);
             this.render('customerordernumber');
         },
-        //waitOn: function () {
-            //return Meteor.subscribe('Custom', 'Deptors', {email: {$ne: ''}});
-        //}
+        waitOn: function () {
+            //make the correct sidebar show
+            this.params.root = 'sale';
+            var filter = jQuery.extend(true, {}, Mapping.postedSalesinvoices.filter);
+            filter.$and.push({ $or: [{customer_order_number: ''}, {customer_order_number: { $exists: 0 }}]});
+            console.log(Mapping.postedSalesinvoices.filter);
+            return Meteor.subscribe('Sale', 10, 0, {}, filter);
+        }
     });
 });

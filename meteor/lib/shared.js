@@ -64,7 +64,21 @@ SetFilter = function(filter, extend, router) {
         var oldFilter = Session.get(mapping.collection + 'filter');
         filter = _.extend(oldFilter || {}, filter);
     }
+    console.log(filter)
     Session.set(mapping.collection + 'filter', filter);
+    if (router) {
+        //router.subscribe(mapping.collection, router.params.key).wait();
+    }
+};
+GetFilter = function(filter, extend, router) {
+    var typeName = Router.current().params.type;
+    var capString = typeName.charAt(0).toUpperCase() + typeName.slice(1);
+    var mapping = GetCurrentMapping();
+    if (extend) {
+        var oldFilter = Session.get(mapping.collection + 'filter');
+        filter = _.extend(oldFilter || {}, filter);
+    }
+    return filter;
     if (router) {
         //router.subscribe(mapping.collection, router.params.key).wait();
     }
@@ -80,7 +94,15 @@ Required = function(name, message, f) {
     else{
         f(val);
     }
-}
+};
+ChangePage = function(more) {
+    Router.go('main', {
+        root: Router.current().params.root, 
+        type: GetCurrentMappingName(),
+        page: more && (parseInt(Router.current().params.page) || 0) + incrementSize || incrementSize,
+        query: Router.current().params.query
+    });
+};
 GetCurrentMappingName = function () {
     return Router.current().params.type;
 };

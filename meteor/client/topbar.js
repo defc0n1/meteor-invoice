@@ -1,18 +1,24 @@
 "use strict";
+var timeout;
+var lastValue = '';
+
+Template.topbar.rendered = function() {
+     $('#search-query').on('input', function () {
+        if ($(this).val() === '') {
+            Router.go('main', {root: 'sale', type: GetCurrentMappingName() , page: 10, query: ''})
+        }
+    });
+}
 Template.topbar.events({
     'keyup #search-query': function(event) {
-        var type = Session.get('type');
-        var collection = type.collection;
-        Session.set(collection + 'query', event.target.value);
-        Session.set(collection + 'skip', 0);
-    },
-    'click #search-query': function(event) {
-        if (event.target.value === '') {
+        if (event.target.value !== '') {
             var type = Session.get('type');
             var collection = type.collection;
-            var type = Session.get('type');
-            Session.set(collection + 'query', '');
-            Session.set(collection + 'skip', 0);
+            if(timeout) { clearTimeout(timeout); }
+
+            timeout = setTimeout(function() {
+                Router.go('main', {root: 'sale', type: GetCurrentMappingName() , page: 10, query: event.target.value});
+            }, 1000);
         }
     },
     'click #logout': function () {

@@ -18,9 +18,7 @@ Template.quickglneditfield.rendered = function() {
         success: function(response, newValue) {
             var update = {};
             var id = $(this).attr('data-id');
-
             update = {gln_number: newValue};
-            console.log(update, id)
             UpdateCollection(Items, id, update);
         },
     });

@@ -20,14 +20,16 @@ FilterQuery = function (collection, fields, query, merger) {
         }
         else {
             list = _.map(fields, function (field) {
-                var obj = {};
-                obj[field] = { '$regex': query, '$options': 'i' };
-                return obj;
+                var number = parseInt(query);
+                if (!isNaN(number) && isFinite(query) && field === 'key') {
+                    return {'$where': '/^' + number + '.*/.test(this.key)'};
+                }
+                else{
+                    var obj = {};
+                    obj[field] = {'$regex': query, '$options': 'i'};
+                    return obj;
+                }
             });
-            var number = parseInt(query);
-            if (!isNaN(number) && isFinite(query)) {
-                list.push({ 'key': number });
-            }
             filter = { $or : list };
         }
     }
@@ -49,7 +51,7 @@ FilterQuery = function (collection, fields, query, merger) {
 
     var options = _.extend(merger.options, { sort: sort });
     var options = merger.options
-    console.log(finalQuery, options, collection._name);
+    console.log(JSON.stringify(finalQuery), options, collection._name);
     return collection.find(finalQuery, options);
 };
 Meteor.publish('DeptorPostings', function (limit, skip, query, filter){
