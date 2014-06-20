@@ -27,7 +27,7 @@ Template.mailsending.events({
                     });
                 }
                 else{
-                    bootbox.confirm('Vil du sende den pågældende mail til gruppe' + group + '?', function(res){
+                    bootbox.confirm('Vil du sende den pågældende mail til gruppe ' + group + '?', function(res){
                         if(res){
                             Meteor.call('sendNewsletter', group, undefined, url, subject, function (err, msg) {console.log(err,msg)});
                         }

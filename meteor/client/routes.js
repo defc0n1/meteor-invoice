@@ -188,7 +188,11 @@ Router.map(function () {
 
         },
         waitOn: function () {
-            return Meteor.subscribe('Custom', 'Deptors', {'secondary_emails.0': {$exists: true}});
+            var handles = [
+                Meteor.subscribe('History', 50, 0, {type: 'newsletter'}, {sort: {created: -1}}),
+                Meteor.subscribe('Custom', 'Deptors', {'secondary_emails.0': {$exists: true}})
+            ];
+            return handles;
         }
     });
     this.route('quickgln', {
