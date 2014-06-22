@@ -184,7 +184,7 @@ Mapping = {
             { header: 'Gruppe', key: 'group' },
             { header: 'Kostpris', key: 'cost_price', formatter: 'GetPrice' },
             { header: 'Salgspris', key: 'price', formatter: 'GetPrice' },
-            { header: 'Beholdning', key: 'quantity' },
+            { header: 'Beholdning', key: 'in_stock' },
             { header: '', key: '', buttons: [
                 { icon: 'wrench', classes: 'table-edit-element-button' },
                 { text: 'Statistik', classes: 'item-statistics-button' },

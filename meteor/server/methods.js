@@ -105,18 +105,33 @@ Meteor.methods({
         return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
     }),
     getItemStats: auth(function (number, startDate, endDate) {
-        var match = { item_number: number };
+        //var match = { 'lines.item_number': number };
+        var match = { posting_date: {}};
         if (endDate) {
-            match.date = { $lte: endDate };
+            match.posting_date = { $lte: new Date(endDate) };
         }
         if (startDate) {
-            match.date = { $gte: startDate };
+            match.posting_date.$gte = new Date(startDate);
         }
         log.info(match);
-        return ItemEntries.aggregate([
-                { $match: match },
-                { $group: { _id: "$type", total: { $sum: "$total_price" }, quantity: { $sum: "$quantity" } } }
-                ]);
+        var query = [
+            { $match: match },
+            {$project: {lines: 1, key: 1, _id: 0}},
+            { $unwind: "$lines"},
+            { $match: { 'lines.item_number': number}},
+            { $group: { _id: "sale", total: { $sum: "$lines.total_without_tax" }, quantity: { $sum: "$lines.quantity" } } }
+        ];
+        log.info(query);
+        match.type = 'invoice';
+        var res1 = Sale.aggregate(query)[0];
+        match.type = 'creditnota';
+        var res2 = Sale.aggregate(query)[0];
+        return [{_id: 'Salg', total: res1.total - res2.total, quantity: res1.quantity - res2.quantity}];
+
+        //return Sale.aggregate([
+                //{ $match: match },
+                //{ $group: { _id: "$type", total: { $sum: "$total_price" }, quantity: { $sum: "$quantity" } } }
+                //]);
     }),
     getCreditorStats: auth(function (number) {
         return CreditorEntries.aggregate([
