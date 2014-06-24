@@ -1,6 +1,5 @@
 "use strict";
 var timeout;
-var lastValue = '';
 
 Template.topbar.rendered = function() {
      $('#search-query').on('input', function () {
@@ -8,8 +7,13 @@ Template.topbar.rendered = function() {
             Router.go('main', {root: 'sale', type: GetCurrentMappingName() , page: 10, query: ''})
         }
     });
-}
+};
 Template.topbar.events({
+    'submit form': function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    },
     'keyup #search-query': function(event) {
         if (event.target.value !== '') {
             var type = Session.get('type');
