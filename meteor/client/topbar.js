@@ -2,9 +2,10 @@
 var timeout;
 
 Template.topbar.rendered = function() {
-     $('#search-query').on('input', function () {
+    $('#search-query').on('input', function () {
         if ($(this).val() === '') {
-            Router.go('main', {root: 'sale', type: GetCurrentMappingName() , page: 10, query: ''})
+            var cur = Router.current();
+            Router.go(cur.route.name, {root: cur.params.root, type: GetCurrentMappingName() , page: 10, query: ''});
         }
     });
 };
@@ -21,7 +22,8 @@ Template.topbar.events({
             if(timeout) { clearTimeout(timeout); }
 
             timeout = setTimeout(function() {
-                Router.go('main', {root: 'sale', type: GetCurrentMappingName() , page: 10, query: event.target.value});
+                var cur = Router.current();
+                Router.go(cur.route.name, {root: cur.params.root, type: GetCurrentMappingName() , page: 10, query: event.target.value});
             }, 1000);
         }
     },

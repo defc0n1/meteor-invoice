@@ -46,7 +46,19 @@ FilterQuery = function (collection, fields, query, merger) {
    if(filter.$and) {
        finalQuery = filter;
    } else {
-       finalQuery = _.extend(filter, merger.filter);
+       if(filter.$or && merger.filter.$or){
+           var and = [{$or: filter.$or}, {$or: merger.filter.$or}];
+           finalQuery = _.extend(filter, merger.filter);
+           delete finalQuery.$or
+               if(finalQuery.$and){
+                   finalQuery.$and.push.apply(finalQuery.$and, and)
+               } else{
+                   finalQuery.$and = and;
+               }
+       }
+       else{
+           finalQuery = _.extend(filter, merger.filter);
+       }
    }
 
     var options = _.extend(merger.options, { sort: sort });

@@ -89,6 +89,7 @@ Router.map(function () {
             if(!this.params.page){
                 this.params.page = 10;
             }
+            //for history back button
             $('#search-query').val(this.params.query);
             var map = Mapping[this.params.type];
             Session.set('type', map);
@@ -206,18 +207,25 @@ Router.map(function () {
         }
     });
     this.route('customerordernumber', {
-        path: '/customerordernumber',
+        path: '/customerordernumber/:root/:page?/:query?',
         layoutTemplate: 'layout',
         action: function () {
             this.render('customerordernumber');
         },
+        onBeforeAction: function () {
+            //for history back button
+            $('#search-query').val(this.params.query);
+        },
         waitOn: function () {
-            //make the correct sidebar show
-            this.params.root = 'sale';
             var filter = jQuery.extend(true, {}, Mapping.postedSalesinvoices.filter);
             filter.$and.push({ $or: [{customer_order_number: ''}, {customer_order_number: { $exists: 0 }}]});
-            console.log(Mapping.postedSalesinvoices.filter);
-            return Meteor.subscribe('Sale', 10, 0, {}, filter);
+            return Meteor.subscribe('Sale',
+                parseInt(this.params.page) || incrementSize,
+                0,
+                this.params.query,
+                filter,
+                function () { }
+            );
         }
     });
 });
