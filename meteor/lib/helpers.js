@@ -35,7 +35,28 @@ GetPrice = function (amount) {
         return val;
 };
 register('GetPrice', GetPrice);
-
+register('showFewer', function() {
+        return (parseInt(Router.current().params.page) || 10) <= 10 ? 'disabled' : '';
+});
+        //var size = CollectionCounts.findOne(GetCurrentMappingName()).count
+        //var offset = 0;
+        //if (size % incrementSize == 0) {
+            //offset = -1
+        //}
+        //var skip = (parseInt(size/incrementSize) + offset) * 10
+    //showMore: function() {
+        //var type = Session.get('type');
+        //var collection = type.collection;
+        //var obj = CollectionCounts.findOne(GetCurrentMappingName());
+        //if (obj) {
+            //var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
+            //return disable ? 'disabled' : '';
+        //}
+        //else {
+            //return false;
+        //}
+        //return '';
+    //},
 GetDate = function (date) {
     if (date) {
         return moment(date).format('DD MMM YYYY');

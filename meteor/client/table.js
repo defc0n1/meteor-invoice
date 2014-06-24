@@ -134,18 +134,6 @@ Template.table.events({
             $('#itemstats').modal({});
         });
     },
-        //var size = CollectionCounts.findOne(GetCurrentMappingName()).count
-        //var offset = 0;
-        //if (size % incrementSize == 0) {
-            //offset = -1
-        //}
-        //var skip = (parseInt(size/incrementSize) + offset) * 10
-    'click #show-more': function(event) {
-        ChangePage(true);
-    },
-    'click #show-fewer': function(event) {
-        ChangePage(false);
-    },
 });
 
 //return true if element is processing
@@ -176,21 +164,5 @@ Template.table.helpers({
     showSpinner: function () {
         var isProcessing = processing(this, 'mail') || processing(this, 'amqp');
         return isProcessing ? 'display: inherit' : 'display:none';
-    },
-    showFewer: function() {
-        return (parseInt(Router.current().params.page) || 10) <= 10 ? 'disabled' : '';
-    },
-    showMore: function() {
-        //var type = Session.get('type');
-        //var collection = type.collection;
-        //var obj = CollectionCounts.findOne(GetCurrentMappingName());
-        //if (obj) {
-            //var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
-            //return disable ? 'disabled' : '';
-        //}
-        //else {
-            //return false;
-        //}
-        return '';
     },
 });
