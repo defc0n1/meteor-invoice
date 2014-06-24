@@ -197,17 +197,25 @@ Router.map(function () {
         }
     });
     this.route('quickgln', {
-        path: '/quickgln',
+        path: '/quickqln/:page?/:query?',
         layoutTemplate: 'layout',
+        onBeforeAction: function () {
+            //for history back button
+            $('#search-query').val(this.params.query);
+        },
         waitOn: function () {
             //make the correct sidebar show
             this.params.root = 'items';
             var filter = { $or: [{gln_number: ''}, {gln_number: { $exists: 0 }}]};
-            return Meteor.subscribe('Items', 10, 0, {}, filter);
+            return Meteor.subscribe('Items',
+                parseInt(this.params.page) || incrementSize,
+                0,
+                this.params.query,
+                filter);
         }
     });
     this.route('customerordernumber', {
-        path: '/customerordernumber/:root/:page?/:query?',
+        path: '/customerordernumber/:page?/:query?',
         layoutTemplate: 'layout',
         action: function () {
             this.render('customerordernumber');
@@ -217,15 +225,15 @@ Router.map(function () {
             $('#search-query').val(this.params.query);
         },
         waitOn: function () {
+            //make the correct sidebar show
+            this.params.root = 'sale';
             var filter = jQuery.extend(true, {}, Mapping.postedSalesinvoices.filter);
             filter.$and.push({ $or: [{customer_order_number: ''}, {customer_order_number: { $exists: 0 }}]});
             return Meteor.subscribe('Sale',
                 parseInt(this.params.page) || incrementSize,
                 0,
                 this.params.query,
-                filter,
-                function () { }
-            );
+                filter);
         }
     });
 });

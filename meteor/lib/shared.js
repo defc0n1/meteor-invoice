@@ -96,11 +96,12 @@ Required = function(name, message, f) {
     }
 };
 ChangePage = function(more) {
-    Router.go('main', {
-        root: Router.current().params.root, 
+    var cur = Router.current();
+    Router.go(cur.route.name, {
+        root: Router.current().params.root,
         type: GetCurrentMappingName(),
-        page: more && (parseInt(Router.current().params.page) || 0) + incrementSize || incrementSize,
-        query: Router.current().params.query
+        page: more && (parseInt(Router.current().params.page) || 10) + incrementSize || incrementSize,
+        query: cur.params.query
     });
 };
 GetCurrentMappingName = function () {
