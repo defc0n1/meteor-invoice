@@ -1,0 +1,13 @@
+{
+    "allowClientAccountCreation": true,
+    "amqp_host": "amqp://prod:12Trade34@144.76.234.182",
+    "amqp_queue": "test",
+    "_amqp_host": "amqp://guest:guest@localhost:5672",
+    "amqp_timeout": 10000,
+    "smtp_user": "tradehouse@tradehouse.as",
+    "smtp_pass": "12Trade34",
+    "smtp_host": "pod51007.outlook.com",
+    "env": "test",
+    "pid": "/apps/pid/invoice.pid",
+    "test_mail": "mikkobe@gmail.com"
+}
