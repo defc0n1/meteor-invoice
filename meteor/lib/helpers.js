@@ -8,7 +8,7 @@ Shorten = function(arg) {
 
 };
 if( Meteor.isServer) {
-    //Handlebars = Meteor.require('handlebars');
+    Handlebars = Meteor.require('handlebars');
 }
 
 var register = function(name, func) {
