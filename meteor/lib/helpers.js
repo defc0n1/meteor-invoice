@@ -8,7 +8,7 @@ Shorten = function(arg) {
 
 };
 if( Meteor.isServer) {
-    Handlebars = Meteor.require('handlebars');
+    //Handlebars = Meteor.require('handlebars');
 }
 
 var register = function(name, func) {
@@ -90,6 +90,7 @@ Handlebars.registerHelper('chain', function () {
         else {
             dyn_args.push(arg);
         }
+        console.log(value, dyn_args)
     });
     return value;
 });

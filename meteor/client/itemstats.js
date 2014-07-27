@@ -1,17 +1,26 @@
 var startDate = new Date(2000, 1, 1)
 var endDate;
+
+var toDate = function(date) {
+    var offset = date.getTimezoneOffset();
+    var utc = date.getTime() - (date.getTimezoneOffset() * 60000);
+    var res = moment(utc).utc().format('YYYY-MM-DDTHH:mm:ssZZ');
+    return res;
+
+    //return date.toDateString()
+}
 Template.itemstatsinner.rendered = function () {
     $('#stats-end-date').datepicker({ autoclose: true }).on('changeDate', function (e) {
         var elem = Session.get('element');
         endDate = e.date;
-        var stats = Meteor.call('getItemStats', elem.elem.key, startDate, endDate, function (err, res) {
+        var stats = Meteor.call('getItemStats', elem.elem.key, toDate(startDate), toDate(endDate), function (err, res) {
             Session.set('stats', res);
         });
     });
     $('#stats-start-date').datepicker({ autoclose: true }).on('changeDate', function (e) {
         var elem = Session.get('element');
         startDate = e.date || startDate;
-        var stats = Meteor.call('getItemStats', elem.elem.key, startDate, endDate, function (err, res) {
+        var stats = Meteor.call('getItemStats', elem.elem.key, toDate(startDate), toDate(endDate), function (err, res) {
             Session.set('stats', res);
         });
     });

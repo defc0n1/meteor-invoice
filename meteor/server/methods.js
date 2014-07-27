@@ -108,12 +108,23 @@ Meteor.methods({
         //var match = { 'lines.item_number': number };
         var match = { posting_date: {}};
         if (endDate) {
-            match.posting_date = { $lte: new Date(endDate) };
+            var date = new Date(endDate)
+            //var _userOffset = date.getTimezoneOffset()*60000; 
+            //var date = new Date(endDate + _userOffset)
+            //date.setDate(date.getDate() + 1);
+            //date.setUTCHours(0)
+            match.posting_date = { $lte: date };
         }
         if (startDate) {
-            match.posting_date.$gte = new Date(startDate);
+            var date = new Date(startDate)
+            //var _userOffset = date.getTimezoneOffset()*60000; 
+            //var date = new Date(startDate + _userOffset)
+            //date.setUTCHours(0)
+            match.posting_date.$gte = date;
         }
-        log.info(match);
+        //log.info(match);
+        log.info(startDate, endDate);
+        log.info(match.posting_date);
         var query = [
             { $match: match },
             {$project: {lines: 1, key: 1, _id: 0}},
@@ -126,6 +137,12 @@ Meteor.methods({
         var res1 = Sale.aggregate(query)[0];
         match.type = 'creditnota';
         var res2 = Sale.aggregate(query)[0];
+        if(!res2 && res1){
+            return [{_id: 'Salg', total: res1.total, quantity: res1.quantity}];
+        }
+        else if(!res1 && res2){
+            return [{_id: 'Salg', total: -res2.total, quantity: -res2.quantity}];
+        }
         return [{_id: 'Salg', total: res1.total - res2.total, quantity: res1.quantity - res2.quantity}];
 
         //return Sale.aggregate([
@@ -145,72 +162,72 @@ Meteor.methods({
                 { $group: { _id: "$type", total: { $sum: "$amount" } } }
         ]);
     }),
-    sendAmqp: auth(function (invoiceNumber) {
-        var invoice = Sale.findOne({ key: invoiceNumber });
-        var deptor = Deptors.findOne({ key: invoice.customer_number });
+    sendAmqp: auth(function (invCredNumber) {
+        var invCred = Sale.findOne({ key: invCredNumber });
+        var deptor = Deptors.findOne({ key: invCred.customer_number });
         if(!deptor){
-            log.info("AMQP edi send cancelled, no deptor", invoice.customer_number);
-            Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
-                invoiceNumber + ' mislykkedes. Debitor findes ikke'});
+            log.info("AMQP edi send cancelled, no deptor", invCred.customer_number);
+            Alerts.insert({ message: 'Afsendelse af EDI faktura/kreditnota ' +
+                invCredNumber + ' mislykkedes. Debitor findes ikke'});
             return;
         }
         if(!deptor.gln){
             log.info("AMQP edi send cancelled, no gln on deptor", deptor.key);
-            Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
-                invoiceNumber + ' mislykkedes. GLN nummer mangler på debitor'});
+            Alerts.insert({ message: 'Afsendelse af EDI dokument ' +
+                invCredNumber + ' mislykkedes. GLN nummer mangler på debitor'});
             return;
         }
         if(!deptor.gln_group){
             log.info("AMQP edi send cancelled, no gln_group on deptor", deptor.key);
-            Alerts.insert({ message: 'Afsendelse af EDI faktura ' + invoiceNumber +
+            Alerts.insert({ message: 'Afsendelse af EDI faktura/kreditnota ' + invCredNumber +
                 ' mislykkedes. GLN gruppe mangler på debitor' });
             return;
         }
-        log.info('Sending invoice over amqp:', invoiceNumber);
+        log.info('Sending invoice/creditnota over amqp:', invCredNumber);
 
         // add ean to all items
         var lines_with_ean = [];
-        invoice.lines.forEach(function(line) {
+        invCred.lines.forEach(function(line) {
             if(line.item_number && !line.gln_number) {
                 var item = Items.findOne({ key: line.item_number});
                 if(!item){
                     log.info("AMQP edi send cancelled, item does not exist", line.item_number);
-                    Alerts.insert({ message: 'Afsendelse af EDI faktura ' +
-                        invoiceNumber + ' mislykkedes. Vare eksisterer ikke:' + line.item_number});
+                    Alerts.insert({ message: 'Afsendelse af EDI faktura/kreditnota ' +
+                        invCredNumber + ' mislykkedes. Vare eksisterer ikke:' + line.item_number});
                     errors.sync('test', 'test');
                 }
                 line.gln_number = item.gln_number;
             }
             lines_with_ean.push(line);
         });
-        invoice.lines = lines_with_ean;
+        invCred.lines = lines_with_ean;
         // construct the message
-        var object = { invoice: invoice, deptor: deptor };
+        var object = { doc: invCred, deptor: deptor };
         object.dry_run = false;
-        // set invoice state to processing
+        // set invoice/creditnota state to processing
         var historyId = UUID.v1()
         History.insert({_id: historyId, state: 'pending', type: 'edi', created: new Date(), user: Meteor.user().emails[0].address,
-            data: {number: invoiceNumber}});
+            data: {number: invCredNumber}});
         Sale.update(
-                { key: invoiceNumber },
+                { key: invCredNumber },
                 { $set: { 'sent.amqp.state': 'processing',
                           'sent.amqp.time': new Date() } }
         );
         // call in case of error
         var error = function (message) {
-            log.error('Unsuccessful send of invoice:', invoiceNumber);
+            log.error('Unsuccessful send of invoice/creditnota:', invCredNumber);
             History.update({_id: historyId}, { $set: {state: 'error', error: message}});
             Sale.update(
-                    { key: invoiceNumber },
+                    { key: invCredNumber },
                     { $set: { 'sent.amqp.state': 'error' } });
-            Alerts.insert({ message: 'Afsendelse af EDI faktura ' + invoiceNumber + ' mislykkedes pga.: ' + message });
+            Alerts.insert({ message: 'Afsendelse af EDI faktura ' + invCredNumber + ' mislykkedes pga.: ' + message });
         }
         amqp.rpc(object, Meteor.settings.amqp_queue, Meteor.bindEnvironment(function (response) {
             if (response.success === true) {
-                console.log('successful send of invoice:', invoiceNumber);
+                console.log('successful send of invoice/creditnota:', invCredNumber);
                 History.update({_id: historyId}, { $set: {state: 'success'}});
                 Sale.update(
-                    { key: invoiceNumber },
+                    { key: invCredNumber },
                     { $push: { 'sent.amqp.history': new Date() },
                       $set: { 'sent.amqp.state': 'success' } });
             }

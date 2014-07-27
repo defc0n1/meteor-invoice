@@ -227,8 +227,7 @@ Router.map(function () {
         waitOn: function () {
             //make the correct sidebar show
             this.params.root = 'sale';
-            var filter = jQuery.extend(true, {}, Mapping.postedSalesinvoices.filter);
-            filter.$and.push({ $or: [{customer_order_number: ''}, {customer_order_number: { $exists: 0 }}]});
+            var filter = { $and: [{ posting_date: { $exists: true } }, { $or: [{customer_order_number: ''}, {customer_order_number: { $exists: 0 }}]}]};
             return Meteor.subscribe('Sale',
                 parseInt(this.params.page) || incrementSize,
                 0,

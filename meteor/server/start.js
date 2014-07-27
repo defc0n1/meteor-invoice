@@ -6,6 +6,7 @@ Fiber = Meteor.require('fibers');
 util = Meteor.require('util');
 
 Meteor.startup(function () {
+    process.env.TZ = 'UTC'
     log.debug(Meteor.settings);
     amqp.connect();
 

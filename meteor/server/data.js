@@ -9,6 +9,7 @@ var queryMinLength = 2;
 //var invoiceSearchFields = [ 'customer_number', '_id', 'name', 'city', 'zip' ];
 
 FilterQuery = function (collection, fields, query, merger) {
+    console.log(JSON.stringify(query), JSON.stringify(merger));
     if (!merger) merger = { options: {}};
     if (!merger.options) merger.options = {};
 
@@ -43,6 +44,7 @@ FilterQuery = function (collection, fields, query, merger) {
 
     var finalQuery = {}
     //hack to allow us to use 123..234 syntax, TODO: fix this and simplify input
+    console.log(JSON.stringify(filter), JSON.stringify(merger.filter));
    if(filter.$and) {
        finalQuery = filter;
    } else {
@@ -60,6 +62,7 @@ FilterQuery = function (collection, fields, query, merger) {
            finalQuery = _.extend(filter, merger.filter);
        }
    }
+   console.log(JSON.stringify(filter));
 
     var options = _.extend(merger.options, { sort: sort });
     var options = merger.options

@@ -1,3 +1,39 @@
+'use strict';
+Template.newlistitem.rendered = function () {
+    $.fn.editable.defaults.mode = 'inline';
+
+    $('.new-edit-field').editable({
+        emptytext: 'Indtast værdi',
+        success: function(response, newValue) {
+            var field = $(this).attr('id');
+            var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
+            var parts = field.split('-');
+            var key = parts[0];
+            var index = parts[1];
+
+            var newLine = elem.lines[index];
+            newLine[key] = newValue;
+            elem.lines.splice(index, 1, newLine);
+
+            var update = {lines: elem.lines};
+            console.log(update);
+
+            UpdateCollection(Sale, elem._id, update);
+        },
+        display: function (value) {
+            var formatter = $(this).attr('data-formatter');
+            // call the formatter function if defined
+            if (formatter) {
+                var func = window[formatter];
+                $(this).html(func(value));
+            }
+            //ootherwise, just insert the new value
+            else{
+                $(this).html(value);
+            }
+        },
+    });
+};
 Template.new.created = function () {
     //Hack to ensure that we do not re
     Template.new.attached = false;
@@ -6,38 +42,60 @@ Template.new.created = function () {
 Template.new.newitem = function () {
     return Sale.findOne({ key: parseInt(Router.current().params.key ) });
 };
-Template.new.total = function () {
-    var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
-    var total = 0;
-    elem.lines.forEach(function (line) {
-        total += line.price * line.quantity;
+Template.new.helpers({
+    total: function () {
+        var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
+        var total = 0;
+        if(elem) {
+            elem.lines.forEach(function (line) {
+                total += line.price * line.quantity;
+            });
+        }
+        return total;
+    },
+    headers: function () {
+        var element = Sale.findOne({ key: parseInt(Router.current().params.key ) });
+        if(!element) return [];
+        var type = Session.get('type');
+        var list =  type.headerFields;
+        list = _.map(list, function(elem) {
+            elem['value'] = element[elem.key];
+            return elem;
+        })
+        return list;
+    }
+});
+Template.newitemheader.rendered = function () {
+    $.fn.editable.defaults.mode = 'inline';
+
+    $('.header-edit-field').editable({
+        emptytext: 'Indtast værdi',
+        success: function(response, newValue) {
+            var key = $(this).attr('id');
+            var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
+            var update = {};
+            update[key] = newValue;
+            console.log(update);
+            UpdateCollection(Sale, elem._id, update);
+        },
+        display: function (value) {
+            var formatter = $(this).attr('data-formatter');
+            // call the formatter function if defined
+            if (formatter) {
+                var func = window[formatter];
+                $(this).html(func(value));
+            }
+            //ootherwise, just insert the new value
+            else{
+                $(this).html(value);
+            }
+        },
     });
-    return total;
-};
+}
 Template.new.rendered = function () {
     //Session.set('type', Mapping['newSalesinvoice']);
     var elem = Sale.findOne({ key: parseInt(Router.current().params.key) });
     Session.set('element', elem);
-    // attach an observed handler and update the
-    // editable value on change
-    var query = Sale.find({ key: parseInt(Router.current().params.key) });
-    var handle = query.observeChanges({changed: function(id, fields) {
-        _.each(fields, function (v, k) {
-            // go through every item line in case that property has changed
-            if (k === 'lines') {
-                _.each(fields.lines, function (line, index) {
-                    // update each property of the line
-                    _.each(line, function (value, key) {
-                        $('#' + key + '-' + index).editable('setValue', value);
-                    });
-                });
-            }
-            else {
-                $('#' + k).editable('setValue', v);
-            }
-        });
-
-    }});
 
     $("#deptor-select").select2({
         placeholder: 'Kundenummer eller navn',
@@ -76,7 +134,6 @@ Template.new.rendered = function () {
 
         $("#deptor-select").on('change', function (val) {
             var type = Session.get('type');
-            var elem = Session.get('element');
             props = val.added.data;
 
             var update = {};
@@ -85,13 +142,14 @@ Template.new.rendered = function () {
                     update[map.key] = props[map.from];
                 }
             });
+            var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
             var res = Sale.update({ _id: elem._id }, { $set: update });
             $("#deptor-select").select2('val', undefined);
         });
 
         $("#item-select").on('change', function (val) {
             props = val.added.data;
-            var elem = Session.get('element');
+            var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
             var duplicate = _.any(elem.lines, function(line){
                 return line.item_number == props.key;
             });
@@ -113,69 +171,13 @@ Template.new.rendered = function () {
         });
     }
 
-    $.fn.editable.defaults.mode = 'inline';
-
-    $('.new-edit-field').editable({
-        emptytext: 'Indtast værdi',
-        success: function(response, newValue) {
-            var elem = Session.get('element');
-            var field = $(this).attr('id');
-
-            var parts = field.split('-');
-            var key = parts[0];
-            var index = parts[1];
-
-            var newLine = elem.lines[index];
-            newLine[key] = newValue;
-            elem.lines.splice(index, 1, newLine);
-
-            var update = {lines: elem.lines};
-            console.log(update);
-
-
-            var res = Sale.update({ _id: elem._id }, { $set: update }, function (err, msg) {
-                console.log(err, msg);
-                if (err) {
-                    console.log(err);
-                    //var selector = '#' + field;
-                    //$(selector).editable('setValue', selected[field] , true);
-                    //Messages.insert({ message: 'Nøgle eksisterer allerede' });
-                }
-                //if (forceReload){$('#main-content').html(Meteor.render(Template.editelement));}
-
-            });
-        },
-        display: function (value) {
-            var formatter = $(this).attr('data-formatter');
-            // call the formatter function if defined
-            if (formatter) {
-                var func = window[formatter];
-                $(this).html(func(value));
-            }
-            //ootherwise, just insert the new value
-            else{
-                $(this).html(value);
-            }
-        },
-    });
-
 };
 Template.new.events({
     'click .remove-list-item': function(event) {
-        console.log(this)
-        var selected = Session.get('element');
+        var selected = Sale.findOne({ key: parseInt(Router.current().params.key ) });
         var list = selected.lines;
         list.splice(this.index, 1);
         var update = {lines: list};
-        Sale.update({ _id: selected._id }, { $set: update }, function (err, msg) {
-            console.log(err, msg);
-            if (err) {
-                console.log(err);
-                //var selector = '#' + field;
-                //$(selector).editable('setValue', selected[field] , true);
-                //Messages.insert({ message: 'Nøgle eksisterer allerede' });
-            }
-        });
-        //$('#main-content').html(Meteor.render(Template.editelement));
+        UpdateCollection(Sale, selected._id, update);
     },
-})
+});
