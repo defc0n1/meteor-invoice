@@ -38,25 +38,27 @@ register('GetPrice', GetPrice);
 register('showFewer', function() {
         return (parseInt(Router.current().params.page) || 10) <= 10 ? 'disabled' : '';
 });
-        //var size = CollectionCounts.findOne(GetCurrentMappingName()).count
-        //var offset = 0;
-        //if (size % incrementSize == 0) {
-            //offset = -1
-        //}
-        //var skip = (parseInt(size/incrementSize) + offset) * 10
-    //showMore: function() {
-        //var type = Session.get('type');
-        //var collection = type.collection;
-        //var obj = CollectionCounts.findOne(GetCurrentMappingName());
-        //if (obj) {
-            //var disable = Session.get(collection + 'skip') + incrementSize >= obj.count;
-            //return disable ? 'disabled' : '';
-        //}
-        //else {
-            //return false;
-        //}
-        //return '';
-    //},
+register('showMore', function() {
+        var obj_with_count = CollectionCounts.findOne(GetCurrentMappingName());
+        if (obj_with_count === undefined)
+            return ''
+        var showCount = parseInt(Router.current().params.page) || incrementSize;
+        return obj_with_count.count <= showCount ? 'disabled' : '';
+});
+register('CountText', function () {
+    var obj_with_count = CollectionCounts.findOne(GetCurrentMappingName());
+    if (obj_with_count === undefined)
+        return "Beregner størrelse";
+
+    var showCount = parseInt(Router.current().params.page) || incrementSize;
+    var total = obj_with_count.count
+    if (total <= showCount) {
+        return 'Viser alle ' + total;
+    }
+    else {
+        return 'Viser 1 til ' + showCount  + ' af ' + total;
+    }
+});
 GetDate = function (date) {
     if (date) {
         return moment(date).format('DD MMM YYYY');
@@ -93,23 +95,6 @@ Handlebars.registerHelper('chain', function () {
     });
     return value;
 });
-register('CountText', function () {
-    var obj_with_count = CollectionCounts.findOne(GetCurrentMappingName());
-    if (obj_with_count === undefined)
-        return "Beregner størrelse";
-
-    var count = obj_with_count.count
-    if (count < incrementSize) {
-        return 'Viser alle';
-    }
-    else {
-        var start = Session.get(GetCurrentCollectionName() + 'skip', 0) + 1;
-        return 'Viser ' + start + ' til ' +
-    Math.min((start + incrementSize - 1), count)  +
-    ' af ' + count;
-    }
-});
-
 register('Equals', function(val1, val2, out) {
     if (val1 == val2){
         return out;

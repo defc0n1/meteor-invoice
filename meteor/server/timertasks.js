@@ -32,7 +32,7 @@ Meteor.setInterval(function () {
     _.each(Mapping,function (val, key) {
         if(val.collection) {
             CollectionCounts.upsert(
-                { _id: key }, 
+                { _id: key },
                 {_id: key, count: global[val.collection].find(val.filter || {}).count()});
         }
     });

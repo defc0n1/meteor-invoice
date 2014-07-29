@@ -1,3 +1,9 @@
+var not_posted = { $or: [ { posting_date: { $exists: false } },
+                { posting_date: null }, { posting_date: '' } ] };
+
+var is_posted = { $and: [ { posting_date: { $exists: true } },
+    { posting_date: { $nin:[null, ''] }} ] };
+
 Mapping = {
     postedPurchaseinvoice: {
         getSingle: 'getPurchaseInvoice',
@@ -35,7 +41,7 @@ Mapping = {
     },
     postedSalescreditnotas: {
         collection: 'Sale',
-        filter: { $and: [ { type: 'creditnota' }, { posting_date: { $exists: true } } ] },
+        filter: { $and: [ { type: 'creditnota' }, is_posted ] },
         singleView: 'postedSalescreditnota',
         table: [
             { header: 'Nummer', key: 'key' },
@@ -52,7 +58,7 @@ Mapping = {
     },
     postedSalesinvoices: {
         collection: 'Sale',
-        filter: { $and: [ { type: 'invoice' }, { posting_date: { $exists: true } } ] },
+        filter: { $and: [ { type: 'invoice' }, is_posted ] },
         singleView: 'postedSalesinvoice',
         table: [
             { header: 'Nummer', key: 'key' },
@@ -73,10 +79,23 @@ Mapping = {
     },
     openSalesinvoices: {
         collection: 'Sale',
-        filter: { $and: [ { type: 'invoice' }, { posting_date: { $exists: false } } ] },
+        filter: { $and: [ { type: 'invoice' }, not_posted ] },
         singleView: 'openSalesinvoice',
-        filter: { $or: [ { posting_date: { $exists: false } },
-            { posting_date: null }, { posting_date: '' } ] },
+        table: [
+            { header: 'Nummer', key: 'key' },
+            { header: 'Kundenummer', key: 'customer_number' },
+            { header: 'Navn', key: 'name' },
+            { header: 'Rediger', key: '', buttons: [
+                { text: 'Bogfør', classes: '' },
+                { icon: 'wrench', classes: 'edit-button' },
+                { icon: 'remove', classes: 'delete-button' },
+           ] },
+        ],
+    },
+    openSalescreditnotas: {
+        collection: 'Sale',
+        filter: { $and: [ { type: 'creditnota' }, not_posted ] },
+        singleView: 'openSalescredinota',
         table: [
             { header: 'Nummer', key: 'key' },
             { header: 'Kundenummer', key: 'customer_number' },
