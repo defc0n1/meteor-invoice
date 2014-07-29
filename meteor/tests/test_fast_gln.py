@@ -2,7 +2,7 @@ import fixtures
 import util
 import time
 
-def test_quick_gln_update(wd, db):
+def test_quick_gln_update(db, wd):
     wd.auth()
     item1 = fixtures.ITEM1.copy()
     db.items.insert(item1)
@@ -22,11 +22,11 @@ def test_quick_gln_update(wd, db):
 
 
     # assert that the value has been updated
-    item = wd.db.items.find_one({ 'key': item['key'] })
+    item = db.items.find_one({ 'key': item['key'] })
     assert item['gln_number'] == gln_number
 
 
-def test_quick_gln_copy_ean(wd, db):
+def test_quick_gln_copy_ean(db, wd):
     wd.auth()
     item1 = fixtures.ITEM1.copy()
     db.items.insert(item1)
@@ -40,14 +40,14 @@ def test_quick_gln_copy_ean(wd, db):
     util.click_button_by_css_selector(wd, ".copy-ean")
 
     # assert that the value has been updated
-    item = wd.db.items.find_one({ 'key': item['key']})
+    item = db.items.find_one({ 'key': item['key']})
     assert item['gln_number'] == item['ean'] 
 
     # assert that the element is not present anymore
     elems = wd.find_elements_by_class_name("copy-ean")
     assert len(elems) == 0, 'expected no'
     
-def test_quick_gln_correct_disappear(wd, db):
+def test_quick_gln_correct_disappear(db, wd):
     wd.auth()
     item = fixtures.ITEM.copy()
     item.pop('gln_number')

@@ -2,7 +2,7 @@ import time
 import util
 import fixtures
 
-def test_create_item(wd):
+def test_create_item(db, wd):
     item = fixtures.ITEM.copy()
     item_key = item.pop('key')
 
@@ -17,14 +17,14 @@ def test_create_item(wd):
         elem = wd.find_element_by_id(key)
         util.fill_xeditable_field(wd, elem, value)
 
-    i = wd.db.items.find_one({'key': item_key})
+    i = db.items.find_one({'key': item_key})
     assert i
 
     for key, value in item.iteritems():
         assert i[key] == value
 
 
-def test_create_deptor(wd):
+def test_create_deptor(db, wd):
     deptor = fixtures.DEPTOR.copy()
     deptor_key = deptor.pop('key')
 
@@ -51,7 +51,7 @@ def test_create_deptor(wd):
             elem = wd.find_element_by_id(key)
             util.fill_xeditable_field(wd, elem, value)
 
-    d = wd.db.deptors.find_one({'key': deptor_key})
+    d = db.deptors.find_one({'key': deptor_key})
     assert d
 
     for key, value in deptor.iteritems():

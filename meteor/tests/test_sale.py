@@ -17,14 +17,14 @@ def insert_invoice(wd, db):
 
     util.click_button_by_css_selector(wd, '.bootbox .btn-primary')
 
-def test_send_edi_no_deptor(wd, db):
+def test_send_edi_no_deptor(db, wd):
     insert_invoice(wd, db)
     elems = wd.find_elements_by_class_name("alert")
     assert len(elems) == 1, 'wrong number of errors'
     #red_buttons = wd.find_elements_by_class_name("btn-danger")
     #assert len(red_buttons) == 1, 'one red button should be present'
 
-def test_send_edi_no_gln_group(wd, db):
+def test_send_edi_no_gln_group(db, wd):
     deptor = fixtures.DEPTOR.copy()
     deptor.pop('gln_group')
     db.deptors.insert(deptor)
@@ -32,7 +32,7 @@ def test_send_edi_no_gln_group(wd, db):
     elems = wd.find_elements_by_class_name("alert")
     assert len(elems) == 1, 'wrong number of errors'
 
-def test_send_edi_no_gln_number_deptor(wd, db):
+def test_send_edi_no_gln_number_deptor(db, wd):
     deptor = fixtures.DEPTOR.copy()
     deptor.pop('gln')
     db.deptors.insert(deptor)
@@ -56,7 +56,7 @@ def test_send_edi_miising_gln_item(wd, db):
     assert len(elems) == 1, 'wrong number of errors'
 
 resp = ''
-def test_send_edi(wd, db):
+def test_send_edi(db, wd):
 
     expected = [
         "UNA:+.? '",
