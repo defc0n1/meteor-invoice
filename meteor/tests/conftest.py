@@ -28,6 +28,7 @@ def real_auth(wd):
 def auth(wd):
     wd.goto('')
     wd.delete_all_cookies()
+    time.sleep(0.5)
     wd.execute_script('Accounts.createUser({ username: "test", password: "test", email: "mikkobe+test@gmail.com" })')
 
 @pytest.yield_fixture(scope='session')
@@ -50,7 +51,10 @@ def wd(request):
 def meteor():
     client = MongoClient()
     print 'starting meteor', db_name
-    p = subprocess.Popen('MONGO_URL="mongodb://localhost:27017/{}" meteor --settings ../config/test-settings.json --port {}'.format(db_name, port), cwd='meteor', shell=True, stdout=subprocess.PIPE)
+    p = subprocess.Popen('MONGO_OPLOG_URL=mongodb://oplogger:test@localhost:27017/local?authSource=admin\
+                          MONGO_URL="mongodb://localhost:27017/{}"\
+                          meteor --settings ../config/test-settings.json --port {}'
+                         .format(db_name, port), cwd='meteor', shell=True, stdout=subprocess.PIPE)
     print 'meteor started'
     yield p
     print 'terminating meteor'

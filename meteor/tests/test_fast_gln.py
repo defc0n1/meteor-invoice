@@ -41,12 +41,12 @@ def test_quick_gln_copy_ean(db, wd):
 
     # assert that the value has been updated
     item = db.items.find_one({ 'key': item['key']})
-    assert item['gln_number'] == item['ean'] 
+    assert item['gln_number'] == item['ean']
 
     # assert that the element is not present anymore
     elems = wd.find_elements_by_class_name("copy-ean")
     assert len(elems) == 0, 'expected no'
-    
+
 def test_quick_gln_correct_disappear(db, wd):
     wd.auth()
     item = fixtures.ITEM.copy()
@@ -57,6 +57,6 @@ def test_quick_gln_correct_disappear(db, wd):
     elems = wd.find_elements_by_class_name("copy-ean")
     assert len(elems) == 1, 'expected one element without gln'
     db.items.update({'key': item['key']}, {'gln_number': '1234'})
-    time.sleep(10)
+    time.sleep(1)
     elems = wd.find_elements_by_class_name("copy-ean")
     assert len(elems) == 0, 'expected item to be gone'

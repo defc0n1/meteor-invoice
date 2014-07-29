@@ -37,6 +37,6 @@ def test_disappear(db, wd):
     assert len(elems) == 1, 'expected one element without customer_order_number'
 
     inv = db.sale.update({ 'key': invoice['key'] }, {'customer_order_number': 123})
-    time.sleep(10)
+    time.sleep(1)
     elems = wd.find_elements_by_class_name("edit-field")
     assert len(elems) == 0, 'expected invoice to be gone no'

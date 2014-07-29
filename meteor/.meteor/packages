@@ -11,7 +11,6 @@ bootstrap-3
 less
 font-awesome
 email
-iron-router
 moment
 npm
 http
@@ -22,3 +21,5 @@ mongodb-server-aggregation
 bootboxjs
 bootstrap-datepicker2
 auto-nprogress
+facts
+iron-router
