@@ -1,10 +1,3 @@
-Template.login.showResult = function() {
-    return Session.get('showResult');
-};
-Template.login.message = function() {
-    return Session.get('message');
-};
-
 Template.login.events({
     'submit #login-form': function(e, t){
         e.preventDefault();
@@ -15,14 +8,11 @@ Template.login.events({
         Meteor.loginWithPassword(email, password,
             function(err){
                 if (err){
-                    Session.set('message', err.reason);
-                    // inform error
+                    $('#login-message').append(err.reason + '<br>');
                     console.log(err);
-                    Session.set('showResult', true);
                 }
                 else{
-                    Session.set('message', 'Du er nu logget ind');
-                    // logged in
+                    $('#login-message').append('Du er nu logget ind<br>');
                 }
             }
         );
@@ -32,18 +22,16 @@ Template.login.events({
         var email = t.find('#login-email').value;
         console.log('cap', email);
         if (!email) {
-            Session.set('message', 'Indtast venligst email adresse');
-            Session.set('showResult', true);
+            $('#login-message').append('Indtast venligst email adresse<br>');
         }
         else{
-            Session.set('showResult', true);
-            Session.set('message', 'Vent et øjeblik');
+            $('#login-message').append('Vent et øjeblik<br>');
             Accounts.forgotPassword({ email: email }, function(err) {
                 if (err) {
-                    Session.set('message', err.message);
+                    $('#login-message').append(err.message + '<br>');
                 }
                 else {
-                    Session.set('message', 'Vi har sendt en email med et password nulstillingslink til dig');
+                    $('#login-message').append('Vi har sendt en email med et password nulstillingslink til dig<br>');
                 }
             });
         }

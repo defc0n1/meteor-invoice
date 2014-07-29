@@ -14,7 +14,7 @@ Template.enroll.events({
             $('#message').html('Ugyldig password token!');
         }
         else {
-            Accounts.resetPassword(Accounts._enrollAccountToken || Accounts._resetPasswordToken, password, function(err) { 
+            Accounts.resetPassword(Accounts._enrollAccountToken || Accounts._resetPasswordToken, password, function(err) {
                 if (err) {
                     $('#message').html(err.message);
                 }

@@ -28,7 +28,7 @@ def update():
         run('mrt install')
 
 def test():
-        local("py.test -vsx meteor/tests")
+        local("py.test -vs meteor/tests")
         with lcd(env.meteor):
             local('laika -s ../config/test-settings.json -V -t 50000')
 
@@ -79,14 +79,7 @@ def mkdirs():
 def bundle():
     with cd(os.path.join(env.app_path, env.meteor)):
         run('pwd')
-        run('meteor bundle ../deploy/out.tgz')
-        run('tar -xzf ../deploy/out.tgz -C ../deploy/')
-        run('rm ../deploy/out.tgz')
-
-def copy():
-    pass
-    #with cd(env.app_path):
-        #run('cp deploy/*.conf /etc/supervisor.d/invoice.conf')
+        run('meteor bundle ../deploy/bundle --directory')
 
 def stage_db():
     run('''
@@ -119,6 +112,4 @@ def deploy():
     pull()
     update()
     bundle()
-    copy()
-    #sync()
     restart()

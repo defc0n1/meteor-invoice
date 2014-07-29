@@ -105,7 +105,9 @@ Meteor.methods({
         return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
     }),
     getItemStats: auth(function (number, startDate, endDate) {
-        var match = { posting_date: {}};
+        // only invoices wich contains the item number
+        var match = { posting_date: {}, 'lines.item_number': number };
+        //var match = { posting_date: {}};
         if (endDate) {
             var date = new Date(endDate)
             match.posting_date = { $lte: date };
@@ -120,6 +122,7 @@ Meteor.methods({
             { $match: match },
             {$project: {lines: 1, key: 1, _id: 0}},
             { $unwind: "$lines"},
+            // only lines with the item number
             { $match: { 'lines.item_number': number}},
             { $group: { _id: "sale", total: { $sum: "$lines.total_without_tax" }, quantity: { $sum: "$lines.quantity" } } }
         ];

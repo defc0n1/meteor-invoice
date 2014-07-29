@@ -17,55 +17,35 @@ Router.onStop(
         history.pushState({ type: this.params.type }, '');
     }
 )
-Router.onBeforeAction(
-        function() {
-
-            if (Meteor.loggingIn()) {
-            }
-            else if (!Meteor.user() && !Meteor.loggingIn()) {
-                //this.render('login');
-                //this.render('login');
-                Router.go('login');
-                this.stop();
-            }
-            else if(Meteor.user()) {
-            }
-        }, {except: ['login', 'forgotPassword', 'setPassword', 'unsubscribe']});
-
-Router.configure({
-    //layoutTemplate: 'layout',
-    loadingTemplate: 'loading',
-});
 
 Router.map(function () {
     this.route('setPassword', {
         path: '/set-password',
-        action: function() {
+        layoutTemplate: '',
+        onBeforeAction: function(pause) {
             console.log('test', this.params.hash);
             if (Meteor.user()) {
-                this.stop();
+                pause();
                 Router.go('index');
-                return;
             }
-            this.render('enroll');
         },
+        action: function() {
+            this.render('enroll');
+        }
     });
     this.route('login', {
         path: '/login',
         template: 'login',
-        onBeforeAction: function() {
+        layoutTemplate: '',
+        onBeforeAction: function(pause) {
 
             if (Meteor.loggingIn()) {
-
             }
             if (Meteor.user()) {
-                this.stop();
+                pause();
                 Router.go('index');
-                //this.redirect('/');
             }
         },
-        onAfterAction: function () {
-        }
     });
     this.route('index', {
         path: '/',
@@ -162,13 +142,10 @@ Router.map(function () {
     });
     this.route('unsubscribe', {
         path: '/unsubscribe',
-        //layoutTemplate: 'layout',
+        layoutTemplate: '',
         action: function () {
             this.render('unsubscribe');
         },
-        //onBeforeAction: function() {
-            //Session.set('type', Mapping[this.params.type]);
-        //}
     });
     this.route('dynamic', {
         path: '/custom/:root/:type',
@@ -242,4 +219,10 @@ Router.map(function () {
                 filter);
         }
     });
+});
+
+Deps.autorun(function() {
+  var except = ['login', 'forgotPassword', 'setPassword', 'unsubscribe']
+  if (Router.current() && !_.contains(except, Router.current().route.name) && Meteor.user() === null && !Meteor.loggingIn())
+    Router.go('login');
 });
