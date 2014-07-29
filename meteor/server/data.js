@@ -35,7 +35,7 @@ FilterQuery = function (collection, fields, query, merger) {
         }
     }
     if (!merger.options.limit) merger.options.limit = 10;
-    if (!merger.options.skip) merger.options.skip = 0;
+    //if (!merger.options.skip) merger.options.skip = 0;
 
 
     var sort = merger.filter && merger.filter.sort ? merger.filter.sort : { key: -1};
@@ -66,6 +66,10 @@ FilterQuery = function (collection, fields, query, merger) {
 
     var options = _.extend(merger.options, { sort: sort });
     var options = merger.options
+    //delete skip if it is zero to enable oplog tailing
+    if (options.skip === 0) {
+        delete options.skip;
+    }
     console.log(JSON.stringify(finalQuery), options, collection._name);
     return collection.find(finalQuery, options);
 };
@@ -168,3 +172,5 @@ Meteor.publish('Custom', function (collection, query){
     }
     return global[collection].find(query);
 });
+
+Facts.setUserIdFilter(function () { return true; });

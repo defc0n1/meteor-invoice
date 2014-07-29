@@ -2,7 +2,7 @@ import fixtures
 import util
 import time
 
-def test_update(wd, db):
+def test_update(db, wd):
     wd.auth()
     invoice = fixtures.INVOICE.copy()
     db.sale.insert(invoice)
@@ -23,10 +23,10 @@ def test_update(wd, db):
 
 
     # assert that the value has been updated
-    inv = wd.db.sale.find_one({ 'key': invoice1['key'] })
+    inv = db.sale.find_one({ 'key': invoice1['key'] })
     assert inv['customer_order_number'] == customer_order_number
 
-def test_disappear(wd, db):
+def test_disappear(db, wd):
     wd.auth()
     invoice = fixtures.INVOICE.copy()
     invoice.pop('customer_order_number')
@@ -36,7 +36,7 @@ def test_disappear(wd, db):
     elems = wd.find_elements_by_class_name("edit-field")
     assert len(elems) == 1, 'expected one element without customer_order_number'
 
-    inv = wd.db.sale.update({ 'key': invoice['key'] }, {'customer_order_number': 123})
-    time.sleep(10)
+    inv = db.sale.update({ 'key': invoice['key'] }, {'customer_order_number': 123})
+    time.sleep(1)
     elems = wd.find_elements_by_class_name("edit-field")
     assert len(elems) == 0, 'expected invoice to be gone no'

@@ -214,6 +214,13 @@ Router.map(function () {
                 filter);
         }
     });
+    this.route('facts', {
+        path: '/facts',
+        layoutTemplate: 'layout',
+        action: function () {
+            this.render('facts');
+        },
+    });
     this.route('customerordernumber', {
         path: '/customerordernumber/:page?/:query?',
         layoutTemplate: 'layout',
