@@ -90,7 +90,6 @@ Handlebars.registerHelper('chain', function () {
         else {
             dyn_args.push(arg);
         }
-        console.log(value, dyn_args)
     });
     return value;
 });

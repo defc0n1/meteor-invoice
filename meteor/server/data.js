@@ -44,7 +44,6 @@ FilterQuery = function (collection, fields, query, merger) {
 
     var finalQuery = {}
     //hack to allow us to use 123..234 syntax, TODO: fix this and simplify input
-    console.log(JSON.stringify(filter), JSON.stringify(merger.filter));
    if(filter.$and) {
        finalQuery = filter;
    } else {

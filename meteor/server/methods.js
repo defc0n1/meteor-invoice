@@ -105,24 +105,15 @@ Meteor.methods({
         return PurchaseCreditnotas.findOne({ creditor_creditnota_number: parseInt(number) }, {fields: {key: 1} });
     }),
     getItemStats: auth(function (number, startDate, endDate) {
-        //var match = { 'lines.item_number': number };
         var match = { posting_date: {}};
         if (endDate) {
             var date = new Date(endDate)
-            //var _userOffset = date.getTimezoneOffset()*60000; 
-            //var date = new Date(endDate + _userOffset)
-            //date.setDate(date.getDate() + 1);
-            //date.setUTCHours(0)
             match.posting_date = { $lte: date };
         }
         if (startDate) {
             var date = new Date(startDate)
-            //var _userOffset = date.getTimezoneOffset()*60000; 
-            //var date = new Date(startDate + _userOffset)
-            //date.setUTCHours(0)
             match.posting_date.$gte = date;
         }
-        //log.info(match);
         log.info(startDate, endDate);
         log.info(match.posting_date);
         var query = [

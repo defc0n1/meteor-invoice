@@ -16,7 +16,6 @@ Template.newlistitem.rendered = function () {
             elem.lines.splice(index, 1, newLine);
 
             var update = {lines: elem.lines};
-            console.log(update);
 
             UpdateCollection(Sale, elem._id, update);
         },
@@ -75,7 +74,6 @@ Template.newitemheader.rendered = function () {
             var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
             var update = {};
             update[key] = newValue;
-            console.log(update);
             UpdateCollection(Sale, elem._id, update);
         },
         display: function (value) {
