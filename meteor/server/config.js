@@ -8,3 +8,5 @@ Accounts.urls.enrollAccount = function (token) {
     return Meteor.absoluteUrl('set-password/#/enroll-account/' + token);
   };
 Accounts.emailTemplates.from = "Invoice administration <tradehouse@tradehouse.as>";
+
+Facts.setUserIdFilter(function () { return true; });

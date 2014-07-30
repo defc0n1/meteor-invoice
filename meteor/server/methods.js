@@ -32,8 +32,8 @@ Meteor.methods({
         }
         return next;
     }),
-    DeptorsSearch: auth(function (query, merger) {
-        return FilterQuery(Deptors, DeptorSearchFields, query, merger).fetch();
+    DeptorsSearch: auth(function (query) {
+        return FilterQuery(Deptors, SearchFields.Deptor, query).fetch();
     }),
     DeleteMailGroup: auth(function (name) {
         log.info('Removing mailgroup', name)
@@ -43,8 +43,8 @@ Meteor.methods({
         Deptors.update(update, {$unset: update}, {multi: true});
         MailGroups.remove({_id: name});
     }),
-    ItemsSearch: auth(function (query, merger) {
-        return FilterQuery(Items, ItemSearchFields, query, merger).fetch();
+    ItemsSearch: auth(function (query) {
+        return FilterQuery(Items, SearchFields.Item, query).fetch();
     }),
     getSalesInvoice: auth(function (key) {
         return Sale.findOne({ key: parseInt(key) });
