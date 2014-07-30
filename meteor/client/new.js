@@ -132,7 +132,7 @@ Template.new.rendered = function () {
 
         $("#deptor-select").on('change', function (val) {
             var type = Session.get('type');
-            props = val.added.data;
+            var props = val.added.data;
 
             var update = {};
             _.each(type.headerFields, function (map) {
@@ -146,7 +146,7 @@ Template.new.rendered = function () {
         });
 
         $("#item-select").on('change', function (val) {
-            props = val.added.data;
+            var props = val.added.data;
             var elem = Sale.findOne({ key: parseInt(Router.current().params.key ) });
             var duplicate = _.any(elem.lines, function(line){
                 return line.item_number == props.key;
